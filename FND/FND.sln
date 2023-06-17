@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{9B506E1A-3C9A-4ED1-B681-23836A73F14D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FND.API", "src\FND.API\FND.API.csproj", "{02E4244E-6F8B-4551-B822-653FFD6423F4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{02E4244E-6F8B-4551-B822-653FFD6423F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02E4244E-6F8B-4551-B822-653FFD6423F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02E4244E-6F8B-4551-B822-653FFD6423F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02E4244E-6F8B-4551-B822-653FFD6423F4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{02E4244E-6F8B-4551-B822-653FFD6423F4} = {9B506E1A-3C9A-4ED1-B681-23836A73F14D}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0F502914-6347-43F4-87CD-ECF3F15D1AF5}
+	EndGlobalSection
+EndGlobal

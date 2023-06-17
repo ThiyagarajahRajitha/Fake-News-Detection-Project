@@ -1,0 +1,10 @@
+
+@app.get("/")
+async def root():
+    return {"message": "Hello World"}
+
+
+
+//calling the below written method instead of item
+
+//writing a method to classify the given news
