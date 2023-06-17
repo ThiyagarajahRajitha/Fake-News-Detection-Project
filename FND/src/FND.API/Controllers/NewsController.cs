@@ -62,6 +62,13 @@ namespace FND.API.Controllers
         //    }
         //    return Ok(updatedEmployee);
         //}
+        [Route("Subscribe")]
+        [HttpPost]
+        public async Task<ActionResult> Subscribe(CreateSubscriberDto createSubscriberDto )//have to give news class object to this 
+        {
+            var result = await newsService.Subscribe(createSubscriberDto);
+            return Ok(result);
+        }
 
     }
 }

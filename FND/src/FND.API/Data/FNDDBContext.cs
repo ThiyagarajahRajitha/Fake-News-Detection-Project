@@ -13,6 +13,7 @@ namespace FND.API.Data
         //    optionsBuilder.UseSqlServer(@"Data Source=LAPTOP-NN7S7R94;Database=FND;Encrypt=False;Integrated Security=True");
         //}
         public DbSet<Entities.News> News { get; set; }
+        public DbSet<Entities.Subscriber> Subscribers { get; set; }
         
 
     }

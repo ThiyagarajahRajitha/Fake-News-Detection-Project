@@ -40,6 +40,16 @@ namespace FND.API.Data.Repositories
 
         }
 
+        public async Task<ActionResult<Subscriber>> Subscribe(CreateSubscriberDto model)
+        {
+            Subscriber newSubscriber = new Subscriber()
+            {
+                Email = model.Email,
+            };
+            _fNDDBContext.Add<Subscriber>(newSubscriber);
+            _fNDDBContext.SaveChanges();
+            return newSubscriber;
+        }
     }
 }
 

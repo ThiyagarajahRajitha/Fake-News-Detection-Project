@@ -60,5 +60,10 @@ namespace FND.API.Services
             return newsList;
         }
 
+        public async Task<CreateSubscriberDto> Subscribe(CreateSubscriberDto createSubscriberDto)
+        {
+            _newsRepository.Subscribe(createSubscriberDto);
+            return createSubscriberDto ;
+        }
     }
 }
