@@ -50,6 +50,17 @@ namespace FND.API.Data.Repositories
             _fNDDBContext.SaveChanges();
             return newSubscriber;
         }
+
+        public async Task<IEnumerable<string>> GetSubscribersEmail()
+        {
+            List<Subscriber> subscribersEmail = await _fNDDBContext.Subscribers.ToListAsync();
+            List<string> sub = new List<string>();
+            foreach (Subscriber subscriber in subscribersEmail)
+            {
+                sub.Add(subscriber.Email.ToString());
+            }
+            return sub;
+        }
     }
 }
 

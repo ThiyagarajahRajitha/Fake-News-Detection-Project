@@ -76,3 +76,14 @@ C:\Rajitha\BIT\PROJECT-2023\Fake News Project\FND\src\FND.API\bin\Debug\net7.0\r
 C:\Rajitha\BIT\PROJECT-2023\Fake News Project\FND\src\FND.API\bin\Debug\net7.0\runtimes\win\lib\netcoreapp3.0\System.Windows.Extensions.dll
 C:\Rajitha\BIT\PROJECT-2023\Fake News Project\FND\src\FND.API\bin\Debug\net7.0\AutoMapper.dll
 C:\Rajitha\BIT\PROJECT-2023\Fake News Project\FND\src\FND.API\bin\Debug\net7.0\Newtonsoft.Json.dll
+C:\Rajitha\BIT\PROJECT-2023\Fake News Project\FND\src\FND.API\bin\Debug\net7.0\BouncyCastle.Cryptography.dll
+C:\Rajitha\BIT\PROJECT-2023\Fake News Project\FND\src\FND.API\bin\Debug\net7.0\MailKit.dll
+C:\Rajitha\BIT\PROJECT-2023\Fake News Project\FND\src\FND.API\bin\Debug\net7.0\MimeKit.dll
+C:\Rajitha\BIT\PROJECT-2023\Fake News Project\FND\src\FND.API\bin\Debug\net7.0\System.Security.Cryptography.Pkcs.dll
+C:\Rajitha\BIT\PROJECT-2023\Fake News Project\FND\src\FND.API\bin\Debug\net7.0\runtimes\win\lib\net7.0\System.Security.Cryptography.Pkcs.dll
+C:\Rajitha\BIT\PROJECT-2023\Fake News Project\FND\src\FND.API\bin\Debug\net7.0\Google.Apis.dll
+C:\Rajitha\BIT\PROJECT-2023\Fake News Project\FND\src\FND.API\bin\Debug\net7.0\Google.Apis.Auth.PlatformServices.dll
+C:\Rajitha\BIT\PROJECT-2023\Fake News Project\FND\src\FND.API\bin\Debug\net7.0\Google.Apis.Auth.dll
+C:\Rajitha\BIT\PROJECT-2023\Fake News Project\FND\src\FND.API\bin\Debug\net7.0\Google.Apis.Core.dll
+C:\Rajitha\BIT\PROJECT-2023\Fake News Project\FND\src\FND.API\bin\Debug\net7.0\GmailKey.json
+C:\Rajitha\BIT\PROJECT-2023\Fake News Project\FND\src\FND.API\bin\Debug\net7.0\Google.Apis.Gmail.v1.dll

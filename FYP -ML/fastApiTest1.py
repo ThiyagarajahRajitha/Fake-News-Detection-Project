@@ -14,7 +14,10 @@ obj.trainData()
 # print(News)
 @app.post("/news/")
 async def classify_news(classification: News):
-    return obj.predict(classification.Content)
+     reslt = obj.predict(classification.Content);
+     return {
+          "result":reslt
+     }
 
 
 

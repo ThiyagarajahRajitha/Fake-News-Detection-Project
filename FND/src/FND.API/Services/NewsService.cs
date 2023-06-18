@@ -11,6 +11,7 @@ using FND.API.Data.Dtos;
 using Azure;
 using System;
 using Newtonsoft.Json;
+using System.Net.Mail;
 
 namespace FND.API.Services
 {
@@ -18,6 +19,8 @@ namespace FND.API.Services
     {
 
         private readonly NewsRepository _newsRepository;
+        private readonly NotificationService _notificationService = new NotificationService();
+
 
         public NewsService(FNDDBContext fNDDBContext)
         {
@@ -41,16 +44,30 @@ namespace FND.API.Services
             var url = "http://127.0.0.1:8000/news/";
             var response = await _httpClient.PostAsync(url, requestContent);
             response.EnsureSuccessStatusCode();
-            var result = await response.Content.ReadAsStringAsync();
-            
+            string result = await response.Content.ReadAsStringAsync();
+            ClassificationResutlt restlJson = JsonConvert.DeserializeObject<ClassificationResutlt>(result);
+            string resultValue = restlJson.result;
+
             CreateNewsDto createNewsDto = new CreateNewsDto()
             {
                 Topic = classifyNewsDto.Topic,
                 Content = classifyNewsDto.Content,
                 //Publisher_id = model.Publisher_id,
-                Classification_Decision = result
+                Classification_Decision = resultValue
             };
             _newsRepository.CreateNews(createNewsDto);
+
+
+            IEnumerable<string> subEmail = await _newsRepository.GetSubscribersEmail();
+            string subject = "A new Fake news have been detected";
+            string body = "News: <b>"+createNewsDto.Topic+".</b> <br> For more details visit http://localhost:4200/</br>";
+
+            Notification notification = new Notification(subject, subEmail,null, body);
+
+            if (resultValue == "Fake")
+            {
+                _notificationService.SendMailAsync(notification);
+            }
             return result;
         }
 
@@ -63,7 +80,16 @@ namespace FND.API.Services
         public async Task<CreateSubscriberDto> Subscribe(CreateSubscriberDto createSubscriberDto)
         {
             _newsRepository.Subscribe(createSubscriberDto);
+            IEnumerable<string> senders = new string[] { createSubscriberDto.Email };
+            Notification message = new Notification("Welcome to Fake News detection System", senders, "welcome");
+            await _notificationService.SendMailAsync(message);
             return createSubscriberDto ;
         }
+
+    }
+
+    public class ClassificationResutlt
+    {
+        public string result { get; set; }
     }
 }
