@@ -14,9 +14,13 @@ namespace FND.API.Data.Repositories
             _fNDDBContext= fNDDBContext;
         }
 
-        public async Task<List<News>> GetNews()
+        public async Task<List<News>> GetNews([FromQuery(Name = "FakeNewsOnly")] bool IsFakeNewsOnly)
         {
             var newsList = await _fNDDBContext.News.OrderByDescending(b => b.Id).ToListAsync();
+            if (IsFakeNewsOnly)
+            {
+                newsList = await _fNDDBContext.News.Where(n=>n.Classification_Decision=="Fake").OrderByDescending(i=>i.Id).ToListAsync();
+            }
             return newsList;
         }
 
@@ -51,16 +55,7 @@ namespace FND.API.Data.Repositories
             return newSubscriber;
         }
 
-        public async Task<IEnumerable<string>> GetSubscribersEmail()
-        {
-            List<Subscriber> subscribersEmail = await _fNDDBContext.Subscribers.ToListAsync();
-            List<string> sub = new List<string>();
-            foreach (Subscriber subscriber in subscribersEmail)
-            {
-                sub.Add(subscriber.Email.ToString());
-            }
-            return sub;
-        }
+        
     }
 }
 

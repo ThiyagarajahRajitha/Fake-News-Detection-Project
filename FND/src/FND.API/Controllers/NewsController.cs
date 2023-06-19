@@ -22,10 +22,10 @@ namespace FND.API.Controllers
 
 
         [HttpGet]
-        public async Task<ActionResult<List<News>>> GetNews()
+        public async Task<ActionResult<List<News>>> GetNews([FromQuery(Name = "FakeNewsOnly")] bool IsFakeNewsOnly)
         {
             //var newsList = await _fNDDBContext.News.ToListAsync();
-            var newsList = await newsService.GetNews();
+            var newsList = await newsService.GetNews(IsFakeNewsOnly);
             return Ok(newsList);
         }
         //var news1 = new  { topic = "covid 19 is every wheeersjgnds", publisher = "Rajitha" };
@@ -62,13 +62,7 @@ namespace FND.API.Controllers
         //    }
         //    return Ok(updatedEmployee);
         //}
-        [Route("Subscribe")]
-        [HttpPost]
-        public async Task<ActionResult> Subscribe(CreateSubscriberDto createSubscriberDto )//have to give news class object to this 
-        {
-            var result = await newsService.Subscribe(createSubscriberDto);
-            return Ok(result);
-        }
+       
 
     }
 }

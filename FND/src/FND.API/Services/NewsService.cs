@@ -19,12 +19,14 @@ namespace FND.API.Services
     {
 
         private readonly NewsRepository _newsRepository;
+        private readonly SubscriberRepository _subscriberRepository;
         private readonly NotificationService _notificationService = new NotificationService();
 
 
         public NewsService(FNDDBContext fNDDBContext)
         {
             _newsRepository =  new NewsRepository(fNDDBContext);
+            _subscriberRepository = new SubscriberRepository(fNDDBContext);
         }
 
         public async Task<string> ClassifyNews(ClassifyNewsDto classifyNewsDto)//givw the news from user-client
@@ -58,7 +60,7 @@ namespace FND.API.Services
             _newsRepository.CreateNews(createNewsDto);
 
 
-            IEnumerable<string> subEmail = await _newsRepository.GetSubscribersEmail();
+            IEnumerable<string> subEmail = await _subscriberRepository.GetSubscribersEmail();
             string subject = "A new Fake news have been detected";
             string body = "News: <b>"+createNewsDto.Topic+".</b> <br> For more details visit http://localhost:4200/</br>";
 
@@ -71,19 +73,10 @@ namespace FND.API.Services
             return result;
         }
 
-        public async Task<List<News>> GetNews()
+        public async Task<List<News>> GetNews([FromQuery(Name = "FakeNewsOnly")] bool IsFakeNewsOnly)
         {
-            var newsList = await _newsRepository.GetNews();
+            var newsList = await _newsRepository.GetNews(IsFakeNewsOnly);
             return newsList;
-        }
-
-        public async Task<CreateSubscriberDto> Subscribe(CreateSubscriberDto createSubscriberDto)
-        {
-            _newsRepository.Subscribe(createSubscriberDto);
-            IEnumerable<string> senders = new string[] { createSubscriberDto.Email };
-            Notification message = new Notification("Welcome to Fake News detection System", senders, "welcome");
-            await _notificationService.SendMailAsync(message);
-            return createSubscriberDto ;
         }
 
     }
