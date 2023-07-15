@@ -8,5 +8,6 @@
         public string Content { get; set; }
         //public int Publisher_id { get; set; }
         public string Classification_Decision { get; set; }
+        public DateTime CreatedOn { get; set; }
     }
 }

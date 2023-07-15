@@ -2,6 +2,7 @@
 using FND.API.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace FND.API.Data.Repositories
 {
@@ -35,7 +36,8 @@ namespace FND.API.Data.Repositories
                 Topic = model.Topic,
                 Content = model.Content,
                 //Publisher_id = model.Publisher_id,
-                Classification_Decision = model.Classification_Decision.Replace("\"", "")
+                Classification_Decision = model.Classification_Decision.Replace("\"", ""),
+                CreatedOn= DateTime.Now,
             };
 
             _fNDDBContext.Add<News>(newNews);
@@ -44,18 +46,22 @@ namespace FND.API.Data.Repositories
 
         }
 
-        public async Task<ActionResult<Subscriber>> Subscribe(CreateSubscriberDto model)
+        public async Task<List<NewsClassificationCount>> GetNewsCountByClassification([FromQuery(Name = "from")] string fromDate, [FromQuery(Name = "to")] string toDate)
         {
-            Subscriber newSubscriber = new Subscriber()
-            {
-                Email = model.Email,
-            };
-            _fNDDBContext.Add<Subscriber>(newSubscriber);
-            _fNDDBContext.SaveChanges();
-            return newSubscriber;
-        }
+            string format = "yyyy-MM-dd";
+            //DateTime fromDateee = DateTime.Parse(fromDate);
+            //DateTime toDateee = DateTime.Parse(fromDate);
+            
+            DateTime fromDatee = DateTime.ParseExact(fromDate, format, CultureInfo.InvariantCulture);
+            DateTime toDatee = DateTime.ParseExact(toDate, format, CultureInfo.InvariantCulture);
+            var newsCountByClassification = await _fNDDBContext.News
+                .Where(n => n.CreatedOn >= fromDatee && n.CreatedOn <= toDatee)
+                .GroupBy(n => n.Classification_Decision)
+                .Select(g => new NewsClassificationCount { Classification = g.Key, Count = g.Count() })
+                .ToListAsync();
 
-        
+            return newsCountByClassification;
+        }
     }
 }
 

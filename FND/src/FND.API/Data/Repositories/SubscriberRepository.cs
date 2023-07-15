@@ -1,4 +1,6 @@
-﻿using FND.API.Entities;
+﻿using FND.API.Data.Dtos;
+using FND.API.Entities;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace FND.API.Data.Repositories
@@ -9,6 +11,18 @@ namespace FND.API.Data.Repositories
         public SubscriberRepository(FNDDBContext fNDDBContext)
         {
             _fNDDBContext = fNDDBContext;
+        }
+
+        public async Task<ActionResult<Subscriber>> Subscribe(CreateSubscriberDto model)
+        {
+            Subscriber newSubscriber = new Subscriber()
+            {
+                Email = model.Email,
+                CreatedOn = DateTime.Now,
+            };
+            _fNDDBContext.Add<Subscriber>(newSubscriber);
+            _fNDDBContext.SaveChanges();
+            return newSubscriber;
         }
         public async Task<IEnumerable<string>> GetSubscribersEmail()
         {

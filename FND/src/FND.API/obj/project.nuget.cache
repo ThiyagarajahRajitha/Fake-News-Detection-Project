@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "p/igwcxnVeAu2sE5ln+SQ6qbeuWd0R/jGvuyzcC/KgVMFjf4P/7aMvU9/HMXM0YpFmoZBrrhPXOWPxqXGYkZJQ==",
+  "dgSpecHash": "faakJIcNqshshsgHZs14Qch8VZyuhq8Rl+thh68ofyCSO7FwyI9k3dWX2ItErbEFLZoynQ2vxqAmu19bm2xMgw==",
   "success": true,
   "projectFilePath": "C:\\Rajitha\\BIT\\PROJECT-2023\\Fake News Project\\FND\\src\\FND.API\\FND.API.csproj",
   "expectedPackageFiles": [
@@ -14,6 +14,7 @@
     "C:\\Users\\thiya\\.nuget\\packages\\google.apis.gmail.v1\\1.60.0.3084\\google.apis.gmail.v1.1.60.0.3084.nupkg.sha512",
     "C:\\Users\\thiya\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\thiya\\.nuget\\packages\\mailkit\\4.1.0\\mailkit.4.1.0.nupkg.sha512",
+    "C:\\Users\\thiya\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\7.0.9\\microsoft.aspnetcore.authentication.jwtbearer.7.0.9.nupkg.sha512",
     "C:\\Users\\thiya\\.nuget\\packages\\microsoft.aspnetcore.openapi\\7.0.2\\microsoft.aspnetcore.openapi.7.0.2.nupkg.sha512",
     "C:\\Users\\thiya\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\1.1.1\\microsoft.bcl.asyncinterfaces.1.1.1.nupkg.sha512",
     "C:\\Users\\thiya\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",

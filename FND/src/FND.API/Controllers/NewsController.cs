@@ -4,6 +4,7 @@ using FND.API.Entities;
 using FND.API.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace FND.API.Controllers
 {
@@ -62,7 +63,14 @@ namespace FND.API.Controllers
         //    }
         //    return Ok(updatedEmployee);
         //}
-       
+        [Route("GetNewsCount")]
+        [HttpGet]
+        public async Task<List<NewsClassificationCount>> GetNewsCountByClassification([FromQuery(Name = "from")] string fromDate, [FromQuery(Name = "to")] string toDate)
+        {
+            //var newsList = await _fNDDBContext.News.ToListAsync();
+            var newsCountByClassification = await newsService.GetNewsCountByClassification(fromDate, toDate);
+            return newsCountByClassification;
+        }
 
     }
 }

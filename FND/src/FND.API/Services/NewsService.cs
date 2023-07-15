@@ -12,6 +12,8 @@ using Azure;
 using System;
 using Newtonsoft.Json;
 using System.Net.Mail;
+using Microsoft.AspNetCore.Http;
+using System.Globalization;
 
 namespace FND.API.Services
 {
@@ -79,6 +81,11 @@ namespace FND.API.Services
             return newsList;
         }
 
+        public async Task<List<NewsClassificationCount>> GetNewsCountByClassification([FromQuery(Name = "from")]string fromDate, [FromQuery(Name = "to")] string toDate)
+        {
+            var newsCountByClassification =  await _newsRepository.GetNewsCountByClassification(fromDate, toDate);
+            return newsCountByClassification;
+        }
     }
 
     public class ClassificationResutlt

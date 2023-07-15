@@ -87,3 +87,4 @@ C:\Rajitha\BIT\PROJECT-2023\Fake News Project\FND\src\FND.API\bin\Debug\net7.0\G
 C:\Rajitha\BIT\PROJECT-2023\Fake News Project\FND\src\FND.API\bin\Debug\net7.0\Google.Apis.Core.dll
 C:\Rajitha\BIT\PROJECT-2023\Fake News Project\FND\src\FND.API\bin\Debug\net7.0\GmailKey.json
 C:\Rajitha\BIT\PROJECT-2023\Fake News Project\FND\src\FND.API\bin\Debug\net7.0\Google.Apis.Gmail.v1.dll
+C:\Rajitha\BIT\PROJECT-2023\Fake News Project\FND\src\FND.API\bin\Debug\net7.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
