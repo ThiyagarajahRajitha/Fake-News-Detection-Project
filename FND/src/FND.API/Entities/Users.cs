@@ -12,6 +12,6 @@ namespace FND.API.Entities
         public DateTimeOffset Created_at { get; set; }
         public string Token { get; set; }
         public string Role { get; set; }
-        public int status { get; set; }
+        public int Status { get; set; }
     }
 }

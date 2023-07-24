@@ -13,6 +13,7 @@ class NewsClassifier:
 	global knn
 	global tfidf_vectorizer
 	tfidf_vectorizer=TfidfVectorizer()
+	
 	def __init__(self):
 		pass
 	def trainData(self):

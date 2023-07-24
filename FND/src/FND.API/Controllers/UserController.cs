@@ -10,6 +10,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System;
+using FND.API.Data.Dtos;
+using FND.API.Data.Repositories;
 
 namespace FND.API.Controllers
 {
@@ -24,18 +26,22 @@ namespace FND.API.Controllers
         }
 
         [HttpPost("authenticate")]
-        public async Task<IActionResult> Authenticate([FromBody] Users userObj)
+        public async Task<IActionResult> Authenticate([FromBody] LoginRequestDto loginRequest)
         {
-            if (userObj == null)
+            if (loginRequest == null)
                 return BadRequest();
 
-            var user = await _context.Users.FirstOrDefaultAsync(x=>x.Email== userObj.Email);
+            var user = await _context.Users.FirstOrDefaultAsync(x=>x.Email== loginRequest.Username);
             if(user == null)
                 return NotFound(new {Message = "User Not Found!"});
 
-            if(!PasswordHasher.verifyPasswood(userObj.Password_hash, user.Password_hash))
+            if(!PasswordHasher.verifyPasswood(loginRequest.Password, user.Password_hash))
             {
                 return BadRequest(new { Message = "Password is incorrect" });
+            }
+            if(user.Status == 0)
+            {
+                return BadRequest(new { Message = "Your account approval is pending" });
             }
 
             user.Token= CreateJwt(user);
@@ -47,17 +53,28 @@ namespace FND.API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] Users userObj)
+        public async Task<IActionResult> Register([FromBody] SignUpRequestDto signUpRequest)
         {
-            if(userObj == null)
+            if(signUpRequest == null)
                 return BadRequest();
             //check email exists
-            if (await CheckEmailExist(userObj.Email))
+            //var users = await _context.Users.FirstOrDefaultAsync(x => x.Email == signUpRequest.Email);
+            if (await CheckEmailExist(signUpRequest.Email))
                 return BadRequest(new { Message = "Email Already Exist!" });
 
-            userObj.Password_hash = PasswordHasher.HashPassword(userObj.Password_hash);
-            userObj.Token = "";
-            await _context.Users.AddAsync(userObj);
+            signUpRequest.Password = PasswordHasher.HashPassword(signUpRequest.Password);
+            //users.Token = "";
+            Users user = new Users()
+            {
+                Name = signUpRequest.Name,
+                Email = signUpRequest.Email,
+                Password_hash = signUpRequest.Password,
+                Created_at = DateTime.UtcNow,
+                Token = "",
+                Role = "Publisher",
+                Status = 0
+            };
+            await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
             return Ok(new
             {
@@ -75,7 +92,7 @@ namespace FND.API.Controllers
             var identity = new ClaimsIdentity(new Claim[]
             {
                 new Claim(ClaimTypes.Role, user.Role),
-                new Claim(ClaimTypes.Email, user.Email)
+                new Claim(ClaimTypes.Name, user.Name)
             });
 
             var credentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256);

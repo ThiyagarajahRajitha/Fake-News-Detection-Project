@@ -14,6 +14,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors(option =>
+{
+    option.AddPolicy("MyPolicy", builder =>
+    {
+        builder.AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader();
+    });
+});
 
 builder.Services.AddDbContext<FNDDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("FNDConnectionString")));
 
@@ -30,7 +39,8 @@ builder.Services.AddAuthentication(x =>
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("veryverysecret.....")),
         ValidateAudience = false,
-        ValidateIssuer = false
+        ValidateIssuer = false,
+        ClockSkew = TimeSpan.Zero
     };
 });
 
@@ -44,8 +54,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseCors(policy => policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+//app.UseCors(policy => policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
+app.UseCors("MyPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 
