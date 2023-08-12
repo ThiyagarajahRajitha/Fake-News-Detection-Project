@@ -1,4 +1,5 @@
 using FND.API.Data;
+using FND.API.Fetcher;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,6 +26,7 @@ builder.Services.AddCors(option =>
 });
 
 builder.Services.AddDbContext<FNDDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("FNDConnectionString")));
+//builder.Services.AddSingleton<IHostedService, NewsFetcherService>();
 
 builder.Services.AddAuthentication(x =>
 {

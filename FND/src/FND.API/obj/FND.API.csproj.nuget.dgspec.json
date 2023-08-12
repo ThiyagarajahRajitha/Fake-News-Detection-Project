@@ -52,6 +52,10 @@
               "target": "Package",
               "version": "[1.60.0.3084, )"
             },
+            "HtmlAgilityPack": {
+              "target": "Package",
+              "version": "[1.11.51, )"
+            },
             "MailKit": {
               "target": "Package",
               "version": "[4.1.0, )"
@@ -85,6 +89,10 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.4.0, )"
+            },
+            "System.ServiceModel.Syndication": {
+              "target": "Package",
+              "version": "[7.0.0, )"
             }
           },
           "imports": [
