@@ -1,0 +1,32 @@
+<div class="modal-header">
+    <h4 class="modal-title">Classify News</h4>
+    <button type="button" class="close" aria-label="Close" (click)="dismissModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <!-- Form controls for adding news -->
+    <div *ngIf="showForm">
+    <form id="classifyForm">
+        <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control" #titleInput placeholder="Type your news title">
+        </div>
+        <div class="mb-3">
+            <label for="newscontent" class="form-label">News Content</label>
+            <textarea class="form-control" #contentInput rows="6" cols="80" placeholder="Type your News Content here"></textarea>
+        </div>
+    </form>
+    </div>
+    <div *ngIf="result">
+      <p>Result: {{ result }}</p>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <div *ngIf="showForm">
+    <button type="button" class="btn btn-primary" (click)="onSubmit()">Classify</button>
+    <!-- <button type="button" class="btn btn-secondary" (click)="dismissModal()">Cancel</button> -->
+    </div>
+  </div>
+
+  

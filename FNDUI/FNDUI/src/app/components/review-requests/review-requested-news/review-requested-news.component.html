@@ -1,0 +1,99 @@
+<section class="home-content">
+    <ng-container *ngIf="role=='Moderator'">
+        <div class="col py-3">
+            <table class="table table-striped">
+                <!-- <thead>
+            <td>Id</td>
+            <td>Comment</td>
+            <td>News Content</td>
+            <td>Action</td>
+        </thead> -->
+                <tbody>
+                    <tr *ngFor="let requestedReviewj of requestedReview">
+                        <div class="news-cards">
+                            <div class="card">
+                                <div class="title-content">
+                                    <a href="#" class="title">{{requestedReviewj.news.topic}}</a>
+                                    <!-- <td>{{requestedReviewj.id}}</td> -->
+                                    <br>
+                                    <span>
+                                        <td>Publisher Comment:{{requestedReviewj.comment}}</td>
+                                    </span>
+                                </div>
+                                <div class="card-header">
+                                    <td>{{requestedReviewj.news.content}}</td>
+                                </div>
+                                <!-- <span><a class="nav-link active" aria-current="page"
+                                        (click)="openSubmitReviewModal(requestedReviewj.id)"
+                                        class="btn btn-primary btn-sm"><i class="fa-solid fa-comments"></i>Submit Review</a></span> -->
+                                        <button class="request-button" (click)="openSubmitReviewModal(requestedReviewj.id)">
+                                            <i class="fa-solid fa-comments"></i> Submit Review
+                                          </button>
+                                <!-- <ng-container *ngIf="!isApproved"><td><span><button  type="button" class="btn btn-outline-success">Approve</button></span>
+                    &nbsp; -->
+                                <!-- <span><button (click)="reject(publisher.id)" type="button" class="btn btn-outline-danger">Reject</button></span></td> -->
+                                <!-- </ng-container> -->
+                            </div>
+                        </div>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </ng-container>
+
+    <ng-container *ngIf="role=='Publisher'">
+        <div class="col py-3">
+            <table class="table table-striped">
+                <!-- <thead>
+            <td>Id</td>
+            <td>Comment</td>
+            <td>News Content</td>
+            <td>Result</td>
+            <td>Review Feedback</td>
+            <td>Status</td>
+        </thead> -->
+                <tbody>
+                    <tr *ngFor="let requestedRevieww of requestedReviewFeedback">
+                        <div class="news-cards">
+                            <div class="card">
+                                <div class="title-content">
+                                    <!-- <div class="card text-dark bg-light border-dark mb-3" style="max-width: 100%;"> -->
+                                    <!-- <div class="card-header">
+                        <div class="row"> -->
+                                    <a href="#" class="title">
+                                        <td>{{requestedRevieww.news.topic}}</td>
+                                    </a>
+                                    <!-- this should be title -->
+                                    <!-- <div style="font-size: larger;">
+                    <div class="card">
+                        <div class="card-body"> -->
+                                    <p class="card-text">
+                                        <td>Status: {{requestedRevieww.status==0? 'Pending':requestedRevieww.status==1?
+                                            'Reviewed':''}}</td>
+                                    </p>
+                                    <p class="card-title">
+                                        <td>Reviewer Result: {{requestedRevieww.result=='0'?
+                                            'Pending':requestedRevieww.result}}</td>
+                                    </p>
+                                </div>
+                                <div class="card-header">
+                                    <p class="card-text">
+                                        <td>News Content: {{requestedRevieww.news.content}}</td>
+                                    </p>
+                                    <h3 class="card-text"><b>
+                                            <td>Publisher Comment: {{requestedRevieww.comment}}</td>
+                                        </b></h3>
+                                    <p class="card-text">
+                                        <td>Reviewer Comment: {{requestedRevieww.reviewFeedback}}</td>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- </div> -->
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </ng-container>
+</section>

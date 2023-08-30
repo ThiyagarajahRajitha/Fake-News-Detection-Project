@@ -1,0 +1,31 @@
+
+<div class="modal-header">
+    <h4 class="modal-title">Invite Moderator</h4>
+    <button type="button" class="close" aria-label="Close" (click)="dismissModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div *ngIf = "showForm">
+    <!-- Form controls for adding news -->
+    <form>
+        <div class="mb-3">
+            <label for="InputEmail1" class="form-label">Email address</label>
+            <input type="email" class="form-control" #emailInput placeholder="example@email.com">
+        </div>  
+    </form>
+    </div>
+    
+    <div *ngIf="result">
+      <p>Invited successfully!</p>
+    </div>
+    <div *ngIf="error">
+      <p>Email Already Exist!</p>
+    </div>
+</div>
+  <div class="modal-footer">
+    <div *ngIf = "showForm">
+    <button type="submit" class="btn btn-primary" (click)="onSubmit()">Invite</button>
+    </div>
+    <!-- <button type="button" class="btn btn-secondary" (click)="dismissModal()">Cancel</button> -->
+</div>

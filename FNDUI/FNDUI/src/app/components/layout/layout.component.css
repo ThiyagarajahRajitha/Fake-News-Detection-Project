@@ -1,0 +1,187 @@
+/* Reset default margin and padding */
+body, h1, h2, h3, h4, h5, h6, p {
+    margin: 0;
+    padding: 0;
+}
+
+/* Style header and navigation */
+header {
+    background-color: #333;
+    color: white;
+    padding: 10px 0;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    margin: 0 15px;
+}
+nav ul li.nav-right a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #fff;
+    transition: color 0.3s;
+}
+
+nav ul li.nav-right a:hover {
+    color: #63d9f7;
+}
+
+/* Style the icons */
+nav ul li.nav-right a i {
+    margin-left: 10px;
+    font-size: 16px;
+}
+nav ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+/* Style footer */
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Style main content */
+main {
+  flex-grow: 1;
+    padding: 20px;
+}
+
+
+  .icon-box {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    background-color: #060f17; /* Background color for the icon box */
+    border-radius: 50%; /* Make it a circle */
+    width: 30px; /* Width for the icon box */
+    height: 30px; /* Height for the icon box */
+     /* Add spacing between icon and text */
+  }
+  
+  .icon-box i {
+    font-size: 14px; /* Adjust icon size */
+  }
+
+  .login-box{
+    position: absolute;
+    right: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    margin-right:100%; /* Push the box to the right side of the nav bar */
+    align-items: center; /* Center items vertically within the box */
+    background-color: white; 
+    color: #060f17; /* Text and icon color */
+    padding: 2px; /* Add some padding for spacing */
+    border-radius: 10px; /* Rounded corners for the box */
+    width: fit-content; /* Adjust width to content */
+  }
+  .user-box{
+    padding: 2px; /* Add some padding for spacing */
+    border-radius: 10px; /* Rounded corners for the box */
+  }
+  .publisherPortal-box{
+    position: absolute;
+    right: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    margin-right:100%; /* Push the box to the right side of the nav bar */
+    display: flex; /* Use flex layout for subscriber box */
+    background-color: white; 
+    color: #060f17; /* Text and icon color */
+    padding: 3px; /* Add some padding for spacing */
+    border-radius: 10px; /* Rounded corners for the box */
+    width: auto; /* Adjust width to content */
+    height: 30px;
+    
+  }
+  
+  .text-box {
+    font-size: 14px;
+  color: rgb(2, 2, 2); /* Set text color to white */
+  font-weight: bold;
+  
+    /* Add any additional styling for the text box if needed */
+  }
+/* Add your global styles here */
+
+/* .mat-tab-group {
+  margin: 20px;
+}
+
+.mat-tab-header {
+  background-color: #63d9f7;
+  color: white;
+}
+
+.mat-tab-label {
+  font-size: 16px;
+  font-weight: bold;
+  padding: 10px 20px;
+  text-transform: uppercase;
+}
+
+.mat-tab-label-active {
+  background-color: #438abf;
+}
+
+.mat-tab-content {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f0f0f0;
+}
+
+.tab-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+} */
+
+.tab-button {
+  padding: 10px 20px;
+  border: none;
+  background-color: #2b616e;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  /* #499baf; */
+}
+.tab-button-menu{
+  padding: 10px 20px;
+  border: none;
+  background-color: #2b616e;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.tab-button.active {
+  background-color: #098e9a;
+}
+
+.tab-button:hover {
+  background-color: #499baf;
+}

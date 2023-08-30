@@ -1,0 +1,97 @@
+<!-- home.component.html -->
+<section class="home-content">
+    
+<section class="banner">
+    <h2>Welcome <span *ngIf="userRole=='Publisher' || userRole=='Moderator'|| userRole=='Admin'"><b>{{username}}</b></span> to Our Fake News Detector</h2>
+    <p>Verify the authenticity of news articles here.</p>
+    <button class="get-started-button" *ngIf="userRole!='Admin' && userRole!='Publisher' && userRole!='Moderator'"(click)="openClassifyNewsModal()">Add News to Classify</button>
+    <button class="get-started-button" *ngIf="userRole!='Admin' && userRole!='Publisher' && userRole!='Moderator'" (click)="openSubscribeModal()">Subscribe <i class="fas fa-paper-plane"></i></button>
+
+</section>
+
+
+<section class="news-list">
+    <h2>Latest News</h2>
+    <div class="form-check form-switch col-3">
+        <h4>
+            <span><input class="form-check-input" type="checkbox" role="switch" [(ngModel)]="checkboxValue"
+                (change)="onCheckboxChange()"/></span>
+            <span><h3 class="form-check-label" for="flexSwitchCheckDefault">Fake News Only</h3></span>
+        </h4>
+    </div>
+    <table class="table">
+        <tbody>
+            <tr *ngFor="let newsItem of news">
+    <div class="news-cards">
+      <div class="card">
+        <div class="title-content">
+          <a href="#" class="title">{{newsItem.topic}}</a>
+          <span class="classification">
+            <p [ngClass]="{ 'classification-real': newsItem.classification_Decision === 'Real', 'classification-fake': newsItem.classification_Decision === 'Fake' }">
+                Classification: {{ newsItem.classification_Decision }} News
+              </p>
+            </span>
+        <span>
+          <button class="request-button" *ngIf="userRole!='Publisher'&& userRole!='Admin'&& userRole!='Moderator'"  (click)="openReviewRequestNewsModal(newsItem.id)">
+            <i class="fa fa-pencil"></i> Request to Review
+          </button>
+        </span>
+        </div>
+          
+        
+        <div class="card-header">
+            <p class="content">{{newsItem.content}}</p>
+          </div>
+      </div>
+      <!-- Add more news articles as cards -->
+    </div>
+    </tr>
+        </tbody></table>
+    </section>
+  </section>
+  
+
+<!-- <app-side-nav></app-side-nav> -->
+<!-- <div class="container my=5"> -->
+    <!-- <div class="col py-3 m-5"> -->
+    <!-- <div class=row align-items-center>
+        <div class="col-3">
+            <h2>News</h2>
+        </div>
+        <div class="form-check form-switch col-3">
+            <h4>
+                <input class="form-check-input" type="checkbox" role="switch" [(ngModel)]="checkboxValue"
+                    (change)="onCheckboxChange()" />
+                <label class="form-check-label" for="flexSwitchCheckDefault">Fake News Only</label>
+            </h4>
+        </div>
+        <div class="col-6 text-end"><a class="nav-link active" aria-current="page" (click)="openClassifyNewsModal()"
+                class="btn btn-primary btn-lg">+</a></div>
+    </div>
+    <table class="table">
+        <tbody>
+            <tr *ngFor="let newsItem of news">
+                <div class="card text-dark bg-light border-dark mb-3" style="max-width: 100%;">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-6">{{newsItem.publisher_id}}</div>
+                            <div class="col-6 text-end" style="font-size: larger;">
+                                <span>{{newsItem.classification_Decision}}</span>
+                                <span *ngIf="userRole=='Publisher'"><a class="nav-link active" aria-current="page" (click)="openReviewRequestNewsModal(newsItem.id)"
+                                    class="btn btn-primary btn-md">?</a></span>
+                            </div>
+                        </div>
+                    </div> -->
+                    <!-- <div style="text-align: right; font-size: larger;">{{newsItem.classification_Decision}}</div> -->
+                    <!-- <div class="card">
+                        <div class="card-body">
+                            <h3 class="card-title"><b>{{newsItem.topic}}</b></h3>
+                            <p class="card-text">{{newsItem.content}}</p> -->
+                            <!-- <a href="#" class="btn btn-primary">Button</a> -->
+                        <!-- </div>
+                    </div>
+                </div>
+            </tr>
+        </tbody>
+    </table> -->
+<!-- </div> -->

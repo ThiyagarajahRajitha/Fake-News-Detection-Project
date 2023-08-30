@@ -1,0 +1,39 @@
+
+<section class="home-content">
+<div class="container my=5">
+    <div class="row align-items-center">
+      <h2>News</h2>
+    </div>
+    <div class="row" align-items-center>
+      <div class = "col-3">
+        <section class="container">
+          <mat-form-field class="example-full-width">
+            <mat-label>From</mat-label>
+            <input matInput [matDatepicker]="fromPicker" (click)="fromPicker.open()" (dateChange)="fromDateChanged($event)">
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker #fromPicker></mat-datepicker>
+          </mat-form-field>
+          <!-- <button mat-raised-button (click)="picker.open()">Open</button> -->
+        </section>
+      </div>
+      <div  class = "col-3">
+        <section class="container">
+          <mat-form-field class="example-full-width">
+            <mat-label>To</mat-label>
+            <input matInput [matDatepicker]="toPicker" (click)="toPicker.open()" (dateChange)="toDateChanged($event)">
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker #toPicker></mat-datepicker>
+          </mat-form-field>
+          <!-- <button mat-raised-button (click)="picker.open()">Open</button> -->
+        </section>
+      </div>
+    </div>
+
+      <div>
+        <canvasjs-chart [options]="chartOptions" (chartInstance)="getChartInstance($event)"></canvasjs-chart>
+      </div>
+      
+
+</div>
+</section>
+
