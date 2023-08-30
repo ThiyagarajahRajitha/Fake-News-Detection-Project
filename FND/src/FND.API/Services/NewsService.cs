@@ -1,124 +1,27 @@
-﻿using FND.API.Data.Repositories;
+﻿using FND.API.Data.Dtos;
+using FND.API.Data.Repositories;
 using FND.API.Entities;
-using System.Text.Json;
-using System.Text;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using FND.API.Data;
-using FND.API.Data.Dtos;
-using Azure;
-using System;
 using Newtonsoft.Json;
-using System.Net.Mail;
-using Microsoft.AspNetCore.Http;
-using System.Globalization;
+using System.Text;
 
 namespace FND.API.Services
 {
-    public class NewsService
+    public interface NewsService
     {
+        public Task<string> ClassifyNews(ClassifyNewsDto classifyNewsDto);
 
-        private readonly NewsRepository _newsRepository;
-        private readonly SubscriberRepository _subscriberRepository;
-        private readonly NotificationService _notificationService = new NotificationService();
+        public Task<List<News>> GetNews([FromQuery(Name = "FakeNewsOnly")] bool IsFakeNewsOnly);
 
+        public Task<List<NewsClassificationCount>> GetNewsCountByClassification([FromQuery(Name = "from")] string fromDate, [FromQuery(Name = "to")] string toDate);
 
-        public NewsService(FNDDBContext fNDDBContext)
-        {
-            _newsRepository =  new NewsRepository(fNDDBContext);
-            _subscriberRepository = new SubscriberRepository(fNDDBContext);
-        }
+        public Task<List<News>> GetNewsByPublisher(int publisherId, [FromQuery(Name = "FakeNewsOnly")] bool IsFakeNewsOnly);
 
-        public async Task<string> ClassifyNews(ClassifyNewsDto classifyNewsDto)//givw the news from user-client
-        {
-            //var nws = new
-            //{
-            //    Topic = "Eagle IT Ltd.",
-            //    Content = "USA ewjrwtwt wetwktw",
-            //    //publisher = "Eagle IT Street 289",
-            //    //date = "11-11-2021"
-            //};
+        public Task<ReviewRequest> RequestReview(CreateRequestReviewDto createRequestReviewDto);
 
-            //var company = JsonSerializer.Serialize(classifyNewsDto);
-            string jsonString = JsonConvert.SerializeObject(classifyNewsDto);
-            var requestContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
-            using var _httpClient = new HttpClient();
-            var url = "http://127.0.0.1:8000/news/";
-            var response = await _httpClient.PostAsync(url, requestContent);
-            response.EnsureSuccessStatusCode();
-            string result = await response.Content.ReadAsStringAsync();
-            ClassificationResutlt restlJson = JsonConvert.DeserializeObject<ClassificationResutlt>(result);
-            string resultValue = restlJson.result;
+        public Task<ReviewRequest> SubmitReview(SubmitReviewDto submitReviewDto);
 
-            CreateNewsDto createNewsDto = new CreateNewsDto()
-            {
-                Topic = classifyNewsDto.Topic,
-                Content = classifyNewsDto.Content,
-                //Publisher_id = model.Publisher_id,
-                Classification_Decision = resultValue
-            };
-            _newsRepository.CreateNews(createNewsDto);
-
-
-            IEnumerable<string> subEmail = await _subscriberRepository.GetSubscribersEmail();
-            string subject = "A new Fake news have been detected";
-            string body = "News: <b>"+createNewsDto.Topic+".</b> <br> For more details visit http://localhost:4200/</br>";
-
-            Notification notification = new Notification(subject, subEmail,null, body);
-
-            if (resultValue == "Fake")
-            {
-                _notificationService.SendMailAsync(notification);
-            }
-            return result;
-        }
-
-        public async Task<List<News>> GetNews([FromQuery(Name = "FakeNewsOnly")] bool IsFakeNewsOnly)
-        {
-            var newsList = await _newsRepository.GetNews(IsFakeNewsOnly);
-            return newsList;
-        }
-
-        public async Task<List<NewsClassificationCount>> GetNewsCountByClassification([FromQuery(Name = "from")]string fromDate, [FromQuery(Name = "to")] string toDate)
-        {
-            var newsCountByClassification =  await _newsRepository.GetNewsCountByClassification(fromDate, toDate);
-            return newsCountByClassification;
-        }
-
-        public async Task<List<News>> GetNewsByPublisher(int publisherId, [FromQuery(Name = "FakeNewsOnly")] bool IsFakeNewsOnly)
-        {
-            var newsList = await _newsRepository.GetNewsByPublisher(publisherId, IsFakeNewsOnly);
-            return newsList;
-        }
-
-        public async Task<ReviewRequest> RequestReview(CreateRequestReviewDto createRequestReviewDto)
-        {
-            var request = await _newsRepository.RequestReview(createRequestReviewDto);
-            return request;
-        }
-
-        public async Task<ReviewRequest> SubmitReview(SubmitReviewDto submitReviewDto)
-        {
-            var request = await _newsRepository.SubmitReview(submitReviewDto);
-            return request;
-        }
-
-        public async Task<List<ReviewRequest>> GetReviewRequestedNewsByPublisherId(int userId)
-        {
-            var request = await _newsRepository.GetReviewRequestedNewsByPublisherId(userId);
-            return request;
-        }
-        public async Task<List<ReviewRequest>> GetAllReviewRequestedNews()
-        {
-            var request = await _newsRepository.GetAllReviewRequestedNews();
-            return request;
-        }
-    }
-
-    public class ClassificationResutlt
-    {
-        public string result { get; set; }
+        public Task<List<ReviewRequest>> GetReviewRequestedNewsByPublisherId(int userId);
+        public Task<List<ReviewRequest>> GetAllReviewRequestedNews();
     }
 }

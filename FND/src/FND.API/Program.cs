@@ -1,8 +1,10 @@
 using FND.API.Data;
 using FND.API.Fetcher;
+using FND.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -25,8 +27,15 @@ builder.Services.AddCors(option =>
     });
 });
 
-builder.Services.AddDbContext<FNDDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("FNDConnectionString")));
-//builder.Services.AddSingleton<IHostedService, NewsFetcherService>();
+builder.Services.AddDbContext<FNDDBContext>(options =>
+    {
+        options.UseSqlServer(builder.Configuration.GetConnectionString("FNDConnectionString"));
+        options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+    });
+builder.Services.TryAddScoped<NewsService, NewsServiceImpl>();
+builder.Services.TryAddScoped<PublisherService, PublisherServiceImpl>();
+
+builder.Services.TryAddSingleton<IHostedService, NewsFetcherService>();
 
 builder.Services.AddAuthentication(x =>
 {

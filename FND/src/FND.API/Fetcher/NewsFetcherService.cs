@@ -3,20 +3,28 @@ using System.Xml;
 using System.ServiceModel.Syndication;
 using HtmlAgilityPack;
 using Microsoft.IdentityModel.Tokens;
+using FND.API.Data.Repositories;
+using FND.API.Data;
+using FND.API.Services;
+using FND.API.Data.Dtos;
 
 namespace FND.API.Fetcher
 {
     public class NewsFetcherService : BackgroundService
-    {        
-        public NewsFetcherService()
+    {
+        private PublisherService publisherService;
+        private NewsService newsService;
+        public NewsFetcherService(IServiceProvider serviceProvider)
         {
-            ////https://iqan.medium.com/how-to-create-a-timely-running-service-in-net-core-757f445035ca
+            publisherService = serviceProvider.CreateScope().ServiceProvider.GetRequiredService<PublisherService>();
+            newsService = serviceProvider.CreateScope().ServiceProvider.GetRequiredService<NewsService>();
+            //https://iqan.medium.com/how-to-create-a-timely-running-service-in-net-core-757f445035ca
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             await fetchNews();
-            var timer = new PeriodicTimer(TimeSpan.FromMinutes(1));
+            var timer = new PeriodicTimer(TimeSpan.FromMinutes(15));
             while (await timer.WaitForNextTickAsync(stoppingToken))
             {
                 await fetchNews();
@@ -26,17 +34,17 @@ namespace FND.API.Fetcher
         private async Task fetchNews()
         {
             // Run the fetching part.
-            List<Publisher> publishers = loadPublishers();
-            foreach (Publisher publisher in publishers)
+            List<Publication> publishers = await loadPublishersAsync();
+            foreach (Publication publisher in publishers)
             {
-                List<News> news = await fetchLastestNews(publisher);
+                fetchAndClassifyLastestNews(publisher);
             }
         }
 
-        private async Task<List<News>> fetchLastestNews(Publisher publisher)
+        private async void fetchAndClassifyLastestNews(Publication publisher)
         {
-            List<News> newsList = new List<News>();
-            using var reader = XmlReader.Create(publisher.rssUrl);
+            List<ClassifyNewsDto> newsList = new List<ClassifyNewsDto>();
+            using var reader = XmlReader.Create(publisher.RSS_Url);
             var feed = SyndicationFeed.Load(reader);
             foreach (var item in feed.Items)
             {
@@ -45,12 +53,14 @@ namespace FND.API.Fetcher
                     continue;
                 }
                 Uri newsUrl = item.Links[0].Uri;
-                if (newsUrl.ToString() == publisher.lastFetchedNewsUrl )
+                if (newsUrl.ToString() == publisher.LastFetchedNewsUrl )
                 {
-                    return newsList;
+                    Console.WriteLine($"No new News to be fetched for : {publisher.Publication_Name}");
+                    return;
                 }
                 if (newsList.IsNullOrEmpty())
                 {
+                    publisherService.updateLastFetchedNews(publisher.Publication_Id, newsUrl.ToString());
                     // This in the latest fetched news url of the publisher. This needs to be updated in the DB
                 }
 
@@ -62,11 +72,12 @@ namespace FND.API.Fetcher
                     htmlDocument.LoadHtml(htmlContent);
 
 
-                    var itemFullTextDiv = htmlDocument.DocumentNode.SelectSingleNode("//div[contains(@class, '" + publisher.newsDiv + "')]");
+                    var itemFullTextDiv = htmlDocument.DocumentNode.SelectSingleNode("//div[contains(@class, '" + publisher.NewsDiv + "')]");
 
                     if (itemFullTextDiv != null)
                     {
                         var paragraphs = itemFullTextDiv.SelectNodes(".//p");
+                        var divs = itemFullTextDiv.SelectNodes(".//div");
                         var content =  "";
                         if (paragraphs != null)
                         {
@@ -76,12 +87,21 @@ namespace FND.API.Fetcher
                                 
                             }
                         }
-                        News news = new News();
+                        if (divs != null)
+                        {
+                            foreach (var div in divs)
+                            {
+                                content = content + "\n" + div.InnerText;
+
+                            }
+                        }
+                        ClassifyNewsDto news = new ClassifyNewsDto();
                         news.Url = newsUrl.ToString();
-                        news.Publisher_id = publisher.id;
+                        news.Publication_Id = publisher.Publication_Id;
                         news.Topic = item.Title.Text;
                         news.Content = content;
-                        Console.WriteLine($"News : {news.Url}");
+                        var result = await newsService.ClassifyNews(news);
+                        Console.WriteLine($"News : {news.Url} , classification result : {result}");
                         newsList.Add(news);
                     }
                     else
@@ -90,29 +110,38 @@ namespace FND.API.Fetcher
                     }
                 }
             }
-            return newsList;
+            return;
         }
 
-        private List<Publisher> loadPublishers()
+        private async Task<List<Publication>> loadPublishersAsync()
         {
+            var publishers = await publisherService.GetApprovedPublication();
             // Load the Publisher data from the DB.
-            List<Publisher> publisherList = new List<Publisher>();
-            Publisher pub = new Publisher()
+            List<Publication> publisherList = new List<Publication>();
+            foreach (Users user in publishers)
             {
-                id = 1,
-                rssUrl = "https://news.lk/news?format=feed",
-                lastFetchedNewsUrl = "https://news.lk/news/political-current-affairs/item/35550-foreign-minister-ali-sabry-to-visit-iran",
-                newsDiv = "itemFullText"
-            };
-            publisherList.Add(pub);
-            Publisher pub1 = new Publisher()
-            {
-                id = 2,
-                rssUrl = "https://newsfirst.lk/feed",
-                lastFetchedNewsUrl = "https://www.newsfirst.lk/2023/08/05/donald-trump-pleads-not-guilty-to-additional-charges-in-documents-case/",
-                newsDiv = "editor-style"
-            };
-            publisherList.Add(pub1);
+                Publication pub = user.Publication;
+                if (pub == null || string.IsNullOrWhiteSpace(pub.NewsDiv)) {
+                    continue;
+                }
+                publisherList.Add(pub);
+            }
+            //Publisher pub = new Publisher()
+            //{
+            //    id = 1,
+            //    rssUrl = "https://news.lk/news?format=feed",
+            //    lastFetchedNewsUrl = "https://news.lk/news/political-current-affairs/item/35550-foreign-minister-ali-sabry-to-visit-iran",
+            //    newsDiv = "itemFullText"
+            //};
+            //publisherList.Add(pub);
+            //Publisher pub1 = new Publisher()
+            //{
+            //    id = 2,
+            //    rssUrl = "https://newsfirst.lk/feed",
+            //    lastFetchedNewsUrl = "https://www.newsfirst.lk/2023/08/05/donald-trump-pleads-not-guilty-to-additional-charges-in-documents-case/",
+            //    newsDiv = "editor-style"
+            //};
+            //publisherList.Add(pub1);
             return publisherList;
         }
     }

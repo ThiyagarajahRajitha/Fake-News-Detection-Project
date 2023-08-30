@@ -13,12 +13,11 @@ namespace FND.API.Controllers
     
     public class NewsController : ControllerBase
     {
-        private readonly FNDDBContext _fNDDBContext;
         private NewsService newsService;
 
-        public NewsController(FNDDBContext fNDDBContext)
+        public NewsController(NewsService newsService)
         {
-            newsService = new NewsService(fNDDBContext);
+            this.newsService = newsService;
         }
 
 

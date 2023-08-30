@@ -13,9 +13,9 @@ namespace FND.API.Controllers
     public class PublisherController : ControllerBase
     {
         private PublisherService publisherService;
-        public PublisherController(FNDDBContext fNDDBContext) 
+        public PublisherController(PublisherService publisherService) 
         {
-            publisherService = new PublisherService(fNDDBContext);
+            this.publisherService = publisherService;
         }
 
         [HttpGet]

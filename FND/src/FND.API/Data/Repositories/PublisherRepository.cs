@@ -15,6 +15,15 @@ namespace FND.API.Data.Repositories
             _fNDDBContext = fNDDBContext;
         }
 
+        public async Task<List<Users>> GetApprovedPublication()
+        {
+            var publishersList = await _fNDDBContext.Users.Where(u => u.Role == "Publisher").Where(p => p.Status == 1)
+               .OrderByDescending(b => b.Id)
+               .Include(rr => rr.Publication) // Include the related News entity;
+               .ToListAsync();
+            return publishersList;
+        }
+
         public async Task<List<Users>> GetPublishers([FromQuery(Name = "PendingApprovalOnly")] bool IsPendingOnly)
         {
             var publishersList = await _fNDDBContext.Users.Where(u => u.Role == "Publisher").OrderByDescending(b => b.Id).ToListAsync();
@@ -39,6 +48,14 @@ namespace FND.API.Data.Repositories
             string email = _fNDDBContext.Users.Where(u => u.Id == id).Select(u => u.Email).FirstOrDefault();
             emailList.Add(email);
             return emailList;
+        }
+
+        internal async void updateLastFetchedNews(int publication_Id, string newsUrl)
+        {
+            var updatedPub = new Publication { Publication_Id = publication_Id, LastFetchedNewsUrl = newsUrl };
+            _fNDDBContext.Attach(updatedPub);
+            _fNDDBContext.Entry(updatedPub).Property(r => r.LastFetchedNewsUrl).IsModified = true;
+            _fNDDBContext.SaveChanges();
         }
     }
 }

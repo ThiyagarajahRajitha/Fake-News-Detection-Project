@@ -34,10 +34,10 @@ namespace FND.API.Data.Repositories
             News newNews = new News()
             {
                 //Id = Guid.NewGuid(),
-                //Url = model.Url,
+                Url = model.Url,
                 Topic = model.Topic,
                 Content = model.Content,
-                //Publisher_id = model.Publisher_id,
+                Publisher_id = model.Publisher_id,
                 Classification_Decision = model.Classification_Decision.Replace("\"", ""),
                 CreatedOn= DateTime.Now,
             };
