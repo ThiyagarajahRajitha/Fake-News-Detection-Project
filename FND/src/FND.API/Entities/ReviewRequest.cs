@@ -10,9 +10,9 @@ namespace FND.API.Entities
         public DateTimeOffset CreatedOn { get; set; }
         public virtual News News { get; set; }
         public int Status { get; set; }
-        public string ReviewFeedback { get; set; }
-        public string Result { get; set; }
-        public DateTimeOffset UpdatedOn { get; set; }
+        public string? ReviewFeedback { get; set; }
+        public string? Result { get; set; }
+        public DateTimeOffset? UpdatedOn { get; set; }
 
     }
 }

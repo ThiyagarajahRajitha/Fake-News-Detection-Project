@@ -7,6 +7,7 @@ import { UserStoreService } from 'src/app/services/user-store/user-store.service
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { ReviewRequestNewsModalComponent } from '../ReviewRequestNewsModal/review-request-news-modal/review-request-news-modal.component';
 import { CreateSubscriberModalComponent } from '../../subscribe/create-subscriber-modal/create-subscriber-modal.component';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-news-list',
@@ -22,7 +23,10 @@ export class NewsListComponent implements OnInit{
    userId:String='';
    uid:number=0;
    reviewRequestedNewsId : number=0;
-    //{
+   max: number = 500;
+   filterControl = new FormControl('fakeOnly');
+   
+  //{
   //   id:54,
   //   url:'dsgsdsg.com',
   //   title:'Covid Today',
@@ -52,8 +56,13 @@ export class NewsListComponent implements OnInit{
     this.userId = this.auth.getprimarySidFromToken();
     this.username = this.auth.getNameFromToken();
     this.uid = Number(this.userId);
+    this.filterControl.valueChanges.subscribe( filter => {
+      if (filter) {
+        this.getNewsByPublisher(filter)
+      }
+    });
     if(this.userRole=='Publisher')
-      this.getNewsByPublisher();
+      this.getNewsByPublisher("fakeOnly");
     else
       this.getAllNews();
   }
@@ -76,8 +85,8 @@ export class NewsListComponent implements OnInit{
     this.getAllNews();
   }
 
-  getNewsByPublisher(){
-    this.newsService.getNewsByPublisherId(this.uid, this.checkboxValue)
+  getNewsByPublisher(filter:string){
+    this.newsService.getNewsByPublisherId(this.uid, filter)
     .subscribe({
       next:(news) => {
         this.news = news;

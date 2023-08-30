@@ -31,14 +31,11 @@ namespace FND.API.Controllers
 
 
         [HttpGet("{publisherId:int}")]
-        public async Task<ActionResult<List<News>>> GetNewsByPublisher(int publisherId, [FromQuery(Name = "FakeNewsOnly")] bool IsFakeNewsOnly)
+        public async Task<ActionResult<List<ListNewsDto>>> GetNewsByPublisher(int publisherId, [FromQuery(Name = "filter")] string filter)
         {
-            //var newsList = await _fNDDBContext.News.ToListAsync();
-            var newsList = await newsService.GetNewsByPublisher(publisherId, IsFakeNewsOnly);
-            return Ok(newsList);
+            var reviewRequestedNewsByPublisher = await newsService.GetNewsByPublisherId(publisherId, filter);
+            return Ok(reviewRequestedNewsByPublisher);
         }
-        //var news1 = new  { topic = "covid 19 is every wheeersjgnds", publisher = "Rajitha" };
-        //var news2 = new { topic = "Everyone should put vaccine", publisher = "Senthalan" };
 
         [HttpPost]
         public async Task<ActionResult> PostSendMsg(ClassifyNewsDto classifyNewsDto)//have to give news class object to this 
@@ -54,15 +51,6 @@ namespace FND.API.Controllers
         {
             var request = await newsService.RequestReview(createRequestReviewDto);
             return Ok(request);
-        }
-
-        [Route("GetReviewRequestedNewsByPublisherId")]
-        [HttpGet]
-        public async Task<ActionResult<List<ReviewRequest>>> GetReviewRequestedNewsByPublisherId(int userId)
-        {
-            //var newsList = await _fNDDBContext.News.ToListAsync();
-            var reviewRequestedNewsByPublisher = await newsService.GetReviewRequestedNewsByPublisherId(userId);
-            return Ok(reviewRequestedNewsByPublisher);
         }
 
         [Route("GetAllReviewRequestedNews")]

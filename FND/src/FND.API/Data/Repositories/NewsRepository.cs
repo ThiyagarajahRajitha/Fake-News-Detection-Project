@@ -65,14 +65,76 @@ namespace FND.API.Data.Repositories
             return newsCountByClassification;
         }
 
-        public async Task<List<News>> GetNewsByPublisher(int publisherId, [FromQuery(Name = "FakeNewsOnly")] bool IsFakeNewsOnly)
+        public async Task<List<ReviewRequest>> GetNewsByPublisherId(int publisherId, string filter)
         {
-            var newsList = await _fNDDBContext.News.Where(b => b.Publisher_id == publisherId).OrderByDescending(p=>p.Id).ToListAsync();
-            if (IsFakeNewsOnly)
+
+            if (filter == "fakeOnly")
             {
-                newsList = await _fNDDBContext.News.Where(n => n.Publisher_id == publisherId && n.Classification_Decision == "Fake").OrderByDescending(b => b.Id).ToListAsync();
+                var newsList = await _fNDDBContext.News
+                    .Where(b => b.Publisher_id == publisherId && b.Classification_Decision == "Fake")
+                    .OrderByDescending(p => p.Id)
+                    .ToListAsync();
+
+                List<ReviewRequest> finalNews = new List<ReviewRequest>();
+                foreach (var news in newsList)
+                {
+                    ReviewRequest reviewNews = await _fNDDBContext.ReviewRequest
+                        .Where(r => r.Id == news.Id)
+                        .Include(rr => rr.News)
+                        .SingleOrDefaultAsync();
+                    if (reviewNews == null)
+                    {
+                        reviewNews = new ReviewRequest
+                        {
+                            News = news
+                        };
+                    }
+                    finalNews.Add(reviewNews);
+
+                }
+                return finalNews;
+            } else if (filter == "pendingOnly")
+            {
+                var newsList = await _fNDDBContext.ReviewRequest
+                    .Where(r => r.News.Publisher_id == publisherId && r.Status == 0)
+                    .OrderByDescending(p => p.Id)
+                    .Include(rr => rr.News)
+                    .ToListAsync();
+                return newsList;
+            } else if (filter == "reviewedOnly")
+            {
+                var newsList = await _fNDDBContext.ReviewRequest
+                   .Where(r => r.News.Publisher_id == publisherId && r.Status == 1)
+                   .OrderByDescending(p => p.Id)
+                   .Include(rr => rr.News)
+                   .ToListAsync();
+                return newsList;
+            } else
+            {
+                var newsList = await _fNDDBContext.News
+                    .Where(b => b.Publisher_id == publisherId)
+                    .OrderByDescending(p => p.Id)
+                    .ToListAsync();
+
+                List<ReviewRequest> finalNews = new List<ReviewRequest>();
+                foreach (var news in newsList)
+                {
+                    ReviewRequest reviewNews = await _fNDDBContext.ReviewRequest
+                        .Where(r => r.Id == news.Id)
+                        .Include(rr => rr.News)
+                        .SingleOrDefaultAsync();
+                    if (reviewNews == null)
+                    {
+                        reviewNews = new ReviewRequest
+                        {
+                            News = news
+                        };
+                    }
+                    finalNews.Add(reviewNews);
+
+                }
+                return finalNews;
             }
-            return newsList;
         }
 
         public async Task<ReviewRequest> RequestReview(CreateRequestReviewDto createRequestReviewDto)
@@ -107,15 +169,6 @@ namespace FND.API.Data.Repositories
             _fNDDBContext.Entry(updateReviewRequest).Property(r => r.UpdatedOn).IsModified = true;
             _fNDDBContext.SaveChanges();
             return updateReviewRequest;
-        }
-
-        public async Task<List<ReviewRequest>> GetReviewRequestedNewsByPublisherId(int userId)
-        {
-            var newsList = await _fNDDBContext.ReviewRequest.Where(r=>r.News.Publisher_id==userId)
-                .OrderByDescending(p => p.Id)
-                .Include(rr => rr.News) // Include the related News entity
-                .ToListAsync();
-            return newsList;
         }
 
         public async Task<List<ReviewRequest>> GetAllReviewRequestedNews()

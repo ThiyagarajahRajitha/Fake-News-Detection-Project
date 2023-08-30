@@ -21,8 +21,8 @@ export class NewsService {
   getAllNews(filterFake: boolean):Observable<News[]>{
     return this.http.get<News[]>(this.baseApiUrl + '/api/News?FakeNewsOnly=' + filterFake.toString());
   }
-  getNewsByPublisherId(publisherId: number, filterFake:boolean):Observable<News[]>{
-    return this.http.get<News[]>(this.baseApiUrl + '/api/News/'+publisherId+'?FakeNewsOnly='+filterFake.toString());
+  getNewsByPublisherId(publisherId: number, fitler:string):Observable<News[]>{
+    return this.http.get<News[]>(this.baseApiUrl + '/api/News/'+publisherId+'?filter='+fitler);
   }
 
   classify(classifyNewsModel: ClassifyNewsModel): Observable<ClassifyNewsResultModel> {

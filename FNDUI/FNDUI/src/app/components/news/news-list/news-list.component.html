@@ -12,36 +12,86 @@
 
 <section class="news-list">
     <h2>Latest News</h2>
-    <div class="form-check form-switch col-3">
+    <div class="form-check form-switch col-3" *ngIf="!userRole">
         <h4>
             <span><input class="form-check-input" type="checkbox" role="switch" [(ngModel)]="checkboxValue"
                 (change)="onCheckboxChange()"/></span>
             <span><h3 class="form-check-label" for="flexSwitchCheckDefault">Fake News Only</h3></span>
         </h4>
     </div>
+   
+    <div>
+        <section>
+            <mat-button-toggle-group [formControl]="filterControl" aria-label="Font Style">
+              <mat-button-toggle value="all">All News</mat-button-toggle>
+              <mat-button-toggle value="fakeOnly">Fake Only</mat-button-toggle>
+              <mat-button-toggle value="pendingOnly">Review Requested</mat-button-toggle>
+              <mat-button-toggle value="reviewedOnly">Review Completed</mat-button-toggle>
+            </mat-button-toggle-group>
+          </section>
+    </div>
+
     <table class="table">
         <tbody>
             <tr *ngFor="let newsItem of news">
     <div class="news-cards">
-      <div class="card">
-        <div class="title-content">
-          <a href="#" class="title">{{newsItem.topic}}</a>
-          <span class="classification">
-            <p [ngClass]="{ 'classification-real': newsItem.classification_Decision === 'Real', 'classification-fake': newsItem.classification_Decision === 'Fake' }">
-                Classification: {{ newsItem.classification_Decision }} News
-              </p>
-            </span>
-        <span>
-          <button class="request-button" *ngIf="userRole!='Publisher'&& userRole!='Admin'&& userRole!='Moderator'"  (click)="openReviewRequestNewsModal(newsItem.id)">
-            <i class="fa fa-pencil"></i> Request to Review
-          </button>
-        </span>
+      <div class="card container">
+        <div class="row">
+            <div class="col-9">
+                <a href="{{newsItem.url}}" target="_blank">{{newsItem.topic}}</a>
+            </div>
+            <div class="col">
+                <span>
+                <p [ngClass]="{ 'classification-real': newsItem.classification_Decision === 'Real', 'classification-fake': newsItem.classification_Decision === 'Fake' }">
+                    Classification: {{ newsItem.classification_Decision }} News
+                    </p>
+                </span>
+                <span>
+                    <button class="request-button" *ngIf="userRole=='Publisher' && newsItem.classification_Decision == 'Fake' && !newsItem.comment"  (click)="openReviewRequestNewsModal(newsItem.id)">
+                        <i class="fa fa-pencil"></i> Request to Review
+                    </button>
+                    <button class="request-button" *ngIf="userRole=='Publisher' && newsItem.comment">
+                       Review Submitted
+                    </button>
+                </span>
+            </div>
         </div>
+        <div class="row mt-3">
+            <div class="col-12">
+                <p class="see-more">
+                    {{ newsItem.seeMore ? newsItem.content : newsItem.content.substr(0, max) }}
+                    <ng-container *ngIf="newsItem.content.length > max">...
+                        <a class="text-primary" (click)="newsItem.seeMore = !newsItem.seeMore;">See {{ newsItem.seeMore ? 'less' : 'more'}}</a>
+                    </ng-container>
+                </p>
+            </div>
+        </div>
+      <div class="row mt-3" *ngIf="userRole=='Publisher' && newsItem.comment">
+        <div class="col-3">
+            Publication Comment :
+        </div>
+        <div class="col-9">
+            <input type="text" value="{{newsItem.comment}}" disabled>
+        </div>
+      </div>
           
-        
-        <div class="card-header">
-            <p class="content">{{newsItem.content}}</p>
-          </div>
+      <div class="row mt-3" *ngIf="userRole=='Publisher' && newsItem.reviewFeedback">
+        <div class="col-3">
+            Reviewer Comment :
+        </div>
+        <div class="col-9">
+            <input type="text" value="{{newsItem.reviewFeedback}}" disabled>
+        </div>
+      </div>
+      <div class="row mt-3" *ngIf="userRole=='Publisher' && newsItem.result">
+        <div class="col-3">
+            Reviewer Decision :
+        </div>
+        <div class="col-9">
+            <input type="text" value="{{newsItem.result}}" disabled>
+        </div>
+      </div>
+
       </div>
       <!-- Add more news articles as cards -->
     </div>

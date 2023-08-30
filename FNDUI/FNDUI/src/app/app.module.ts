@@ -14,6 +14,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatInputModule} from  '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatNativeDateModule } from '@angular/material/core';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import { DatePipe } from '@angular/common';
 import { CanvasJSAngularChartsModule } from '@canvasjs/angular-charts';
 import { LoginComponent } from './components/login/login.component';
@@ -60,6 +61,7 @@ import { TabbedViewComponent } from './components/tabbed-view/tabbed-view/tabbed
     MatInputModule,
     MatFormFieldModule,
     MatNativeDateModule,
+    MatButtonToggleModule,
     CanvasJSAngularChartsModule,
     ReactiveFormsModule,
     MatTabsModule

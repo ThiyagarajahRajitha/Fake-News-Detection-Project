@@ -13,7 +13,6 @@
   
   .home-content p {
     font-size: 16px;
-    margin-bottom: 30px;
   }
   
   .get-started-button {
@@ -69,8 +68,7 @@
     margin-bottom: 10px;
     transition: transform 0.3s ease-in-out;
     display: flex;
-    flex-direction: row;
-    align-items: center;
+    flex-direction: column;
 }
 
 .card:hover {

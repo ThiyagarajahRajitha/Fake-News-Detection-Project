@@ -79,10 +79,32 @@ namespace FND.API.Services
             return newsCountByClassification;
         }
 
-        public async Task<List<News>> GetNewsByPublisher(int publisherId, [FromQuery(Name = "FakeNewsOnly")] bool IsFakeNewsOnly)
+        public async Task<List<ListNewsDto>> GetNewsByPublisherId(int publisherId, string Filter)
         {
-            var newsList = await _newsRepository.GetNewsByPublisher(publisherId, IsFakeNewsOnly);
-            return newsList;
+            var newsList = await _newsRepository.GetNewsByPublisherId(publisherId, Filter);
+            List<ListNewsDto> result = new List<ListNewsDto>();
+            foreach (var news in newsList)
+            {
+                ListNewsDto n = new ListNewsDto
+                {
+                    Id = news.News.Id,
+                    Url = news.News.Url,
+                    Topic = news.News.Topic,
+                    Content = news.News.Content,
+                    Publisher_id = news.News.Publisher_id,
+                    Classification_Decision = news.News.Classification_Decision,
+                    CreatedOn = news.News.CreatedOn,
+                    Comment = news.Comment,
+                    ReviewCreatedOn = news.CreatedOn,
+                    Status = news.Status,
+                    ReviewFeedback = news.ReviewFeedback,
+                    Result = news.Result,
+                    UpdatedOn = news.UpdatedOn
+                };
+                result.Add(n);
+
+            }
+            return result;
         }
 
         public async Task<ReviewRequest> RequestReview(CreateRequestReviewDto createRequestReviewDto)
@@ -97,11 +119,6 @@ namespace FND.API.Services
             return request;
         }
 
-        public async Task<List<ReviewRequest>> GetReviewRequestedNewsByPublisherId(int userId)
-        {
-            var request = await _newsRepository.GetReviewRequestedNewsByPublisherId(userId);
-            return request;
-        }
         public async Task<List<ReviewRequest>> GetAllReviewRequestedNews()
         {
             var request = await _newsRepository.GetAllReviewRequestedNews();
