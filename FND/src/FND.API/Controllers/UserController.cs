@@ -55,8 +55,8 @@ namespace FND.API.Controllers
             }) ;
         }
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] SignUpRequestDto signUpRequest)
+        [HttpPost("CreateUser")]
+        public async Task<IActionResult> CreateUser([FromBody] SignUpRequestDto signUpRequest)
         {
             if(signUpRequest == null)
                 return BadRequest();
@@ -65,20 +65,23 @@ namespace FND.API.Controllers
             if (await CheckUserEmailExist(signUpRequest.Email))
                 return BadRequest(new { Message = "Email Already Exist!" });
 
-            signUpRequest.Password = PasswordHasher.HashPassword(signUpRequest.Password);
-            //users.Token = "";
-            Users user = new Users()
-            {
-                Name = signUpRequest.Name,
-                Email = signUpRequest.Email,
-                Password_hash = signUpRequest.Password,
-                Created_at = DateTime.UtcNow,
-                Token = "",
-                Role = "Publisher",
-                Status = 0
-            };
-            await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
+            //signUpRequest.Password = PasswordHasher.HashPassword(signUpRequest.Password);
+            ////users.Token = "";
+            //Users user = new Users()
+            //{
+            //    Name = signUpRequest.Name,
+            //    Email = signUpRequest.Email,
+            //    Password_hash = signUpRequest.Password,
+            //    Created_at = DateTime.UtcNow,
+            //    Token = "",
+            //    Role = "Publisher",
+            //    Status = 0
+            //};
+
+
+            //await _context.Users.AddAsync(user);
+            //await _context.SaveChangesAsync();
+            await userService.CreateUser(signUpRequest);
             return Ok(new
             {
                 Message = "user registered!"
@@ -185,7 +188,8 @@ namespace FND.API.Controllers
             var identity = new ClaimsIdentity(new Claim[]
             {
                 new Claim(ClaimTypes.Role, user.Role),
-                new Claim(ClaimTypes.Name, user.Name)
+                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.PrimarySid, user.Id.ToString())
             });
 
             var credentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256);

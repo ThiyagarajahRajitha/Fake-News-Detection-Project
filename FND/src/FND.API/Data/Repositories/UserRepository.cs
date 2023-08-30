@@ -1,5 +1,6 @@
 ﻿using FND.API.Data.Dtos;
 using FND.API.Entities;
+using FND.API.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -14,8 +15,36 @@ namespace FND.API.Data.Repositories
         {
             this.fNDDBContext = fNDDBContext;
         }
+        public async Task<Users> CreateUser(SignUpRequestDto signUpRequest)
+        {
+            signUpRequest.Password = PasswordHasher.HashPassword(signUpRequest.Password);
+            Users user = new Users()
+            {
+                Name = signUpRequest.Name,
+                Email = signUpRequest.Email,
+                Password_hash = signUpRequest.Password,
+                Created_at = DateTime.UtcNow,
+                Token = "",
+                Role = "Publisher",
+                Status = 0
+            };
+            await fNDDBContext.Users.AddAsync(user);
+            await fNDDBContext.SaveChangesAsync();
 
+            GetUserById(user.Id);
 
+            Publication publication = new Publication()
+            {
+                Publication_Id = user.Id,
+                Publication_Name = signUpRequest.Name,
+                RSS_Url = signUpRequest.Url,
+                CreatedOn = DateTime.UtcNow
+            };
+             await fNDDBContext.Publications.AddAsync(publication);
+            await fNDDBContext.SaveChangesAsync();
+            return user;
+
+        }
         public async Task<Moderator> CreateModerator(CreateModeratorDto createModeratorDto)
         {
             //check the email is already exist
@@ -59,8 +88,13 @@ namespace FND.API.Data.Repositories
             }
         }
 
+        public async Task<Users> GetUserById(int id)
+        {
+            var user = await fNDDBContext.Users.Where(u=>u.Id == id).FirstOrDefaultAsync();
+            return user;
+        }
 
-            private Task<bool> CheckEmailExist(string email)
+        private Task<bool> CheckEmailExist(string email)
             => fNDDBContext.Users.AnyAsync(x => x.Email == email);
     }
 }

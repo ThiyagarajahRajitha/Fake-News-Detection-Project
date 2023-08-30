@@ -86,6 +86,35 @@ namespace FND.API.Services
             var newsCountByClassification =  await _newsRepository.GetNewsCountByClassification(fromDate, toDate);
             return newsCountByClassification;
         }
+
+        public async Task<List<News>> GetNewsByPublisher(int publisherId, [FromQuery(Name = "FakeNewsOnly")] bool IsFakeNewsOnly)
+        {
+            var newsList = await _newsRepository.GetNewsByPublisher(publisherId, IsFakeNewsOnly);
+            return newsList;
+        }
+
+        public async Task<ReviewRequest> RequestReview(CreateRequestReviewDto createRequestReviewDto)
+        {
+            var request = await _newsRepository.RequestReview(createRequestReviewDto);
+            return request;
+        }
+
+        public async Task<ReviewRequest> SubmitReview(SubmitReviewDto submitReviewDto)
+        {
+            var request = await _newsRepository.SubmitReview(submitReviewDto);
+            return request;
+        }
+
+        public async Task<List<ReviewRequest>> GetReviewRequestedNewsByPublisherId(int userId)
+        {
+            var request = await _newsRepository.GetReviewRequestedNewsByPublisherId(userId);
+            return request;
+        }
+        public async Task<List<ReviewRequest>> GetAllReviewRequestedNews()
+        {
+            var request = await _newsRepository.GetAllReviewRequestedNews();
+            return request;
+        }
     }
 
     public class ClassificationResutlt

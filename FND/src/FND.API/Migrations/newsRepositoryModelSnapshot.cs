@@ -79,6 +79,58 @@ namespace FND.API.Migrations
                     b.ToTable("News");
                 });
 
+            modelBuilder.Entity("FND.API.Entities.Publication", b =>
+                {
+                    b.Property<int>("Publication_Id")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Publication_Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RSS_Url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Publication_Id");
+
+                    b.ToTable("Publications");
+                });
+
+            modelBuilder.Entity("FND.API.Entities.ReviewRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Result")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReviewFeedback")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset>("UpdatedOn")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ReviewRequest");
+                });
+
             modelBuilder.Entity("FND.API.Entities.Subscriber", b =>
                 {
                     b.Property<int>("Id")
@@ -136,6 +188,34 @@ namespace FND.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("FND.API.Entities.Publication", b =>
+                {
+                    b.HasOne("FND.API.Entities.Users", "Users")
+                        .WithOne("Publication")
+                        .HasForeignKey("FND.API.Entities.Publication", "Publication_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("FND.API.Entities.ReviewRequest", b =>
+                {
+                    b.HasOne("FND.API.Entities.News", "News")
+                        .WithMany()
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("News");
+                });
+
+            modelBuilder.Entity("FND.API.Entities.Users", b =>
+                {
+                    b.Navigation("Publication")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

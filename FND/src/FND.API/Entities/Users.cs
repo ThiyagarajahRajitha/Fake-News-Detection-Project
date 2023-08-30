@@ -13,5 +13,6 @@ namespace FND.API.Entities
         public string Token { get; set; }
         public string Role { get; set; }
         public int Status { get; set; }
+        public virtual Publication Publication { get; set; }
     }
 }

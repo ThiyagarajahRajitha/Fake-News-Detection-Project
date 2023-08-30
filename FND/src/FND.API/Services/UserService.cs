@@ -2,6 +2,7 @@
 using FND.API.Data.Dtos;
 using FND.API.Data.Repositories;
 using FND.API.Entities;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FND.API.Services
 {
@@ -13,8 +14,13 @@ namespace FND.API.Services
         {
             _repository = new UserRepository(fNDDBContext);
         }
+        public async Task<Users> CreateUser([FromBody] SignUpRequestDto signUpRequest)
+        {
+            var user = await _repository.CreateUser(signUpRequest);
+            return user;
+        }
 
-        public async Task<Moderator> CreateModerator(CreateModeratorDto createModeratorDto)
+            public async Task<Moderator> CreateModerator(CreateModeratorDto createModeratorDto)
         {
             var moderator = await _repository.CreateModerator(createModeratorDto);
             IEnumerable<string> senders = new string[] {createModeratorDto.Email };
@@ -34,6 +40,13 @@ namespace FND.API.Services
         {
             var moderator = await _repository.DeleteModerator(userName);
             return moderator;
+        }
+
+        public async Task<Users> GetUserById(int id)
+        {
+            var newsList = await _repository.GetUserById(id);
+            return newsList;
+
         }
     }
 }

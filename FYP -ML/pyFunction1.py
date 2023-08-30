@@ -23,9 +23,10 @@ class NewsClassifier:
 		
 		corpus = df['text'].tolist()
 		labels = df['label'].tolist()
+		X_train, X_test,y_train, y_test=train_test_split(corpus,labels,test_size=0.20,random_state=9,shuffle=True)
 
 		cleaned_corpus =[]
-		for tt in corpus:
+		for tt in X_train:
 			cleaned_text =re.sub(r'[^\w\s]', '', tt)#remove punctuation
 			cleaned_text=re.sub('\n','',cleaned_text) #Remove New lines
 			cleaned_text = cleaned_text.lower()
@@ -39,13 +40,13 @@ class NewsClassifier:
 			tokenized_corpus.append(tokens) 
 
 		# Convert tokens to features using TF-IDF vectorization
-		X = tfidf_vectorizer.fit_transform([' '.join(tokens) for tokens in tokenized_corpus])
-		X_train, X_test,y_train, y_test=train_test_split(X,labels,test_size=0.20,random_state=9,shuffle=True)
+		Xt_vec = tfidf_vectorizer.fit_transform([' '.join(tokens) for tokens in tokenized_corpus])
+		# X_train, X_test,y_train, y_test=train_test_split(X,labels,test_size=0.20,random_state=9,shuffle=True)
 		from sklearn.neighbors import KNeighborsClassifier
 		
 		global knn
 		knn=KNeighborsClassifier(n_neighbors=2)
-		knn.fit(X_train,y_train)
+		knn.fit(Xt_vec,y_train)
 		
 
 
@@ -66,10 +67,10 @@ class NewsClassifier:
 			tokenized_text.append(tokens)
 		newTest_X = tfidf_vectorizer.transform([' '.join(tokens) for tokens in tokenized_text])
 		y_pred=knn.predict(newTest_X)
-		if y_pred[0] == 'False':
-			reslt = "Fake"
-		elif y_pred[0] =='Real':
+		if y_pred[0] =='True':
 			reslt = "Real"
+		elif y_pred[0] == 'False':
+			reslt = "Fake"
 		else:
 			reslt = "Not Sure"
 

@@ -29,6 +29,15 @@ namespace FND.API.Controllers
             var newsList = await newsService.GetNews(IsFakeNewsOnly);
             return Ok(newsList);
         }
+
+
+        [HttpGet("{publisherId:int}")]
+        public async Task<ActionResult<List<News>>> GetNewsByPublisher(int publisherId, [FromQuery(Name = "FakeNewsOnly")] bool IsFakeNewsOnly)
+        {
+            //var newsList = await _fNDDBContext.News.ToListAsync();
+            var newsList = await newsService.GetNewsByPublisher(publisherId, IsFakeNewsOnly);
+            return Ok(newsList);
+        }
         //var news1 = new  { topic = "covid 19 is every wheeersjgnds", publisher = "Rajitha" };
         //var news2 = new { topic = "Everyone should put vaccine", publisher = "Senthalan" };
 
@@ -39,6 +48,35 @@ namespace FND.API.Controllers
             return Ok(result);
             //SaveClassifyResult(result);
         }
+
+        [Route("RequestReview")]
+        [HttpPost]
+        public async Task<IActionResult> RequestReview(CreateRequestReviewDto createRequestReviewDto)
+        {
+            var request = await newsService.RequestReview(createRequestReviewDto);
+            return Ok(request);
+        }
+
+        [Route("GetReviewRequestedNewsByPublisherId")]
+        [HttpGet]
+        public async Task<ActionResult<List<ReviewRequest>>> GetReviewRequestedNewsByPublisherId(int userId)
+        {
+            //var newsList = await _fNDDBContext.News.ToListAsync();
+            var reviewRequestedNewsByPublisher = await newsService.GetReviewRequestedNewsByPublisherId(userId);
+            return Ok(reviewRequestedNewsByPublisher);
+        }
+
+        [Route("GetAllReviewRequestedNews")]
+        [HttpGet]
+        public async Task<ActionResult<List<ReviewRequest>>> GetAllReviewRequestedNews()
+        {
+            //var newsList = await _fNDDBContext.News.ToListAsync();
+            var reviewRequestedNewsByPublisher = await newsService.GetAllReviewRequestedNews();
+            return Ok(reviewRequestedNewsByPublisher);
+        }
+
+
+
 
         //[Route("AddNews")]
         //[HttpPost]
@@ -70,6 +108,15 @@ namespace FND.API.Controllers
             //var newsList = await _fNDDBContext.News.ToListAsync();
             var newsCountByClassification = await newsService.GetNewsCountByClassification(fromDate, toDate);
             return newsCountByClassification;
+        }
+
+        //submit review
+        [Route("SubmitReview")]
+        [HttpPost]
+        public async Task<IActionResult> SubmitReview(SubmitReviewDto submitReviewDto)
+        {
+            var request = await newsService.SubmitReview(submitReviewDto);
+            return Ok(request);
         }
 
     }
