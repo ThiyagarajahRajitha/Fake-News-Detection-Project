@@ -41,16 +41,16 @@ export class ReviewRequestedNewsComponent {
   }
 
   GetAllReviewRequestedNews(){
-    this.moderatorService.GetAllReviewRequestedNews()
-    .subscribe({
-      next:(requestedReview) => {
-        this.requestedReview = requestedReview;
-        //console.log(requestedReview);
-      },
-      error:(response: any) =>{
-        console.log(response);  
-      }
-    })
+    // this.moderatorService.GetAllReviewRequestedNews()
+    // .subscribe({
+    //   next:(requestedReview) => {
+    //     this.requestedReview = requestedReview;
+    //     //console.log(requestedReview);
+    //   },
+    //   error:(response: any) =>{
+    //     console.log(response);  
+    //   }
+    // })
   }
 
   openSubmitReviewModal(newId:number){
@@ -60,16 +60,16 @@ export class ReviewRequestedNewsComponent {
   }
 
   GetReviewRequestedNewsByPublisherId(publisherId:number){
-    this.newsService.GetReviewRequestedNewsByPublisherId(this.userId)
-    .subscribe({
-      next:(requestedReviewFeedback) => {
-        this.requestedReviewFeedback = requestedReviewFeedback;
-        console.log(requestedReviewFeedback);
-      },
-      error:(response: any) =>{
-        console.log(response);  
-      }
-    })
+    // this.newsService.GetReviewRequestedNewsByPublisherId(this.userId)
+    // .subscribe({
+    //   next:(requestedReviewFeedback) => {
+    //     this.requestedReviewFeedback = requestedReviewFeedback;
+    //     console.log(requestedReviewFeedback);
+    //   },
+    //   error:(response: any) =>{
+    //     console.log(response);  
+    //   }
+    // })
   }
 
 }

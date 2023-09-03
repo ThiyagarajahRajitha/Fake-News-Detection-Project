@@ -15,6 +15,37 @@ namespace FND.API.Services
         private readonly SubscriberRepository _subscriberRepository;
         private readonly NotificationService _notificationService = new NotificationService();
 
+        string fakenewsSubject = "A new Fake news have been detected";
+        string fakenewsBody = """
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>New Fake News Detected</title>
+            </head>
+            <body>
+                <table width="100%" bgcolor="#f0f0f0">
+                    <tr>
+                        <td align="center">
+                            <table width="600" bgcolor="#ffffff" style="border-radius: 10px; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);">
+                                <tr>
+                                    <td style="padding: 20px;">
+                                        <h1>New Fake News Detected</h1>
+                                        <p>Dear Subscriber,</p>
+                                        <p>We are writing to inform you that a new fake news article with the title <b>"{0}"</b> has been detected by our system.</p>
+                                        <p>For more details visit http://localhost:4200/</p>
+                                        <p>Best regards,</p>
+                                        <p>Your Fake News Detection Team</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </body>
+            </html>
+            """;
+
 
         public NewsServiceImpl(FNDDBContext fNDDBContext)
         {
@@ -55,10 +86,9 @@ namespace FND.API.Services
 
 
             IEnumerable<string> subEmail = await _subscriberRepository.GetSubscribersEmail();
-            string subject = "A new Fake news have been detected";
-            string body = "News: <b>"+createNewsDto.Topic+".</b> <br> For more details visit http://localhost:4200/</br>";
 
-            Notification notification = new Notification(subject, subEmail,null, body);
+            string body = string.Format(fakenewsBody, createNewsDto.Topic);
+            Notification notification = new Notification(fakenewsSubject, subEmail,null, body);
 
             if (resultValue == "Fake")
             {
@@ -73,7 +103,7 @@ namespace FND.API.Services
             return newsList;
         }
 
-        public async Task<List<NewsClassificationCount>> GetNewsCountByClassification([FromQuery(Name = "from")]string fromDate, [FromQuery(Name = "to")] string toDate)
+        public async Task<NewsDashboardResult> GetNewsCountByClassification([FromQuery(Name = "from")]string fromDate, [FromQuery(Name = "to")] string toDate)
         {
             var newsCountByClassification =  await _newsRepository.GetNewsCountByClassification(fromDate, toDate);
             return newsCountByClassification;
@@ -82,6 +112,12 @@ namespace FND.API.Services
         public async Task<List<ListNewsDto>> GetNewsByPublisherId(int publisherId, string Filter)
         {
             var newsList = await _newsRepository.GetNewsByPublisherId(publisherId, Filter);
+            List<ListNewsDto> result = ConvertToListNewsDTO(newsList);
+            return result;
+        }
+
+        private static List<ListNewsDto> ConvertToListNewsDTO(List<ReviewRequest> newsList)
+        {
             List<ListNewsDto> result = new List<ListNewsDto>();
             foreach (var news in newsList)
             {
@@ -104,6 +140,7 @@ namespace FND.API.Services
                 result.Add(n);
 
             }
+
             return result;
         }
 
@@ -119,10 +156,11 @@ namespace FND.API.Services
             return request;
         }
 
-        public async Task<List<ReviewRequest>> GetAllReviewRequestedNews()
+        public async Task<List<ListNewsDto>> GetAllReviewRequestedNews(string filter)
         {
-            var request = await _newsRepository.GetAllReviewRequestedNews();
-            return request;
+            var newsList = await _newsRepository.GetAllReviewRequestedNews(filter);
+            List<ListNewsDto> result = ConvertToListNewsDTO(newsList);
+            return result;
         }
     }
 

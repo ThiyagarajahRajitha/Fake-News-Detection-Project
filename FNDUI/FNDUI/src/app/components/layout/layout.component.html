@@ -12,49 +12,35 @@
     <header>
         <nav>
             <ul>
-                <li><a routerLink="/">Home</a></li>
-                <li *ngIf="role!='Admin' && role!='Publisher' && role!='Moderator'"><a routerLink="/about">About</a></li>
-                <li *ngIf="role!='Admin' && role!='Publisher' && role!='Moderator'"><a routerLink="/services">Services</a></li>
-                <li *ngIf="role!='Admin' && role!='Publisher' && role!='Moderator'"><a routerLink="/contact">Contact</a></li>
-                <li *ngIf="role=='Publisher' || role=='Moderator'"><button class="tab-button-menu" routerLink="/review-requests" routerLinkActive="active">Review Requested News</button></li>
-                <li *ngIf="role=='Publisher'"><button class="tab-button" routerLink="/dashboard" routerLinkActive="active">Dashboard</button></li>
+                <li *ngIf="role!='Admin'"><a class="menu-content" routerLink="/">Home</a></li>
+                <li *ngIf="!role"><a class="menu-content" routerLink="/about">About</a></li>
+                <li *ngIf="!role"><a class="menu-content" routerLink="/services">Services</a></li>
+                <li *ngIf="!role"><a class="menu-content" routerLink="/contact">Contact</a></li>
+                <li *ngIf="role=='Admin'"><a class="menu-content" routerLink="/publisher-approval">Publishers</a></li>
+                <li *ngIf="role=='Admin'"><a class="menu-content" routerLink="moderator-invitation">Moderators</a></li>
+                <li *ngIf="role"><a class="menu-content" routerLink="/dashboard">Dashboard</a></li>
 
 
-                <li class="publisherPortal-box nav-right"*ngIf="role!='Admin' && role!='Publisher' && role!='Moderator'" (click)="publisherSignIn()"><div class="text-box">Publisher Portal</div></li>
-                <li class="user-box nav-right" *ngIf="role=='Admin' || role=='Publisher' || role=='Moderator'"><a href=""><i class="fa-solid fa-user"></i> {{username}}</a></li>
-                <li class="login-box nav-right"*ngIf="role=='Admin' || role=='Publisher' || role=='Moderator'"><a href=""><div class="icon-box" (click)="logout()"><i class="fas fa-sign-in-alt"></i></div></a></li>
+                <li class="publisherPortal-box nav-right"*ngIf="!role" (click)="publisherSignIn()"><div class="text-box">Publisher Portal</div></li>
                 
+                <li class="account-box nav-right" *ngIf="role" >
+                  <button mat-icon-button [matMenuTriggerFor]="menu">
+                    <mat-icon>account_circle</mat-icon>
+                  </button>
+                  <mat-menu #menu="matMenu">
+                    <button mat-menu-item>
+                        <mat-icon>manage_accounts</mat-icon>
+                        <span>{{username}}</span>
+                      </button>
+                    <button mat-menu-item (click)="logout()">
+                      <mat-icon>logout</mat-icon>
+                      <span>Logout</span>
+                    </button>
+                  </mat-menu>
+                </li>
             </ul>
         </nav>
     </header>
-
-    <div class="tab-buttons" *ngIf="role=='Admin'">
-        <button class="tab-button" routerLink="/publisher-approval" routerLinkActive="active">Publisher Approval</button>
-        <button class="tab-button" routerLink="/moderator-invitation" routerLinkActive="active">Moderator Invitation</button>
-    </div>
-    <div class="tab-buttons" *ngIf="role=='Publisher'">
-        <button class="tab-button" routerLink="/review-requests" routerLinkActive="active">Review Requested News</button>
-        <button class="tab-button" routerLink="/dashboard" routerLinkActive="active">Dashboard</button>
-    </div>
-    <div class="tab-buttons" *ngIf="role=='Moderator'">
-        <button class="tab-button" routerLink="/review-requests" routerLinkActive="active">Review Requested News</button>
-        <button class="tab-button" routerLink="/" routerLinkActive="active"></button>
-    </div>
-
-    <div class="tab-buttons" *ngIf="role=='Admin'">
-        <!-- <button [routerLink]="['/publisher-approval']" routerLinkActive="active">
-            Publisher Approval
-          </button>
-          <button [routerLink]="['/moderator-invitation']" routerLinkActive="active">
-            Invite Moderator
-          </button> -->
-          <button routerLink="/publisher-approval" routerLinkActive="active">Publisher Approval</button>
-    <button routerLink="/moderator-invitation" routerLinkActive="active">Moderator Invitation</button>
-        <!-- <button class="tab-button" [routerLink]="'/publisher-approval'" [class.active]="activeTab === 'publisher-approval'">Publisher Approval</button>
-        <button class="tab-button" [routerLink]="'/moderator-invitation'" [class.active]="activeTab === 'invite-moderator'">Invite Moderator</button> -->
-        <!-- Add more buttons for other tabs if needed-->
-      </div>
-      
     <main>
         <router-outlet></router-outlet>
         <!-- <app-tabbed-view></app-tabbed-view> -->

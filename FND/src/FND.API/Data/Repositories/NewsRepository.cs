@@ -48,7 +48,7 @@ namespace FND.API.Data.Repositories
 
         }
 
-        public async Task<List<NewsClassificationCount>> GetNewsCountByClassification([FromQuery(Name = "from")] string fromDate, [FromQuery(Name = "to")] string toDate)
+        public async Task<NewsDashboardResult> GetNewsCountByClassification([FromQuery(Name = "from")] string fromDate, [FromQuery(Name = "to")] string toDate)
         {
             string format = "yyyy-MM-dd";
             //DateTime fromDateee = DateTime.Parse(fromDate);
@@ -62,7 +62,19 @@ namespace FND.API.Data.Repositories
                 .Select(g => new NewsClassificationCount { Classification = g.Key, Count = g.Count() })
                 .ToListAsync();
 
-            return newsCountByClassification;
+            NewsDashboardResult result = new NewsDashboardResult();
+            foreach (var classification in newsCountByClassification )
+            {
+                if (classification.Classification == "Fake")
+                {
+                    result.fakeCount = classification.Count;
+                }
+                if (classification.Classification == "Real")
+                {
+                    result.realCount = classification.Count;
+                }
+            }
+            return result;
         }
 
         public async Task<List<ReviewRequest>> GetNewsByPublisherId(int publisherId, string filter)
@@ -171,15 +183,23 @@ namespace FND.API.Data.Repositories
             return updateReviewRequest;
         }
 
-        public async Task<List<ReviewRequest>> GetAllReviewRequestedNews()
+        public async Task<List<ReviewRequest>> GetAllReviewRequestedNews(string filter)
         {
-            var newsList = await _fNDDBContext.ReviewRequest.Where(r=>r.Status==0)
-                            .OrderByDescending(p => p.Id)
-                            .Include(rr => rr.News) // Include the related News entity
-                            .ToListAsync();
-
-            //_fNDDBContext.ReviewRequest.OrderByDescending(p => p.Id).ToListAsync();
-            return newsList;
+            if (filter == "pendingOnly")
+            {
+                var newsList = await _fNDDBContext.ReviewRequest.Where(r => r.Status == 0)
+                                .OrderByDescending(p => p.Id)
+                                .Include(rr => rr.News) // Include the related News entity
+                                .ToListAsync();
+                return newsList;
+            } else
+            {
+                var newsList = await _fNDDBContext.ReviewRequest.Where(r => r.Status == 1)
+                                .OrderByDescending(p => p.Id)
+                                .Include(rr => rr.News) // Include the related News entity
+                                .ToListAsync();
+                return newsList;
+            }
         }
 
         //public async Task<List<ReviewRequest>> GetReviewRequestedNewsById(int RequestedReviewId)

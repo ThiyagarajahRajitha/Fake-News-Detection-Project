@@ -4,27 +4,38 @@
 <section class="banner">
     <h2>Welcome <span *ngIf="userRole=='Publisher' || userRole=='Moderator'|| userRole=='Admin'"><b>{{username}}</b></span> to Our Fake News Detector</h2>
     <p>Verify the authenticity of news articles here.</p>
-    <button class="get-started-button" *ngIf="userRole!='Admin' && userRole!='Publisher' && userRole!='Moderator'"(click)="openClassifyNewsModal()">Add News to Classify</button>
-    <button class="get-started-button" *ngIf="userRole!='Admin' && userRole!='Publisher' && userRole!='Moderator'" (click)="openSubscribeModal()">Subscribe <i class="fas fa-paper-plane"></i></button>
+    <button class="get-started-button" *ngIf="!userRole" (click)="openClassifyNewsModal()">Add News to Classify</button>
+    <button class="get-started-button" *ngIf="!userRole" (click)="openSubscribeModal()">Subscribe <i class="fas fa-paper-plane"></i></button>
 
 </section>
 
 
 <section class="news-list">
     <h2>Latest News</h2>
-    <div class="form-check form-switch col-3" *ngIf="!userRole">
-        <h4>
-            <span><input class="form-check-input" type="checkbox" role="switch" [(ngModel)]="checkboxValue"
-                (change)="onCheckboxChange()"/></span>
-            <span><h3 class="form-check-label" for="flexSwitchCheckDefault">Fake News Only</h3></span>
-        </h4>
-    </div>
    
-    <div>
+    <div *ngIf="!userRole">
         <section>
-            <mat-button-toggle-group [formControl]="filterControl" aria-label="Font Style">
+            <mat-button-toggle-group [formControl]="publicFilterControl" aria-label="Font Style">
               <mat-button-toggle value="all">All News</mat-button-toggle>
               <mat-button-toggle value="fakeOnly">Fake Only</mat-button-toggle>
+            </mat-button-toggle-group>
+          </section>
+    </div>
+
+    <div *ngIf="userRole=='Publisher'">
+        <section>
+            <mat-button-toggle-group [formControl]="publisherFilterControl" aria-label="Font Style">
+              <mat-button-toggle value="all">All News</mat-button-toggle>
+              <mat-button-toggle value="fakeOnly">Fake Only</mat-button-toggle>
+              <mat-button-toggle value="pendingOnly">Review Requested</mat-button-toggle>
+              <mat-button-toggle value="reviewedOnly">Review Completed</mat-button-toggle>
+            </mat-button-toggle-group>
+          </section>
+    </div>
+
+    <div *ngIf="userRole=='Moderator'">
+        <section>
+            <mat-button-toggle-group [formControl]="ModeratorFilterControl" aria-label="Font Style">
               <mat-button-toggle value="pendingOnly">Review Requested</mat-button-toggle>
               <mat-button-toggle value="reviewedOnly">Review Completed</mat-button-toggle>
             </mat-button-toggle-group>
@@ -50,9 +61,12 @@
                     <button class="request-button" *ngIf="userRole=='Publisher' && newsItem.classification_Decision == 'Fake' && !newsItem.comment"  (click)="openReviewRequestNewsModal(newsItem.id)">
                         <i class="fa fa-pencil"></i> Request to Review
                     </button>
-                    <button class="request-button" *ngIf="userRole=='Publisher' && newsItem.comment">
+                    <button class="request-button" *ngIf="userRole=='Publisher' && newsItem.comment && newsItem.status == 0">
                        Review Submitted
                     </button>
+                    <button class="request-button" *ngIf="userRole=='Publisher' && newsItem.status == 1">
+                        Review Completed
+                     </button>
                 </span>
             </div>
         </div>
@@ -66,29 +80,35 @@
                 </p>
             </div>
         </div>
-      <div class="row mt-3" *ngIf="userRole=='Publisher' && newsItem.comment">
+      <div class="row mt-3" *ngIf="userRole && newsItem.comment">
         <div class="col-3">
             Publication Comment :
         </div>
-        <div class="col-9">
+        <div class="col">
             <input type="text" value="{{newsItem.comment}}" disabled>
         </div>
+        <div class="col-2" *ngIf="userRole=='Moderator' && newsItem.status == 0">
+            <button class="request-button" (click)="openSubmitReviewModal(newsItem.id)">
+                <i class="fa fa-pencil"></i> Submit Review
+            </button>
+          </div>
       </div>
-          
-      <div class="row mt-3" *ngIf="userRole=='Publisher' && newsItem.reviewFeedback">
-        <div class="col-3">
-            Reviewer Comment :
+      <div *ngIf="userRole && newsItem.status != 0">
+        <div class="row mt-3" *ngIf="newsItem.reviewFeedback">
+            <div class="col-3">
+                Reviewer Comment :
+            </div>
+            <div class="col-9">
+                <input type="text" value="{{newsItem.reviewFeedback}}" disabled>
+            </div>
         </div>
-        <div class="col-9">
-            <input type="text" value="{{newsItem.reviewFeedback}}" disabled>
-        </div>
-      </div>
-      <div class="row mt-3" *ngIf="userRole=='Publisher' && newsItem.result">
-        <div class="col-3">
-            Reviewer Decision :
-        </div>
-        <div class="col-9">
-            <input type="text" value="{{newsItem.result}}" disabled>
+        <div class="row mt-3" *ngIf="newsItem.result">
+            <div class="col-3">
+                Reviewer Decision :
+            </div>
+            <div class="col-9">
+                <input type="text" value="{{newsItem.result}}" disabled>
+            </div>
         </div>
       </div>
 

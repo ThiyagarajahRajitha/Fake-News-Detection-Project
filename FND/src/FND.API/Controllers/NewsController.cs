@@ -55,10 +55,10 @@ namespace FND.API.Controllers
 
         [Route("GetAllReviewRequestedNews")]
         [HttpGet]
-        public async Task<ActionResult<List<ReviewRequest>>> GetAllReviewRequestedNews()
+        public async Task<ActionResult<List<ListNewsDto>>> GetAllReviewRequestedNews([FromQuery(Name = "filter")] string filter)
         {
             //var newsList = await _fNDDBContext.News.ToListAsync();
-            var reviewRequestedNewsByPublisher = await newsService.GetAllReviewRequestedNews();
+            var reviewRequestedNewsByPublisher = await newsService.GetAllReviewRequestedNews(filter);
             return Ok(reviewRequestedNewsByPublisher);
         }
 
@@ -90,7 +90,7 @@ namespace FND.API.Controllers
         //}
         [Route("GetNewsCount")]
         [HttpGet]
-        public async Task<List<NewsClassificationCount>> GetNewsCountByClassification([FromQuery(Name = "from")] string fromDate, [FromQuery(Name = "to")] string toDate)
+        public async Task<NewsDashboardResult> GetNewsCountByClassification([FromQuery(Name = "from")] string fromDate, [FromQuery(Name = "to")] string toDate)
         {
             //var newsList = await _fNDDBContext.News.ToListAsync();
             var newsCountByClassification = await newsService.GetNewsCountByClassification(fromDate, toDate);

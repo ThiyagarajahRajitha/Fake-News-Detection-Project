@@ -1,25 +1,55 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <ng-container *ngIf="role=='Admin'">
     <div class="col py-3">
-        <h2>Publisher Approval</h2>
+        <h2>Publishers</h2>
+    <div>
+        <section>
+            <mat-button-toggle-group [formControl]="filterControl" aria-label="Font Style">
+                <mat-button-toggle value="false">All</mat-button-toggle>
+                <mat-button-toggle value="true">Pending</mat-button-toggle>
+            </mat-button-toggle-group>
+            </section>
+    </div>
     <table class="table table-striped styled-table">
         <thead>
             <td>Id</td>
             <td>Name</td>
             <td>Email</td>
             <td>Action</td>
-            <td>Status</td>
         </thead>
         <tbody>
             <tr *ngFor="let publisher of users">
                 <td>{{publisher.id}}</td>
                 <td>{{publisher.name}}</td>
                 <td>{{publisher.email}}</td>
-                <ng-container *ngIf="!isApproved"><td><span><button class="approve-button"(click)="approve(publisher.id)"  type="button"><i class="fas fa-check-circle"></i> Approve</button></span>
-                    &nbsp;
-                   <span><button class="reject-button" (click)="reject(publisher.id)" type="button"><i class="fas fa-times-circle"></i> Reject</button></span></td>
-                </ng-container>
-                <td class="status-pending">Pending</td>
+                <td>
+                    <div *ngIf="publisher.status==0">
+                        <span>
+                            <button class="approve-button"(click)="approve(publisher)"  type="button">
+                                <i class="fas fa-check-circle"></i> Approve
+                            </button>
+                        </span>&nbsp;
+                        <span>
+                            <button class="reject-button" (click)="reject(publisher)" type="button">
+                                <i class="fas fa-times-circle"></i> Reject
+                            </button>
+                        </span>
+                    </div>
+                    <div *ngIf="publisher.status==1">
+                        <span>
+                            <button class="reject-button" type="button">
+                                <i class="fas fa-times-circle"></i> Delete
+                            </button>
+                        </span>
+                    </div>
+                    <div *ngIf="publisher.status==-1">
+                        <span>
+                            <button class="reject-button" type="button" disabled>
+                                <i class="fas fa-times-circle"></i> Rejected
+                            </button>
+                        </span>
+                    </div>
+                </td>
             </tr>
         </tbody>
     </table>

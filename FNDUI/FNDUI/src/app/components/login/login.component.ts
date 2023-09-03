@@ -43,7 +43,7 @@ export class LoginComponent {
           this.userStore.setRoleForStore(tokenPayload.role);
           //alert(res.message);
           if(tokenPayload.role == 'Admin')
-          this.router.navigate(['news-list']);
+          this.router.navigate(['publisher-approval']);
           if(tokenPayload.role == 'Publisher')
           this.router.navigate(['news-list']);
           if(tokenPayload.role == 'Moderator')

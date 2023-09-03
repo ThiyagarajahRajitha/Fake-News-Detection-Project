@@ -29,7 +29,7 @@ namespace FND.API.Data.Repositories
             var publishersList = await _fNDDBContext.Users.Where(u => u.Role == "Publisher").OrderByDescending(b => b.Id).ToListAsync();
             if (IsPendingOnly)
             {
-                publishersList = await _fNDDBContext.Users.Where(p =>p.Status==0).OrderByDescending(i => i.Id).ToListAsync();
+                publishersList = await _fNDDBContext.Users.Where(p => p.Role == "Publisher" && p.Status==0).OrderByDescending(i => i.Id).ToListAsync();
             }
             return publishersList;
         }

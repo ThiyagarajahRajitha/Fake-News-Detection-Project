@@ -10,7 +10,12 @@
     <form id="classifyForm">
         <div class="mb-3">
             <label for="result" class="form-label">Reviewed Result</label>
-            <input type="text" class="form-control" #resultInput placeholder="Type your reviewed result here">
+            <select class="form-control" #resultInput>
+              <option value=""></option>
+              <option value="Fake">Fake</option>
+              <option value="Real">Real</option>
+            </select>
+            <!-- <input type="text" class="form-control" #resultInput placeholder="Type your reviewed result here"> -->
         </div>
         <div class="mb-3">
             <label for="newscontent" class="form-label">Review Feedback</label>

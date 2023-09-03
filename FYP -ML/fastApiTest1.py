@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-
-from pyFunction1 import NewsClassifier
+#from pyFunction1 import NewsClassifier
+from NaiveBayes import NewsClassifier
 
 
 class News(BaseModel):

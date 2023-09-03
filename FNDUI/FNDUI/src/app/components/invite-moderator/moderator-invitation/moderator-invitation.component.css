@@ -1,0 +1,53 @@
+/* Reset default margin and padding */
+body, table {
+    margin: 0;
+    padding: 0;
+}
+
+/* Style the table */
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ddd;
+    margin-top: 20px;
+    background-color: #e2f3f8;
+}
+
+.styled-table th, .styled-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.styled-table th {
+    background-color: #f2f2f2;
+}
+
+/* Style the action buttons */
+.approve-button, .reject-button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.reject-button {
+    background-color: #e74c3c;
+}
+
+.approve-button:disabled, .reject-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Style the status cells */
+.status-pending {
+    color: #e74c3c;
+}
+
+.status-approved {
+    color: #2ecc71;
+}

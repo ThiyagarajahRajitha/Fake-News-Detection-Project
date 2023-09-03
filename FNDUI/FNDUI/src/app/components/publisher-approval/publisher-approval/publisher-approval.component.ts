@@ -3,6 +3,7 @@ import { Users } from 'src/app/models/users.model';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { PublisherApprovalService } from 'src/app/services/publisher-approval/publisher-approval.service';
 import { UserStoreService } from 'src/app/services/user-store/user-store.service';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-publisher-approval',
@@ -12,9 +13,7 @@ import { UserStoreService } from 'src/app/services/user-store/user-store.service
 export class PublisherApprovalComponent {
   public role:string = "";
   users:Users[] = [];
-  IsPending: boolean = false;
-  isApproved = false;
-  isRejected = false;
+  filterControl = new FormControl('false');
 
   constructor(private auth:AuthService, private userStore:UserStoreService, private publisherApproval:PublisherApprovalService){}
 
@@ -24,11 +23,18 @@ export class PublisherApprovalComponent {
       const roleFromToken = this.auth.getRoleFromToken();
       this.role = val || roleFromToken;
     })
-    this.getAllNews();
+    this.getPublishers("false");
+    this.filterControl.valueChanges.subscribe( filter => {
+      if (filter) {
+        this.getPublishers(filter)
+      } else {
+        this.getPublishers("false")
+      }
+    });
   }
 
-  getAllNews(){
-    this.publisherApproval.getPendingPublishers(this.IsPending)
+  getPublishers(IsPending:string){
+    this.publisherApproval.getPublishers(IsPending)
     .subscribe({
       next:(users) => {
         this.users = users;
@@ -41,9 +47,9 @@ export class PublisherApprovalComponent {
     })
   }
 
-  approve(id:number){
-    this.isApproved = true;
-    this.publisherApproval.approve(id)
+  approve(user:Users){
+    user.status = 1;
+    this.publisherApproval.approve(user.id)
     .subscribe({
       next:(x)=>{
         console.log("succ");
@@ -54,8 +60,8 @@ export class PublisherApprovalComponent {
     //console.log(id+" APPROVE function called");
   }
 
-  reject(id:number){
-    this.isRejected = true;
+  reject(user:Users){
+    user.status = -1;
     console.log("reject function called");
   }
 }

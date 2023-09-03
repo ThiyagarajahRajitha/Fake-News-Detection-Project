@@ -35,17 +35,16 @@ export class NewsService {
   // getNewsCount(from:Date, to:Date):Observable<NewsClassificationCountsModel[]>{
   //   return this.http.get<NewsClassificationCountsModel[]>(this.baseApiUrl + '/api/News/GetNewsCount');
   // }
-  getNewsCount(from: Date, to: Date): Observable<NewsClassificationCountsModel[]> {
+  getNewsCount(from: Date, to: Date): Observable<NewsClassificationCountsModel> {
     const apiUrl = `${this.baseApiUrl}/api/News/GetNewsCount?from=${from}&to=${to}`;
     console.log("apiurl " +apiUrl);
-    return this.http.get<NewsClassificationCountsModel[]>(apiUrl);
+    return this.http.get<NewsClassificationCountsModel>(apiUrl);
   }
 
   submitReview(reviewedResultModel:ReviewedResultModel):Observable<any>{
     return this.http.post<any>(this.baseApiUrl +'/api/News/SubmitReview',reviewedResultModel)
   }
-
-  GetReviewRequestedNewsByPublisherId(publisherId: number):Observable<ReviewRequestedNewsListModel[]>{
-    return this.http.get<ReviewRequestedNewsListModel[]>(this.baseApiUrl + '/api/News/GetReviewRequestedNewsByPublisherId?userId='+publisherId);
+  GetAllReviewRequestedNews(filter:string) {
+    return this.http.get<News[]>(this.baseApiUrl + '/api/News/GetAllReviewRequestedNews?filter=' + filter);
   }
 }

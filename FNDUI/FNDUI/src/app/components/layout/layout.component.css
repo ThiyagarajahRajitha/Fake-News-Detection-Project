@@ -115,7 +115,24 @@ main {
     height: 30px;
     
   }
+
+  .account-box{
+    position: absolute;
+    right: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    margin-right:100%; /* Push the box to the right side of the nav bar */
+    display: flex; /* Use flex layout for subscriber box */
+    padding: 3px; /* Add some padding for spacing */
+    border-radius: 10px; /* Rounded corners for the box */
+    width: auto; /* Adjust width to content */
+    height: 30px;
+  }
   
+  .menu-content {
+    vertical-align:sub;
+  }
   .text-box {
     font-size: 14px;
   color: rgb(2, 2, 2); /* Set text color to white */

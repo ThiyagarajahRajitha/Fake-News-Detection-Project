@@ -1,39 +1,88 @@
-
 <section class="home-content">
-<div class="container my=5">
+  <div class="container my=5">
     <div class="row align-items-center">
       <h2>News</h2>
     </div>
     <div class="row" align-items-center>
-      <div class = "col-3">
+      <div class="col-3">
         <section class="container">
           <mat-form-field class="example-full-width">
             <mat-label>From</mat-label>
-            <input matInput [matDatepicker]="fromPicker" (click)="fromPicker.open()" (dateChange)="fromDateChanged($event)">
+            <input matInput [matDatepicker]="fromPicker" (click)="fromPicker.open()"
+              (dateChange)="fromDateChanged($event)" [value]="from">
             <mat-hint>MM/DD/YYYY</mat-hint>
             <mat-datepicker #fromPicker></mat-datepicker>
           </mat-form-field>
           <!-- <button mat-raised-button (click)="picker.open()">Open</button> -->
         </section>
       </div>
-      <div  class = "col-3">
+      <div class="col-3">
         <section class="container">
           <mat-form-field class="example-full-width">
             <mat-label>To</mat-label>
-            <input matInput [matDatepicker]="toPicker" (click)="toPicker.open()" (dateChange)="toDateChanged($event)">
+            <input matInput [matDatepicker]="toPicker" (click)="toPicker.open()" (dateChange)="toDateChanged($event)"
+              [value]="to">
             <mat-hint>MM/DD/YYYY</mat-hint>
             <mat-datepicker #toPicker></mat-datepicker>
           </mat-form-field>
           <!-- <button mat-raised-button (click)="picker.open()">Open</button> -->
         </section>
       </div>
+      <!-- <div  class = "col-3">
+        <section class="container">
+          <mat-form-field class="example-full-width">
+            <mat-label>Publication</mat-label>
+            <mat-select [value]="0">
+              <mat-option *ngFor="let publication of publications" [value]="publication.id">
+                {{publication.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </section>
+      </div> -->
     </div>
+  </div>
+  <div>
+    <canvasjs-chart [options]="newsChartOptions" (chartInstance)="getNewsChartInstance($event)"></canvasjs-chart>
+  </div>
 
-      <div>
-        <canvasjs-chart [options]="chartOptions" (chartInstance)="getChartInstance($event)"></canvasjs-chart>
-      </div>
-      
+  <br>
+  <br>
+  <div>
+    <canvasjs-chart [options]="publisherChartOptions"
+      (chartInstance)="getPublisherChartInstance($event)"></canvasjs-chart>
+  </div>
 
-</div>
+  <br>
+  <br>
+  <div>
+    <canvasjs-chart [options]="timeSeriesChartOptions"
+      (chartInstance)="getTimeSeriesChartInstance($event)"></canvasjs-chart>
+  </div>
 </section>
 
+<section class="home-content">
+  <div class="container my=5">
+    <div class="row align-items-center">
+      <h2>Review Requests</h2>
+    </div>
+  </div>
+  <div>
+    <canvasjs-chart [options]="reviewRequestChartOptions"
+      (chartInstance)="getReviewRequestsChartInstance($event)"></canvasjs-chart>
+  </div>
+
+  <br>
+  <br>
+  <div>
+    <canvasjs-chart [options]="reviewPublisherChartOptions"
+      (chartInstance)="getReviewPublisherChartInstance($event)"></canvasjs-chart>
+  </div>
+
+  <br>
+  <br>
+  <div>
+    <canvasjs-chart [options]="reviewModeratorChartOptions"
+      (chartInstance)="getReviewModeratorChartInstance($event)"></canvasjs-chart>
+  </div>
+</section>

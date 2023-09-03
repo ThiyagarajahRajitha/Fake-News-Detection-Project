@@ -12,9 +12,9 @@ export class PublisherApprovalService {
   baseApiUrl:string = environment.baseApiUrl;
   constructor(private http:HttpClient) { }
 
-  getPendingPublishers(filterPending: boolean):Observable<Users[]>{
-     var usee = this.http.get<Users[]>(this.baseApiUrl + '/api/Publisher?PendingApproval=' + filterPending.toString());
-     console.log(this.baseApiUrl + '/api/Publisher?PendingApproval=' + filterPending.toString());
+  getPublishers(filter: string):Observable<Users[]>{
+     var usee = this.http.get<Users[]>(this.baseApiUrl + '/api/Publisher?PendingApproval=' + filter);
+     console.log(this.baseApiUrl + '/api/Publisher?PendingApproval=' + filter);
      return usee;
   }
 

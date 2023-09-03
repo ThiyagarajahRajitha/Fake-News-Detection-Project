@@ -1,4 +1,10 @@
 export interface NewsClassificationCountsModel{
-    classification:string;
-    count:number;
+    realCount:number;
+    fakeCount:number;
+}
+
+export interface PublisherDashboardModel{
+    realCount:number;
+    fakeCount:number;
+    pId:number;
 }

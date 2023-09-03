@@ -4,6 +4,7 @@ using FND.API.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 
 namespace FND.API.Data.Repositories
 {
@@ -92,6 +93,30 @@ namespace FND.API.Data.Repositories
         {
             var user = await fNDDBContext.Users.Where(u=>u.Id == id).FirstOrDefaultAsync();
             return user;
+        }
+
+        public async Task<List<Users>> GetModerators(bool isPendingOnly)
+        {
+            if (isPendingOnly)
+            {
+                var moderators = await fNDDBContext.Moderators.OrderByDescending(b => b.Id).ToListAsync();
+                List<Users> result = new List<Users>();
+                foreach (var moderator in moderators)
+                {
+                    Users users1 = new Users
+                    {
+                        Id = moderator.Id,
+                        Email = moderator.Username,
+                        Status = 0
+                    };
+                    result.Add(users1);
+                }
+                return result;
+            }
+
+            var users = await fNDDBContext.Users.Where(p => p.Role == "Moderator").OrderByDescending(i => i.Id).ToListAsync();
+            return users;
+
         }
 
         private Task<bool> CheckEmailExist(string email)

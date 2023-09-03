@@ -1,31 +1,54 @@
-<p>moderator-invitation works!</p>
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-            <ng-container *ngIf="role=='Admin'">
-                <div class="col py-3">
-                    <h2>Publisher Approval</h2>
-                <table class="table table-striped styled-table">
-                    <thead>
-                        <td>Id</td>
-                        <td>Name</td>
-                        <td>Email</td>
-                        <td>Action</td>
-                        <td>Status</td>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let publisher of users">
-                            <td>{{publisher.id}}</td>
-                            <td>{{publisher.name}}</td>
-                            <td>{{publisher.email}}</td>
-                            <ng-container *ngIf="!isApproved"><td><span><button class="approve-button"  type="button"><i class="fas fa-check-circle"></i> Approve</button></span>
-                                &nbsp;
-                                <!-- (click)="approve(publisher.id)" -->
-                               <span><button class="reject-button" (click)="reject(publisher.id)" type="button"><i class="fas fa-times-circle"></i> Reject</button></span></td>
-                            </ng-container>
-                            <td class="status-pending">Pending</td>
-                        </tr>
-                    </tbody>
-                </table>
-                </div>
-            </ng-container>
-            
-            
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<ng-container *ngIf="role=='Admin'">
+    <div class="col py-3">
+        <div class="row">
+            <div class="col-11">
+                <h2>Moderators</h2>
+            </div>
+            <div class="col">
+                <button (click)="openInviteModeratorModal()" mat-raised-button><i class="fa-solid fa-plus"></i></button>
+            </div>
+        </div>
+        
+          
+    <div>
+        <section>
+            <mat-button-toggle-group [formControl]="filterControl" aria-label="Font Style">
+                <mat-button-toggle value="false">Accepted</mat-button-toggle>
+                <mat-button-toggle value="true">Pending</mat-button-toggle>
+            </mat-button-toggle-group>
+            </section>
+    </div>
+    <table class="table table-striped styled-table">
+        <thead>
+            <td>Id</td>
+            <td>Email</td>
+            <td></td>
+        </thead>
+        <tbody>
+            <tr *ngFor="let moderator of users">
+                <td>{{moderator.id}}</td>
+                <td>{{moderator.email}}</td>
+                <td>
+                    <div *ngIf="moderator.status==0">
+                        <span>
+                            <button class="approve-button"  type="button">
+                                <i class="fas fa-share"></i> Resend
+                            </button>
+                        </span>&nbsp;
+                    </div>
+                    <div *ngIf="moderator.status==1">
+                        <span>
+                            <button class="reject-button" type="button">
+                                <i class="fas fa-times-circle"></i> Delete
+                            </button>
+                        </span>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+</ng-container>
+

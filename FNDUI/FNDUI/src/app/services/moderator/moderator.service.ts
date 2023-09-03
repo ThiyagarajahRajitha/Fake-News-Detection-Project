@@ -8,6 +8,7 @@ import { ModeratorsVerifyModel } from 'src/app/models/moderator-verify.model';
 import { ModeratorModel } from 'src/app/models/moderator.model';
 import { RequestReviewModel } from 'src/app/models/request-review.model';
 import { ReviewRequestedNewsListModel } from 'src/app/models/review-requested-newsList.model';
+import { Users } from 'src/app/models/users.model';
 import { environment } from 'src/environments/environment.development';
 
 @Injectable({
@@ -19,21 +20,21 @@ export class ModeratorService {
   constructor(private http:HttpClient) { }
 
   inviteModerator(createModeratorModel:InviteModeratorModel): Observable<any> {
-    return this.http.post<any>(this.baseApiUrl + '/api/User/CreateModerator', createModeratorModel, {observe: 'response'});
+    return this.http.post<any>(this.baseApiUrl + '/api/Moderator/CreateModerator', createModeratorModel, {observe: 'response'});
   }
 
   validateModerator(verifyModel:ModeratorsVerifyModel):Observable<any>{
-    return this.http.post<any>(this.baseApiUrl + '/api/User/ValidateModerator?username=' + verifyModel.username.toString()+'&inviteCode='+ verifyModel.inviteCode, verifyModel, {observe: 'response'});
+    return this.http.post<any>(this.baseApiUrl + '/api/Moderator/ValidateModerator?username=' + verifyModel.username.toString()+'&inviteCode='+ verifyModel.inviteCode, verifyModel, {observe: 'response'});
  }
 
  registerModerator(moderatorSignUpModel:ModeratorSignupModel):Observable<any>{
-  return this.http.post<any>(this.baseApiUrl + '/api/User/RegisterModerator?Email='+ moderatorSignUpModel.Name, {observe: 'response'});
-}
+  return this.http.post<any>(this.baseApiUrl + '/api/Moderator/RegisterModerator?Email='+ moderatorSignUpModel.Name, {observe: 'response'});
+  }
 
-GetAllReviewRequestedNews():Observable<ReviewRequestedNewsListModel[]>{
-  var usee = this.http.get<ReviewRequestedNewsListModel[]>(this.baseApiUrl + '/api/News/GetAllReviewRequestedNews');
-  return usee;
-}
-
+  getModerators(filter: string):Observable<Users[]>{
+    var usee = this.http.get<Users[]>(this.baseApiUrl + '/api/Moderator?Pending=' + filter);
+    console.log(this.baseApiUrl + '/api/Moderator?Pending=' + filter);
+    return usee;
+ }
 }
 

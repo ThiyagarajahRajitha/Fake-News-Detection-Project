@@ -88,99 +88,9 @@ namespace FND.API.Controllers
             });
         }
 
-        [HttpPost("CreateModerator")]
-        public async Task<ActionResult<Moderator>> CreateModerator(CreateModeratorDto createModeratorDto)
-        {
-            if (createModeratorDto == null)
-                return BadRequest();
-
-            if (await CheckModeratorEmailExist(createModeratorDto.Email))
-                return BadRequest(new { Message = "Email Already Exist!" });
-
-            var moderator  = await userService.CreateModerator(createModeratorDto);
-            return Ok();
-        }
-
-        [HttpPost("ValidateModerator")]
-        public async Task<IActionResult> ValidateModerator([FromQuery(Name = "username")] string userName, [FromQuery(Name = "inviteCode")] Guid inviteCode)
-        {
-            //var newsList = await _fNDDBContext.News.ToListAsync();
-            bool isvalid= await userService.ValidateModerator(userName, inviteCode);
-            if (isvalid)
-                return Ok();
-            else 
-                return BadRequest();
-
-        }
-
-        [HttpPost("RegisterModerator")]
-        public async Task<IActionResult> RegisterModerator([FromBody] ModeratorSignUpRequestDto moderatorSignUp)
-        {
-            if (moderatorSignUp == null)
-                return BadRequest();
-            //check email exists
-            //var users = await _context.Users.FirstOrDefaultAsync(x => x.Email == signUpRequest.Email);
-            if (await CheckModeratorEmailExist(moderatorSignUp.Email))
-            {
-                bool isvalid = await userService.ValidateModerator(moderatorSignUp.Email, moderatorSignUp.InviteCode);
-                if (isvalid)
-                {
-                    moderatorSignUp.Password = PasswordHasher.HashPassword(moderatorSignUp.Password);
-                    //users.Token = "";
-                    Users user = new Users()
-                    {
-                        Name = moderatorSignUp.Name,
-                        Email = moderatorSignUp.Email,
-                        Password_hash = moderatorSignUp.Password,
-                        Created_at = DateTime.UtcNow,
-                        Token = "",
-                        Role = "Moderator",
-                        Status = 1
-                    };
-
-                    if (await CheckUserEmailExist(user.Email))
-                    {
-                        return BadRequest(new
-                        {
-                            Message = "User Already Exist!"
-                        });
-                    }
-                    await _context.Users.AddAsync(user);
-                    await userService.DeleteModerator(moderatorSignUp.Email);
-                    await _context.SaveChangesAsync();
-                    return Ok(new
-                    {
-                        Message = "Registered as Moderator!"
-                    });
-                }
-                else
-                {
-                    return BadRequest();
-                }
-            }
-            else
-            {
-                return NotFound(new
-                {
-                    Message = "No Username found!"
-                });
-            }
-        }
-
-        //private async Task<IActionResult> UpdateModerator([FromRoute] string email)
-        //{
-        //    var updatedMod = new Moderator { Username = email, IsAccepted = true };
-        //    _context.Attach(updatedMod);
-        //    _context.Entry(updatedMod).Property(r => r.IsAccepted).IsModified = true;
-        //    _context.SaveChanges();
-        //    return Ok();
-
-        //}
         private Task<bool> CheckUserEmailExist(string email)
             =>_context.Users.AnyAsync(x => x.Email == email);
 
-        private Task<bool> CheckModeratorEmailExist(string email)
-            => _context.Moderators.AnyAsync(x => x.Username == email);
         private string CreateJwt(Users user)
         {
             var jwtTokenhandler = new JwtSecurityTokenHandler();
@@ -192,7 +102,8 @@ namespace FND.API.Controllers
                 new Claim(ClaimTypes.PrimarySid, user.Id.ToString())
             });
 
-            var credentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256);
+            var credentials = new SigningCredentials(new SymmetricSecurityKey(key), 
+                SecurityAlgorithms.HmacSha256);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {

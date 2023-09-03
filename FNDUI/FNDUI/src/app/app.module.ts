@@ -11,7 +11,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NewsCountsComponent } from './components/news-counts/news-counts/news-counts.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatIconModule} from '@angular/material/icon';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from  '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatNativeDateModule } from '@angular/material/core';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
@@ -59,6 +63,10 @@ import { TabbedViewComponent } from './components/tabbed-view/tabbed-view/tabbed
     BrowserAnimationsModule,
     MatDatepickerModule,
     MatInputModule,
+    MatButtonModule, 
+    MatMenuModule, 
+    MatIconModule,
+    MatSelectModule,
     MatFormFieldModule,
     MatNativeDateModule,
     MatButtonToggleModule,

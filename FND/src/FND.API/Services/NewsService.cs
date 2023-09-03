@@ -13,12 +13,12 @@ namespace FND.API.Services
 
         public Task<List<News>> GetNews([FromQuery(Name = "FakeNewsOnly")] bool IsFakeNewsOnly);
 
-        public Task<List<NewsClassificationCount>> GetNewsCountByClassification([FromQuery(Name = "from")] string fromDate, [FromQuery(Name = "to")] string toDate);
+        public Task<NewsDashboardResult> GetNewsCountByClassification([FromQuery(Name = "from")] string fromDate, [FromQuery(Name = "to")] string toDate);
         public Task<List<ListNewsDto>> GetNewsByPublisherId(int publisherId, string Filter);
         public Task<ReviewRequest> RequestReview(CreateRequestReviewDto createRequestReviewDto);
 
         public Task<ReviewRequest> SubmitReview(SubmitReviewDto submitReviewDto);
 
-        public Task<List<ReviewRequest>> GetAllReviewRequestedNews();
+        public Task<List<ListNewsDto>> GetAllReviewRequestedNews(string filter);
     }
 }
