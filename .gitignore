@@ -9,11 +9,12 @@ obj/
 *.user
 *.userosscache
 *.sln.docstates
+gmail-dotnet-credentials.json
+GmailKey.json
 
 # Angular
 node_modules/
 /dist/
-/.idea/
 npm-debug.log
 
 # Python
@@ -23,3 +24,4 @@ __pycache__/
 *.egg-info/
 dist/
 build/
+.ipynb_checkpoints/
