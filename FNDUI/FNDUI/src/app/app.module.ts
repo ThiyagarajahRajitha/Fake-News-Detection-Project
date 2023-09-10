@@ -52,7 +52,7 @@ import { TabbedViewComponent } from './components/tabbed-view/tabbed-view/tabbed
     LayoutComponent,
     ModeratorInvitationComponent,
     TabbedViewComponent,
-    
+        
   ],
   imports: [
     BrowserModule,

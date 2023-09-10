@@ -65,6 +65,17 @@ namespace FND.API.Services
             return moderator;
         }
 
+        public async Task<bool> ReInviteModerator(int id)
+        {
+            Moderator moderator = await _repository.UpdateModerator(id);
+            IEnumerable<string> senders = new string[] { moderator.Username };
+            string body = string.Format(moderatorInviteBody, "http://localhost:4200/moderator-signup?username="
+                + moderator.Username + "&inviteCode=" + moderator.InviteCode);
+            Notification message = new Notification(moderatorInviteSubject, senders, body);
+            await _notificationService.SendMailAsync(message);
+            return true;
+        }
+
         public async Task<bool> ValidateModerator(string userName, Guid inviteCode)
         {
             bool isvalid = await _repository.ValidateModerator(userName, inviteCode);
@@ -87,6 +98,12 @@ namespace FND.API.Services
         public async Task<List<Users>> GetModerators(bool isPendingOnly)
         {
             return await _repository.GetModerators(isPendingOnly);
+        }
+
+        public async Task<bool> DeleteModeratorUser(int id)
+        {
+            bool rslt = await _repository.DeleteModeratorUser(id);
+            return rslt;
         }
     }
 }

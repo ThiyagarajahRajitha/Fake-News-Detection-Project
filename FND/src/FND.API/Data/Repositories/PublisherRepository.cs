@@ -1,5 +1,7 @@
-﻿using FND.API.Data.Dtos;
+﻿using FND.API.Controllers;
+using FND.API.Data.Dtos;
 using FND.API.Entities;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -34,12 +36,41 @@ namespace FND.API.Data.Repositories
             return publishersList;
         }
 
-        public async Task UpdatePublisherAsync(int id)
+        //public async Task UpdatePublisherAsync(int id)
+        //{
+        //    var updatedPub = new Users { Id = id, Status = 1 };
+        //    _fNDDBContext.Attach(updatedPub);
+        //    _fNDDBContext.Entry(updatedPub).Property(r => r.Status).IsModified = true;
+        //    _fNDDBContext.SaveChanges();
+        //}
+
+        public async Task UpdatePublisherAsync(int id, ActivatePublisherDto activatePublisher)
         {
             var updatedPub = new Users { Id = id, Status = 1 };
             _fNDDBContext.Attach(updatedPub);
             _fNDDBContext.Entry(updatedPub).Property(r => r.Status).IsModified = true;
+
+            var updatePublication = new Publication { Publication_Id = id, NewsDiv = activatePublisher.divClass };
+            _fNDDBContext.Attach(updatePublication);
+            _fNDDBContext.Entry(updatePublication).Property(r => r.Publication_Id).IsModified = true;
+            _fNDDBContext.Entry(updatePublication).Property(r => r.NewsDiv).IsModified = true;
             _fNDDBContext.SaveChanges();
+        }
+
+        public async Task<bool> RejectPublisher(int id,RejectPublisherDto rejectPublisherDto)
+        {
+            if (rejectPublisherDto == null)
+                return false;
+
+            var rejectPubUser = new Users { Id = id, Status = -1};
+            _fNDDBContext.Attach(rejectPubUser);
+            _fNDDBContext.Entry(rejectPubUser).Property(r => r.Status).IsModified = true;
+
+            var rejectPublication = new Publication { Publication_Id = id,PublisherRejectReason=rejectPublisherDto.RejectReason };
+            _fNDDBContext.Attach(rejectPublication);
+            _fNDDBContext.Entry(rejectPublication).Property(r=>r.IsUpdated).IsModified = true;
+            _fNDDBContext.SaveChanges();
+            return true;
         }
 
         public async Task<IEnumerable<string>> getEmail(int id)
@@ -56,6 +87,34 @@ namespace FND.API.Data.Repositories
             _fNDDBContext.Attach(updatedPub);
             _fNDDBContext.Entry(updatedPub).Property(r => r.LastFetchedNewsUrl).IsModified = true;
             _fNDDBContext.SaveChanges();
+        }
+
+        public async Task<Publication> getBublisherById(int id)
+        {
+            
+            Publication publisher = _fNDDBContext.Publications.Where(p => p.Publication_Id == id).FirstOrDefault();
+            return publisher;
+        }
+
+        public async Task<bool> DeletePublisher(int id)
+        {
+            var publisher = getBublisherById(id);
+
+            if (publisher == null)
+                return false;
+            
+            var deletePub = new Publication { Publication_Id = id, IsDeleted = true, DeletedAt = DateTimeOffset.UtcNow };
+            var deleteUser = new Users { Id = id, IsDeleted = true, DeletedAt = DateTimeOffset.UtcNow };
+            _fNDDBContext.Attach(deletePub);
+            _fNDDBContext.Entry(deletePub).Property(r => r.IsDeleted).IsModified = true;
+            _fNDDBContext.Entry(deletePub).Property(r => r.DeletedAt).IsModified = true;
+
+            _fNDDBContext.Attach(deleteUser);
+            _fNDDBContext.Entry(deleteUser).Property(r => r.IsDeleted).IsModified = true;
+            _fNDDBContext.Entry(deleteUser).Property(r => r.DeletedAt).IsModified = true;
+            _fNDDBContext.SaveChanges();
+            return true;
+            
         }
     }
 }

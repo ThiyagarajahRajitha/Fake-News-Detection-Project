@@ -4,6 +4,7 @@ using FND.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FND.API.Migrations
 {
     [DbContext(typeof(FNDDBContext))]
-    partial class newsRepositoryModelSnapshot : ModelSnapshot
+    [Migration("20230909100624_addedPublisherAndUserTableDelete")]
+    partial class addedPublisherAndUserTableDelete
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,11 +36,8 @@ namespace FND.API.Migrations
                     b.Property<Guid>("InviteCode")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("IsUpdated")
+                    b.Property<bool>("IsAccepted")
                         .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -106,10 +106,6 @@ namespace FND.API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Publication_Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PublisherRejectReason")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

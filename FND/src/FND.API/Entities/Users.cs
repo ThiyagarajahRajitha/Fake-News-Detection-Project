@@ -9,10 +9,12 @@ namespace FND.API.Entities
         public string Name { get; set; }
         public string Email { get; set; }
         public string Password_hash { get; set; }
-        public DateTimeOffset Created_at { get; set; }
-        public string Token { get; set; }
         public string Role { get; set; }
         public int Status { get; set; }
+        public DateTimeOffset Created_at { get; set; }
+        public bool IsDeleted { get; set; }
+        public DateTimeOffset DeletedAt { get; set; }
+        public string Token { get; set; }
         public virtual Publication Publication { get; set; }
     }
 }

@@ -7,15 +7,18 @@
   <div class="modal-body">
     <!-- Form controls for adding news -->
     <div *ngIf="showForm">
-    <form id="classifyForm">
+      <form [formGroup]="form" id="classifyForm">
         <div class="mb-3">
             <label for="title" class="form-label">Title</label>
-            <input type="text" class="form-control" #titleInput placeholder="Type your news title">
+            <input type="text" class="form-control" formControlName="title" type="text" placeholder="Type your news title">
+            <div *ngIf="form.controls['title'].dirty && form.hasError('required','title')" class="text-danger">*Title is required</div>
         </div>
+
         <div class="mb-3">
             <label for="newscontent" class="form-label">News Content</label>
-            <textarea class="form-control" #contentInput rows="6" cols="80" placeholder="Type your News Content here"></textarea>
-        </div>
+            <textarea class="form-control" formControlName="content" rows="6" cols="80" placeholder="Type your News Content here"></textarea>
+            <div *ngIf="form.controls['content'].dirty && form.hasError('required','content')" class="text-danger">*Content is required</div>
+          </div>
     </form>
     </div>
     <div *ngIf="result">
@@ -24,7 +27,7 @@
   </div>
   <div class="modal-footer">
     <div *ngIf="showForm">
-    <button type="button" class="btn btn-primary" (click)="onSubmit()">Classify</button>
+    <button type="submit" class="btn btn-primary" form="classifyForm" (click)="onSubmit()">Classify</button>
     <!-- <button type="button" class="btn btn-secondary" (click)="dismissModal()">Cancel</button> -->
     </div>
   </div>

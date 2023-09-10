@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { News } from 'src/app/models/news.model';
 import { NewsService } from 'src/app/services/news.service';
 import { ClassifyNewsModalComponent } from '../classify-news-modal/classify-news-modal.component';
@@ -28,15 +28,19 @@ export class NewsListComponent implements OnInit{
    publisherFilterControl = new FormControl('fakeOnly');
    publicFilterControl = new FormControl('all');
    ModeratorFilterControl = new FormControl('pendingOnly');
+   ngbModalOptions: NgbModalOptions = {
+    backdrop : 'static',
+    keyboard : false
+    };
 
   constructor(private newsService: NewsService, private modalService: NgbModal, private userStore:UserStoreService, private auth:AuthService){}
 
   openSubscribeModal(){
-    const modalRef = this.modalService.open(CreateSubscriberModalComponent);
+    const modalRef = this.modalService.open(CreateSubscriberModalComponent, this.ngbModalOptions);
   }
   
   openClassifyNewsModal() {
-    const modalRef = this.modalService.open(ClassifyNewsModalComponent);
+    const modalRef = this.modalService.open(ClassifyNewsModalComponent, this.ngbModalOptions);
   }
 
   openReviewRequestNewsModal(newId:number){

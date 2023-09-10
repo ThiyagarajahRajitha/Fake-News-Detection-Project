@@ -3,6 +3,7 @@ using FND.API.Data.Dtos;
 using FND.API.Data.Repositories;
 using FND.API.Entities;
 using Microsoft.AspNetCore.Mvc;
+using System.Xml;
 
 namespace FND.API.Services
 {
@@ -59,19 +60,31 @@ namespace FND.API.Services
             return publishersList;
         }
 
-       
-        public async Task UpdatePublisherAsync([FromRoute] int id)
+
+        public async Task UpdatePublisherAsync([FromRoute] int id, [FromBody] ActivatePublisherDto activatePublisher)
         {
-            await _publisherRepository.UpdatePublisherAsync(id);
+            await _publisherRepository.UpdatePublisherAsync(id, activatePublisher);
 
             IEnumerable<string> email = await _publisherRepository.getEmail(id);
             Notification notification = new Notification(subject, email, null, publisherInviteBody);
             _notificationService.SendMailAsync(notification);
         }
 
+        public async Task<bool> RejectPublisher(int id, RejectPublisherDto rejectPublisherDto)
+        {
+            bool rslt = await _publisherRepository.RejectPublisher(id, rejectPublisherDto);
+            return rslt;
+        }
+
         public async void updateLastFetchedNews(int publication_Id, string newsUrl)
         {
             _publisherRepository.updateLastFetchedNews(publication_Id, newsUrl);
+        }
+
+        public async Task<bool> DeletePublisher(int id)
+        {
+            bool rslt= await _publisherRepository.DeletePublisher(id);
+            return rslt;
         }
     }
 }

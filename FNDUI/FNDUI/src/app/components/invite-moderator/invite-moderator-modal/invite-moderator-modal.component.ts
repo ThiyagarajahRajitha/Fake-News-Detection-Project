@@ -1,6 +1,8 @@
 import { HttpResponse } from '@angular/common/http';
 import { Component, ViewChild } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import ValidateForm from 'src/app/helpers/validateform';
 import { InviteModeratorModel} from 'src/app/models/invite-moderator.model';
 import { ModeratorService } from 'src/app/services/moderator/moderator.service';
 
@@ -10,9 +12,10 @@ import { ModeratorService } from 'src/app/services/moderator/moderator.service';
   styleUrls: ['./invite-moderator-modal.component.css']
 })
 export class InviteModeratorModalComponent {
-  constructor(public activeModal: NgbActiveModal, private moderatorService: ModeratorService) { }
-  @ViewChild('emailInput') emailInput: any;
- 
+  constructor(private fb:FormBuilder, public activeModal: NgbActiveModal, private moderatorService: ModeratorService) { }
+  form = this.fb.group({
+    email:['', [Validators.required, Validators.email]]
+  })  
   result: any= '';
   error:any='';
   showForm: boolean = true;
@@ -23,8 +26,12 @@ export class InviteModeratorModalComponent {
   }
 
   onSubmit() {
+    if(!this.form.valid) {
+      ValidateForm.validateAllFormFields(this.form);
+      return;
+    }
     // You can access the form data and perform any necessary operations
-    const email = this.emailInput.nativeElement.value;
+    const email = this.form.value.email || '';
     //this.activeModal.close();
     
     // Create an object with the data to be sent

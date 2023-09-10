@@ -1,4 +1,5 @@
-﻿using FND.API.Data.Repositories;
+﻿using FND.API.Data.Dtos;
+using FND.API.Data.Repositories;
 using FND.API.Entities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,7 +12,9 @@ namespace FND.API.Services
 
         public Task<List<Users>> GetPublishers([FromQuery(Name = "PendingApprovalOnly")] bool IsPendingOnly);
 
-        public Task UpdatePublisherAsync([FromRoute] int id);
+        public Task UpdatePublisherAsync(int id, ActivatePublisherDto activatePublisher);
+        public Task<bool> RejectPublisher(int id, RejectPublisherDto rejectPublisherDto);
         public void updateLastFetchedNews(int publication_Id, string newsUrl);
+        public Task<bool> DeletePublisher(int id);
     }
 }

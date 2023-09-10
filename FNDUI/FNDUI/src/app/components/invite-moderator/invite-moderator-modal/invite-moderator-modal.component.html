@@ -8,10 +8,13 @@
   <div class="modal-body">
     <div *ngIf = "showForm">
     <!-- Form controls for adding news -->
-    <form>
+    <form [formGroup]="form">
         <div class="mb-3">
             <label for="InputEmail1" class="form-label">Email address</label>
-            <input type="email" class="form-control" #emailInput placeholder="example@email.com">
+            <input type="email" class="form-control" formControlName="email" placeholder="example@email.com">
+            <div *ngIf="form.controls['email'].dirty && form.hasError('required','email')" class="text-danger">*Email is required</div>
+            <div *ngIf="form.controls['email'].dirty && form.hasError('email','email')" class="text-danger">*Invalid Email</div>
+
         </div>  
     </form>
     </div>

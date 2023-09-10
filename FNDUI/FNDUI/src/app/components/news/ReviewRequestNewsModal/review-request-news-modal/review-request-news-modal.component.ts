@@ -1,5 +1,7 @@
 import { Component, Input, ViewChild } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import ValidateForm from 'src/app/helpers/validateform';
 import { RequestReviewModel } from 'src/app/models/request-review.model';
 import { NewsService } from 'src/app/services/news.service';
 
@@ -10,12 +12,12 @@ import { NewsService } from 'src/app/services/news.service';
 })
 export class ReviewRequestNewsModalComponent {
   @Input() newId: number = 0;
-  constructor(public activeModal: NgbActiveModal, private newsService: NewsService) { }
+  constructor(private fb:FormBuilder, public activeModal: NgbActiveModal, private newsService: NewsService) { }
 
-  //@ViewChild('newsId') newsId: any;
-  
-  @ViewChild('contentInput') contentInput: any;
-  result: any= '';
+  form = this.fb.group({
+    newscontent: ['', Validators.required]
+  }) 
+  result: boolean= false;
   error:any='';
   showForm: boolean = true;
 
@@ -24,10 +26,15 @@ export class ReviewRequestNewsModalComponent {
   }
 
   onSubmit() {
+    if(!this.form.valid) {
+      ValidateForm.validateAllFormFields(this.form);
+      return;
+    }
+    
     // Handle the form submission here
     // You can access the form data and perform any necessary operations
     //const newsTitle = this.titleInput.nativeElement.value;
-    const newsContent = this.contentInput.nativeElement.value;
+    const newsContent = this.form.value.newscontent || '';
     //this.activeModal.close();
 
     // Create an object with the data to be sent
@@ -41,7 +48,7 @@ export class ReviewRequestNewsModalComponent {
       response => {
         // Handle the response from the API
         console.log('API response:', response);
-            this.result = response.status;
+            this.result = true;
             this.showForm = false;
         
 

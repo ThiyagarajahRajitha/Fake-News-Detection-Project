@@ -7,12 +7,12 @@ namespace FND.API.Entities
         [ForeignKey("News")]
         public int Id { get; set; }
         public string Comment { get; set; }
-        public DateTimeOffset CreatedOn { get; set; }
-        public virtual News News { get; set; }
         public int Status { get; set; }
         public string? ReviewFeedback { get; set; }
         public string? Result { get; set; }
+        public int ReviewedBy { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
         public DateTimeOffset? UpdatedOn { get; set; }
-
+        public virtual News News { get; set; }
     }
 }

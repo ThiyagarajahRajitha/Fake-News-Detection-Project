@@ -36,7 +36,7 @@ export class AuthService {
       "password": userObj.Password
     }
     //return this.http.post<any>(`${this.baseUrl}register`, signupRequset)
-    return this.http.post<any>(this.baseApiUrl + '/api/User/RegisterModerator', signupRequset);
+    return this.http.post<any>(this.baseApiUrl + '/api/Moderator/RegisterModerator', signupRequset);
   }
 
   login(loginObj:any){
@@ -50,6 +50,7 @@ export class AuthService {
 
   storeToken(tokenValue:string){
     localStorage.setItem('token', tokenValue);
+    this.userPayload = this.decodedToken();
   }
 
   getToken(){

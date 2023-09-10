@@ -1,5 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import ValidateForm from 'src/app/helpers/validateform';
 import { CreateSubscriberModel } from 'src/app/models/create-subscriber.model';
 import { SubscribeService } from 'src/app/services/subscribe/subscribe.service';
 
@@ -10,9 +12,10 @@ import { SubscribeService } from 'src/app/services/subscribe/subscribe.service';
 })
 export class CreateSubscriberModalComponent {
 
-  constructor(public activeModal: NgbActiveModal, private subscriberService: SubscribeService) { }
-  @ViewChild('emailInput') emailInput: any;
- 
+  constructor(private fb:FormBuilder, public activeModal: NgbActiveModal, private subscriberService: SubscribeService) { }
+  form = this.fb.group({
+    email:['', [Validators.required, Validators.email]]
+  }) 
   result: any= '';
   showForm: boolean = true;
 
@@ -22,8 +25,12 @@ export class CreateSubscriberModalComponent {
   }
 
   onSubmit() {
+    if(!this.form.valid) {
+      ValidateForm.validateAllFormFields(this.form);
+      return;
+    }
     // You can access the form data and perform any necessary operations
-    const email = this.emailInput.nativeElement.value;
+    const email = this.form.value.email || '';
     //this.activeModal.close();
     
     // Create an object with the data to be sent

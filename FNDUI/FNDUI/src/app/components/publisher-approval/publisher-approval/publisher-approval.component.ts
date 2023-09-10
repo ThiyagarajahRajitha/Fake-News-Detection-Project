@@ -4,6 +4,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { PublisherApprovalService } from 'src/app/services/publisher-approval/publisher-approval.service';
 import { UserStoreService } from 'src/app/services/user-store/user-store.service';
 import { FormControl } from '@angular/forms';
+import { ConfirmationDialogService } from '../../confim-dialog/confirmation-dialog.service';
 
 @Component({
   selector: 'app-publisher-approval',
@@ -15,7 +16,9 @@ export class PublisherApprovalComponent {
   users:Users[] = [];
   filterControl = new FormControl('false');
 
-  constructor(private auth:AuthService, private userStore:UserStoreService, private publisherApproval:PublisherApprovalService){}
+  constructor(private auth:AuthService, private userStore:UserStoreService, 
+    private publisherApproval:PublisherApprovalService, 
+    private confirmationDialogService: ConfirmationDialogService){}
 
   ngOnInit(){
     this.userStore.getRoleFromStore()
@@ -61,7 +64,11 @@ export class PublisherApprovalComponent {
   }
 
   reject(user:Users){
-    user.status = -1;
-    console.log("reject function called");
+    this.confirmationDialogService.confirm('Please confirm', 'Do you really want to delete ' + user.email + ' ?')
+    .then((confirmed) => {
+      user.status = -1;
+      console.log('User confirmed:', confirmed)
+    })
+    .catch(() => console.log('User dismissed the dialog'));
   }
 }

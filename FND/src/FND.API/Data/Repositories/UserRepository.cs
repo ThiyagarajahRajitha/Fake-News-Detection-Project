@@ -29,8 +29,8 @@ namespace FND.API.Data.Repositories
                 Role = "Publisher",
                 Status = 0
             };
-            await fNDDBContext.Users.AddAsync(user);
-            await fNDDBContext.SaveChangesAsync();
+            fNDDBContext.Users.AddAsync(user);
+            fNDDBContext.SaveChangesAsync();
 
             GetUserById(user.Id);
 
@@ -41,8 +41,8 @@ namespace FND.API.Data.Repositories
                 RSS_Url = signUpRequest.Url,
                 CreatedOn = DateTime.UtcNow
             };
-             await fNDDBContext.Publications.AddAsync(publication);
-            await fNDDBContext.SaveChangesAsync();
+            fNDDBContext.Publications.AddAsync(publication);
+            fNDDBContext.SaveChangesAsync();
             return user;
 
         }
@@ -53,12 +53,27 @@ namespace FND.API.Data.Repositories
             //if not create record with new invite code
             Moderator moderator = new Moderator() {
                 Username = createModeratorDto.Email,
-                InviteCode = Guid.NewGuid(),
-                IsAccepted = false
+                InviteCode = Guid.NewGuid()
             };
             await fNDDBContext.Moderators.AddAsync(moderator);
             await fNDDBContext.SaveChangesAsync();
             return moderator;
+
+        }
+
+        public async Task<Moderator> UpdateModerator(int id)
+        {
+            //check the email is already exist
+            var mod = await GetModeratorById(id);
+            //if not create record with new invite code
+            var updateModerator = new Moderator { Id = id, InviteCode=Guid.NewGuid(), IsUpdated=true, UpdatedAt=DateTimeOffset.UtcNow};
+            fNDDBContext.Attach(updateModerator);
+            fNDDBContext.Entry(updateModerator).Property(r => r.InviteCode).IsModified = true;
+            fNDDBContext.Entry(updateModerator).Property(r => r.IsUpdated).IsModified = true;
+            fNDDBContext.Entry(updateModerator).Property(r => r.UpdatedAt).IsModified = true;
+            await fNDDBContext.SaveChangesAsync();
+
+            return await GetModeratorById(id);
 
         }
 
@@ -121,5 +136,31 @@ namespace FND.API.Data.Repositories
 
         private Task<bool> CheckEmailExist(string email)
             => fNDDBContext.Users.AnyAsync(x => x.Email == email);
+
+        public async Task<Users> GetModeratorUserById(int id)
+        {
+            Users moderator = await fNDDBContext.Users.Where(u => u.Id == id && u.Role == "Moderator").FirstAsync();
+            return moderator;
+        }
+
+        public async Task<Moderator> GetModeratorById(int id)
+        {
+            Moderator moderator = await fNDDBContext.Moderators.Where(u => u.Id==id).FirstAsync();
+            return moderator;
+        }
+        public async Task<bool> DeleteModeratorUser(int id)
+        {
+            var moderatorUser = GetModeratorUserById(id);
+
+            if (moderatorUser == null)
+                return false;
+
+            var deleteModeratorUser = new Users { Id = id, IsDeleted = true, DeletedAt = DateTimeOffset.UtcNow };
+            fNDDBContext.Attach(deleteModeratorUser);
+            fNDDBContext.Entry(deleteModeratorUser).Property(r => r.IsDeleted).IsModified = true;
+            fNDDBContext.Entry(deleteModeratorUser).Property(r => r.DeletedAt).IsModified = true;
+            fNDDBContext.SaveChanges();
+            return true;
+        }
     }
 }

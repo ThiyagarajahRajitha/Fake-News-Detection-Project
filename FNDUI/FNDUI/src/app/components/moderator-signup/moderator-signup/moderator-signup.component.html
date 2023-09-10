@@ -17,13 +17,6 @@
 
                             <div class="form-group pt-3">
                                 <div class="input-field">
-                                    <input formControlName="email" type="text" placeholder="Email">
-                                </div>
-                            </div>
-                            <small *ngIf="signUpForm.controls['email'].dirty && signUpForm.hasError('required','email')" class="text-danger">*Email is required</small>
-
-                            <div class="form-group pt-3">
-                                <div class="input-field">
                                     <input formControlName="password" [type]=type placeholder="Password">
                                     <span (click)="hideShowPass()" class="fa {{eyeIcon}}"></span>
                                 </div>
@@ -41,7 +34,10 @@
             </div>
         </div>
     </div>
-    <!-- <div *ngIf="error">
+    <div *ngIf="error">
         <p>Username or invite code is invalid!</p>
-      </div> -->
+    </div>
+    <div *ngIf="created">
+        <p>The Account created Sucessfully. Please click <a href="/login">here</a> to login</p>
+    </div>
 </div>

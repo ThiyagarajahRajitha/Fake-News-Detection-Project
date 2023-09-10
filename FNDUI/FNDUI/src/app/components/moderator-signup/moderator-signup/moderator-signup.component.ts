@@ -23,6 +23,7 @@ export class ModeratorSignupComponent implements OnInit{
   eyeIcon:string = "fa-eye-slash"
   signUpForm! : FormGroup;
   showSignUpForm:boolean = false;
+  created:boolean = false;
   error:any;
   email:string="";
  
@@ -70,7 +71,6 @@ export class ModeratorSignupComponent implements OnInit{
    validateForm():void{
     this.signUpForm = this.fb.group({
       name:['',Validators.required],
-      email:['',Validators.required],
       password:['',Validators.required],
     })
    }
@@ -84,7 +84,7 @@ export class ModeratorSignupComponent implements OnInit{
 
     if(this.signUpForm.valid){
       const signUpModeratorModel: ModeratorSignupModel = {
-        Email: this.moderatorVerify.username,
+        Email: this.email,
         InviteCode: this.moderatorVerify.inviteCode,
         Name: this.signUpForm.value.name,
         Password:this.signUpForm.value.password
@@ -92,9 +92,8 @@ export class ModeratorSignupComponent implements OnInit{
         this.auth.moderatorSignup(signUpModeratorModel)
         .subscribe({
           next:(res=>{
-            alert(res.message);
-            this.signUpForm.reset();
-            this.router.navigate(['login']);
+            this.showSignUpForm = false;
+            this.created = true;
           })
           ,error:(err=>{
             alert(err?.error.message)
@@ -104,7 +103,6 @@ export class ModeratorSignupComponent implements OnInit{
     }
     else{
       ValidateForm.validateAllFormFields(this.signUpForm);
-      alert("Your Form is Invalid");
     }
   }
 

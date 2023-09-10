@@ -58,7 +58,6 @@ export class LoginComponent {
     }
     else{
       ValidateForm.validateAllFormFields(this.loginForm);
-      alert("Your Form is Invalid");
     }
   }
 }

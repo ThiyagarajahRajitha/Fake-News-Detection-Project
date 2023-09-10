@@ -7,20 +7,23 @@
   <div class="modal-body">
     <!-- Form controls for adding news -->
     <div *ngIf="showForm">
-    <form id="classifyForm">
+    <form id="classifyForm" [formGroup]="form">
         <div class="mb-3">
             <label for="result" class="form-label">Reviewed Result</label>
-            <select class="form-control" #resultInput>
+            <select type="result" class="form-control" formControlName="result">
               <option value=""></option>
               <option value="Fake">Fake</option>
               <option value="Real">Real</option>
             </select>
+            <div *ngIf="form.controls['result'].dirty && form.hasError('required','result')" class="text-danger">*Result is required</div>
+
             <!-- <input type="text" class="form-control" #resultInput placeholder="Type your reviewed result here"> -->
         </div>
         <div class="mb-3">
             <label for="newscontent" class="form-label">Review Feedback</label>
-            <textarea class="form-control" #contentInput rows="6" cols="80" placeholder="Type your Feedback here"></textarea>
-        </div>
+            <textarea class="form-control" rows="6" cols="80" formControlName="newscontent" placeholder="Type your Feedback here"></textarea>
+            <div *ngIf="form.controls['newscontent'].dirty && form.hasError('required','newscontent')" class="text-danger">*Feedback is required</div>
+          </div>
     </form>
     </div>
     <div *ngIf="result">

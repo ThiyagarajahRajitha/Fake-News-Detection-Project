@@ -100,9 +100,9 @@ namespace FND.API.Controllers
         //submit review
         [Route("SubmitReview")]
         [HttpPost]
-        public async Task<IActionResult> SubmitReview(SubmitReviewDto submitReviewDto)
+        public async Task<IActionResult> SubmitReview([FromRoute] int ModeratorId, SubmitReviewDto submitReviewDto)
         {
-            var request = await newsService.SubmitReview(submitReviewDto);
+            var request = await newsService.SubmitReview(ModeratorId, submitReviewDto);
             return Ok(request);
         }
 

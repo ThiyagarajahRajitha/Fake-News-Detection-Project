@@ -163,7 +163,7 @@ namespace FND.API.Data.Repositories
             return reviewRequest;
         }
 
-        public async Task<ReviewRequest> SubmitReview(SubmitReviewDto submitReviewDto)
+        public async Task<ReviewRequest> SubmitReview(int ModeratorId, SubmitReviewDto submitReviewDto)
         {
             //GetReviewRequestedNewsById(submitReviewDto.RequestReviewId);
             ReviewRequest updateReviewRequest = new ReviewRequest()
@@ -172,6 +172,7 @@ namespace FND.API.Data.Repositories
                 ReviewFeedback = submitReviewDto.ReviewFeedback,
                 Result = submitReviewDto.ReviewResult,
                 Status = 1,
+                ReviewedBy = ModeratorId,
                 UpdatedOn = DateTime.Now
             };
             _fNDDBContext.Attach(updateReviewRequest);

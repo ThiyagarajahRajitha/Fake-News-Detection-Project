@@ -14,12 +14,16 @@ export class SignupComponent {
   isText:boolean = false
   eyeIcon:string = "fa-eye-slash"
   signUpForm! : FormGroup;
+  showSignUpForm:boolean = true;
+  created:boolean = false;
+  error:any;
+
   constructor(private fb:FormBuilder,private auth:AuthService, private router:Router){}
   
   ngOnInit():void{
     this.signUpForm = this.fb.group({
       name:['',Validators.required],
-      email:['',Validators.required],
+      email:['',[Validators.required, Validators.email]],
       url:['',Validators.required],
       password:['',Validators.required],
     })
@@ -36,19 +40,17 @@ export class SignupComponent {
         this.auth.signup(this.signUpForm.value)
         .subscribe({
           next:(res=>{
-            alert(res.message);
-            this.signUpForm.reset();
-            this.router.navigate(['login']);
+            this.showSignUpForm = false;
+            this.created = true;
           })
           ,error:(err=>{
-            alert(err?.error.message)
+            this.error = err?.error.message;
           })
         })
       }
     }
     else{
       ValidateForm.validateAllFormFields(this.signUpForm);
-      alert("Your Form is Invalid");
     }
   }
 }

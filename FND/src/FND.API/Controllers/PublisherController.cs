@@ -5,6 +5,7 @@ using FND.API.Entities;
 using FND.API.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MimeKit.Encodings;
 
 namespace FND.API.Controllers
 {
@@ -13,7 +14,7 @@ namespace FND.API.Controllers
     public class PublisherController : ControllerBase
     {
         private PublisherService publisherService;
-        public PublisherController(PublisherService publisherService) 
+        public PublisherController(PublisherService publisherService)
         {
             this.publisherService = publisherService;
         }
@@ -26,10 +27,36 @@ namespace FND.API.Controllers
         }
 
         [HttpPatch("{id}/activate")]
-        public async Task<IActionResult> UpdatePublisher([FromRoute] int id)
+        public async Task<IActionResult> UpdatePublisher([FromRoute] int id, [FromBody] ActivatePublisherDto activatePublisher)
         {
-            await publisherService.UpdatePublisherAsync(id);
+            if (activatePublisher == null)
+                return BadRequest();
+            await publisherService.UpdatePublisherAsync(id, activatePublisher);
             return Ok();
+        }
+
+
+        [HttpPatch("{id:int}/reject")]
+        public async Task<IActionResult> RejectPublisher(int id, RejectPublisherDto rejectPublisherDto)
+        {
+            if(rejectPublisherDto==null)
+                return BadRequest();
+
+            bool rslt = await publisherService.RejectPublisher(id, rejectPublisherDto);
+            if(rslt == true)
+                return Ok();
+            else
+                return BadRequest(rslt);
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeletePublisher([FromRoute] int id)
+        {
+            bool rslt =  await publisherService.DeletePublisher(id);
+            if(rslt == true)
+                return Ok();
+            else
+                return BadRequest(rslt);
         }
     }
 }

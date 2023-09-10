@@ -1,5 +1,7 @@
 import { Component, Input, ViewChild } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import ValidateForm from 'src/app/helpers/validateform';
 import { ReviewedResultModel } from 'src/app/models/reviewed-result.model';
 import { NewsService } from 'src/app/services/news.service';
 
@@ -10,12 +12,13 @@ import { NewsService } from 'src/app/services/news.service';
 })
 export class SubmitReviewModalComponent {
   @Input() newId: number = 0;
-  constructor(public activeModal: NgbActiveModal, private newsService: NewsService) { }
+  constructor(private fb:FormBuilder, public activeModal: NgbActiveModal, private newsService: NewsService) { }
 
-  //@ViewChild('newsId') newsId: any;
-  
-  @ViewChild('contentInput') contentInput: any;
-  @ViewChild('resultInput') resultInput:any;
+  form = this.fb.group({
+    result:['', Validators.required],
+    newscontent: ['', Validators.required]
+  }) 
+
   result: any= '';
   error:any='';
   showForm: boolean = true;
@@ -25,11 +28,17 @@ export class SubmitReviewModalComponent {
   }
 
   onSubmit() {
+
+    if(!this.form.valid) {
+      ValidateForm.validateAllFormFields(this.form);
+      return;
+    }
+    
     // Handle the form submission here
     // You can access the form data and perform any necessary operations
     //const newsTitle = this.titleInput.nativeElement.value;
-    const feedback = this.contentInput.nativeElement.value;
-    const reviewResult = this.resultInput.nativeElement.value;
+    const feedback = this.form.value.newscontent || '';
+    const reviewResult = this.form.value.result || '';
     //this.activeModal.close();
 
     // Create an object with the data to be sent

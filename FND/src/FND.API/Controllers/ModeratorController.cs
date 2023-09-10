@@ -41,6 +41,17 @@ namespace FND.API.Controllers
             return Ok();
         }
 
+        [HttpPost("Reinvite")]
+        public async Task<ActionResult<Moderator>> ReinviteModerator(int id)
+        {
+            var rslt = await userService.ReInviteModerator(id);
+            if(rslt == true)
+                return Ok();
+
+            return BadRequest();
+        }
+
+
         [HttpPost("ValidateModerator")]
         public async Task<IActionResult> ValidateModerator([FromQuery(Name = "username")] string userName, [FromQuery(Name = "inviteCode")] Guid inviteCode)
         {
@@ -113,6 +124,17 @@ namespace FND.API.Controllers
             var result = await userService.GetModerators(IsPendingOnly);
             return result;
         }
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteModerator([FromRoute] int id)
+        {
+            bool rslt = await userService.DeleteModeratorUser(id);
+            if (rslt == true)
+                return Ok();
+            else
+                return BadRequest(rslt);
+        }
+
 
         private Task<bool> CheckUserEmailExist(string email)
             =>_context.Users.AnyAsync(x => x.Email == email);
