@@ -6,7 +6,8 @@ import { UserStoreService } from 'src/app/services/user-store/user-store.service
 import { InviteModeratorModalComponent } from '../../invite-moderator/invite-moderator-modal/invite-moderator-modal.component';
 
 import { FormControl } from '@angular/forms';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
+import { ConfirmationDialogService } from '../../confim-dialog/confirmation-dialog.service';
 
 @Component({
   selector: 'app-moderator-invitation',
@@ -17,9 +18,14 @@ export class ModeratorInvitationComponent {
   public role:string = "";
   users:Users[] = [];
   filterControl = new FormControl('false');
+  ngbModalOptions: NgbModalOptions = {
+    backdrop : 'static',
+    keyboard : false
+    };
 
-
-  constructor(private auth:AuthService, private userStore:UserStoreService, private modalService: NgbModal,private moderatorService:ModeratorService){}
+  constructor(private auth:AuthService, private userStore:UserStoreService, 
+    private modalService: NgbModal,private moderatorService:ModeratorService,
+    private confirmationDialogService: ConfirmationDialogService){}
 
   ngOnInit(){
     this.userStore.getRoleFromStore()
@@ -51,6 +57,20 @@ export class ModeratorInvitationComponent {
     })
   }
   openInviteModeratorModal(){
-    const modalRef = this.modalService.open(InviteModeratorModalComponent);
+    const modalRef = this.modalService.open(InviteModeratorModalComponent, this.ngbModalOptions);
+  }
+
+
+  resend(user:Users){
+    
+  }
+
+  delete(user:Users){
+    this.confirmationDialogService.confirm('Please confirm', 'Do you really want to delete ' + user.email + ' ?')
+    .then((confirmed) => {
+      user.status = -1;
+      console.log('User confirmed to delete: ', confirmed)
+    })
+    .catch(() => console.log('User dismissed the dialog'));
   }
 }

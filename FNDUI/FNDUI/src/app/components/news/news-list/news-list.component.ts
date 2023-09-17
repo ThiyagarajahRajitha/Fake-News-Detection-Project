@@ -45,13 +45,13 @@ export class NewsListComponent implements OnInit{
 
   openReviewRequestNewsModal(newId:number){
     this.reviewRequestedNewsId = newId;
-    const modalRef = this.modalService.open(ReviewRequestNewsModalComponent);
+    const modalRef = this.modalService.open(ReviewRequestNewsModalComponent, this.ngbModalOptions);
     modalRef.componentInstance.newId = newId;
   }
 
   openSubmitReviewModal(newId:number){
     this.reviewRequestedNewsId = newId;
-    const modalRef = this.modalService.open(SubmitReviewModalComponent);
+    const modalRef = this.modalService.open(SubmitReviewModalComponent, this.ngbModalOptions);
     modalRef.componentInstance.newId = newId;
   }
 

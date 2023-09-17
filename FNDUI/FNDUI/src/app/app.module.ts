@@ -34,6 +34,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { ModeratorInvitationComponent } from './components/invite-moderator/moderator-invitation/moderator-invitation.component';
 import { TabbedViewComponent } from './components/tabbed-view/tabbed-view/tabbed-view.component';
 import { TokenInterceptor } from './interceptors/token.interceptor';
+import { PublisherApporvalModalComponent } from './components/publisher-approval/publisher-apporval-modal/publisher-apporval-modal.component';
+import {NgToastModule} from 'ng-angular-popup';
 
 @NgModule({
   declarations: [
@@ -53,7 +55,7 @@ import { TokenInterceptor } from './interceptors/token.interceptor';
     LayoutComponent,
     ModeratorInvitationComponent,
     TabbedViewComponent,
-        
+    PublisherApporvalModalComponent,        
   ],
   imports: [
     BrowserModule,
@@ -73,7 +75,8 @@ import { TokenInterceptor } from './interceptors/token.interceptor';
     MatButtonToggleModule,
     CanvasJSAngularChartsModule,
     ReactiveFormsModule,
-    MatTabsModule
+    MatTabsModule,
+    NgToastModule
   ],
   entryComponents: [ClassifyNewsModalComponent],
   providers: [{

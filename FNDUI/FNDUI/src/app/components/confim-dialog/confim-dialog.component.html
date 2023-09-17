@@ -6,16 +6,6 @@
     </div>
     <div class="modal-body">
       {{ message }}
-      
-      <div *ngIf="approval" >
-        <form (formGroup)="form">
-          <div class="mb-3">
-              <label for="newsDiv" class="form-label">News Div</label>
-              <input type="text" class="form-control" formControlName="newsDiv">
-              <div *ngIf="form.controls['newsDiv'].dirty && form.hasError('required','newsDiv')" class="text-danger">*News div is required</div>
-          </div>  
-        </form>
-      </div>
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-danger" (click)="decline()">{{ btnCancelText }}</button>

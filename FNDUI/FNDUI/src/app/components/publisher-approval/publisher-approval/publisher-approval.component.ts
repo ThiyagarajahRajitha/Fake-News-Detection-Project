@@ -5,6 +5,9 @@ import { PublisherApprovalService } from 'src/app/services/publisher-approval/pu
 import { UserStoreService } from 'src/app/services/user-store/user-store.service';
 import { FormControl } from '@angular/forms';
 import { ConfirmationDialogService } from '../../confim-dialog/confirmation-dialog.service';
+import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
+import { PublisherApporvalModalComponent } from '../publisher-apporval-modal/publisher-apporval-modal.component';
+import { NgToastService } from 'ng-angular-popup';
 
 @Component({
   selector: 'app-publisher-approval',
@@ -14,11 +17,17 @@ import { ConfirmationDialogService } from '../../confim-dialog/confirmation-dial
 export class PublisherApprovalComponent {
   public role:string = "";
   users:Users[] = [];
+  ngbModalOptions: NgbModalOptions = {
+    backdrop : 'static',
+    keyboard : false
+    };
   filterControl = new FormControl('false');
 
   constructor(private auth:AuthService, private userStore:UserStoreService, 
     private publisherApproval:PublisherApprovalService, 
-    private confirmationDialogService: ConfirmationDialogService){}
+    private confirmationDialogService: ConfirmationDialogService,
+    private modalService: NgbModal,
+    private toastService: NgToastService){}
 
   ngOnInit(){
     this.userStore.getRoleFromStore()
@@ -51,23 +60,27 @@ export class PublisherApprovalComponent {
   }
 
   approve(user:Users){
-    user.status = 1;
-    this.publisherApproval.approve(user.id)
-    .subscribe({
-      next:(x)=>{
-        console.log("succ");
-        alert("Approved Successfully");
-        
-      }
-    })
-    //console.log(id+" APPROVE function called");
+    const modalRef = this.modalService.open(PublisherApporvalModalComponent, this.ngbModalOptions);
+    modalRef.componentInstance.user = user;
+    modalRef.componentInstance.isApprove = true;  
   }
 
   reject(user:Users){
+    const modalRef = this.modalService.open(PublisherApporvalModalComponent, this.ngbModalOptions);
+    modalRef.componentInstance.user = user;
+  }
+
+  delete(user:Users){
+    
     this.confirmationDialogService.confirm('Please confirm', 'Do you really want to delete ' + user.email + ' ?')
     .then((confirmed) => {
-      user.status = -1;
-      console.log('User confirmed:', confirmed)
+      if (confirmed) {
+        // Delete the user here.
+        user.status = -1;
+        this.toastService.success({detail:'Success',summary:'The ' + user.email  + ' Deleted.',
+                                   sticky:false,position:'tr', duration:5000})
+        console.log('User confirmed to delete: ', confirmed)
+      }
     })
     .catch(() => console.log('User dismissed the dialog'));
   }

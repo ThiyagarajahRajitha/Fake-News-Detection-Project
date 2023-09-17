@@ -37,7 +37,7 @@
                     </div>
                     <div *ngIf="publisher.status==1">
                         <span>
-                            <button class="reject-button" type="button">
+                            <button class="reject-button" type="button" (click)="delete(publisher)">
                                 <i class="fas fa-times-circle"></i> Delete
                             </button>
                         </span>

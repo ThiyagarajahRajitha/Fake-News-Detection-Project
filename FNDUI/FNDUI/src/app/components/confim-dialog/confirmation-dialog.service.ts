@@ -23,12 +23,6 @@ export class ConfirmationDialogService {
     modalRef.componentInstance.message = message;
     modalRef.componentInstance.btnOkText = btnOkText;
     modalRef.componentInstance.btnCancelText = btnCancelText;
-    modalRef.componentInstance.approval = true;
-    modalRef.componentInstance.form = this.fb.group({
-                                          newsDiv:['', Validators.required]
-                                      }) 
-
-    console.log(modalRef);
     return modalRef.result;
   }
 

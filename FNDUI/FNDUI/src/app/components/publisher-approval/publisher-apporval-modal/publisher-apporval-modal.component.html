@@ -1,0 +1,40 @@
+<div class="modal-header">
+    <h4 class="modal-title">
+        {{isApprove ? 'Approve Publisher' : 'Reject Publisher'}}
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="dismissModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <!-- Form controls for adding news -->
+    <div *ngIf = "showForm">
+        <form [formGroup]="form">
+            <div class="mb-3">
+                <label for="input" class="form-label">
+                    {{isApprove ? 'The News Div' : 'Reject Reason'}}
+                </label>
+                <input type="input" class="form-control" formControlName="input">
+                <div *ngIf="form.controls['input'].dirty && form.hasError('required','input')" class="text-danger">
+                    {{isApprove ? '*The news Div is required' : '*The reason is required'}}
+                </div>
+            </div>  
+        </form>
+    </div>
+    
+    <div *ngIf="result">
+      <p>{{result}}</p>
+    </div>
+</div>
+  <div class="modal-footer">
+    <div *ngIf = "showForm">
+        <button type="submit" class="btn btn-primary" (click)="onSubmit()">
+            {{isApprove ? 'Approve' : 'Reject'}}
+        </button>
+    </div>
+    <!-- <button type="button" class="btn btn-secondary" (click)="dismissModal()">Cancel</button> -->
+</div>
+
+
+
+  
