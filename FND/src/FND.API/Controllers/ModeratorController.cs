@@ -23,11 +23,14 @@ namespace FND.API.Controllers
     public class ModeratorController : ControllerBase
     {
         private readonly FNDDBContext _context;
+        private readonly ModeratorService moderatorService;
         private readonly UserService userService;
         public ModeratorController(FNDDBContext fNDDBContext) 
         {
             _context = fNDDBContext;
+            moderatorService = new ModeratorService(fNDDBContext);
             userService = new UserService(fNDDBContext);
+
         }
 
         [Authorize]
@@ -40,15 +43,15 @@ namespace FND.API.Controllers
             if (await CheckModeratorEmailExist(createModeratorDto.Email))
                 return BadRequest(new { Message = "Email Already Exist!" });
 
-            var moderator  = await userService.CreateModerator(createModeratorDto);
+            var moderator  = await moderatorService.CreateModerator(createModeratorDto);
             return Ok();
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpPost("Reinvite")]
         public async Task<ActionResult<Moderator>> ReinviteModerator(int id)
         {
-            var rslt = await userService.ReInviteModerator(id);
+            var rslt = await moderatorService.ReInviteModerator(id);
             if(rslt == true)
                 return Ok();
 
@@ -60,7 +63,7 @@ namespace FND.API.Controllers
         public async Task<IActionResult> ValidateModerator([FromQuery(Name = "username")] string userName, [FromQuery(Name = "inviteCode")] Guid inviteCode)
         {
             //var newsList = await _fNDDBContext.News.ToListAsync();
-            bool isvalid= await userService.ValidateModerator(userName, inviteCode);
+            bool isvalid= await moderatorService.ValidateModerator(userName, inviteCode);
             if (isvalid)
                 return Ok();
             else 
@@ -78,7 +81,7 @@ namespace FND.API.Controllers
             //var users = await _context.Users.FirstOrDefaultAsync(x => x.Email == signUpRequest.Email);
             if (await CheckModeratorEmailExist(moderatorSignUp.Email))
             {
-                bool isvalid = await userService.ValidateModerator(moderatorSignUp.Email, moderatorSignUp.InviteCode);
+                bool isvalid = await moderatorService.ValidateModerator(moderatorSignUp.Email, moderatorSignUp.InviteCode);
                 if (isvalid)
                 {
                     moderatorSignUp.Password = PasswordHasher.HashPassword(moderatorSignUp.Password);
@@ -102,7 +105,7 @@ namespace FND.API.Controllers
                         });
                     }
                     await _context.Users.AddAsync(user);
-                    await userService.DeleteModerator(moderatorSignUp.Email);
+                    await moderatorService.DeleteModerator(moderatorSignUp.Email);
                     await _context.SaveChangesAsync();
                     return Ok(new
                     {

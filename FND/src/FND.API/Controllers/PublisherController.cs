@@ -2,7 +2,7 @@
 using FND.API.Data.Dtos;
 using FND.API.Data.Repositories;
 using FND.API.Entities;
-using FND.API.Services;
+using FND.API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,8 +15,8 @@ namespace FND.API.Controllers
     [ApiController]
     public class PublisherController : ControllerBase
     {
-        private PublisherService publisherService;
-        public PublisherController(PublisherService publisherService)
+        private IPublisherService publisherService;
+        public PublisherController(IPublisherService publisherService)
         {
             this.publisherService = publisherService;
         }

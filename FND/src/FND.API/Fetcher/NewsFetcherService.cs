@@ -5,19 +5,19 @@ using HtmlAgilityPack;
 using Microsoft.IdentityModel.Tokens;
 using FND.API.Data.Repositories;
 using FND.API.Data;
-using FND.API.Services;
 using FND.API.Data.Dtos;
+using FND.API.Interfaces;
 
 namespace FND.API.Fetcher
 {
     public class NewsFetcherService : BackgroundService
     {
-        private PublisherService publisherService;
-        private NewsService newsService;
+        private IPublisherService publisherService;
+        private INewsService newsService;
         public NewsFetcherService(IServiceProvider serviceProvider)
         {
-            publisherService = serviceProvider.CreateScope().ServiceProvider.GetRequiredService<PublisherService>();
-            newsService = serviceProvider.CreateScope().ServiceProvider.GetRequiredService<NewsService>();
+            publisherService = serviceProvider.CreateScope().ServiceProvider.GetRequiredService<IPublisherService>();
+            newsService = serviceProvider.CreateScope().ServiceProvider.GetRequiredService<INewsService>();
             //https://iqan.medium.com/how-to-create-a-timely-running-service-in-net-core-757f445035ca
         }
 

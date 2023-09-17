@@ -63,7 +63,7 @@ namespace FND.API.Data.Repositories
                 var newsCountByClassification = await _fNDDBContext.News
                .Where(n => n.CreatedOn >= fromDatee && n.CreatedOn <= toDatee)
                .GroupBy(n => n.Classification_Decision)
-               .Select(g => new NewsClassificationCount { Classification = g.Key, Count = g.Count() })
+               .Select(g => new NewsClassificationCountDto { Classification = g.Key, Count = g.Count() })
                .ToListAsync();
 
                 foreach (var classification in newsCountByClassification)
@@ -83,7 +83,7 @@ namespace FND.API.Data.Repositories
                 var newsCountByClassification = await _fNDDBContext.News
                .Where(n => n.Publisher_id == userId && n.CreatedOn >= fromDatee && n.CreatedOn <= toDatee)
                .GroupBy(n => n.Classification_Decision)
-               .Select(g => new NewsClassificationCount { Classification = g.Key, Count = g.Count() })
+               .Select(g => new NewsClassificationCountDto { Classification = g.Key, Count = g.Count() })
                .ToListAsync();
 
 

@@ -1,7 +1,7 @@
 ﻿using FND.API.Data;
 using FND.API.Data.Dtos;
 using FND.API.Entities;
-using FND.API.Services;
+using FND.API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,9 +14,9 @@ namespace FND.API.Controllers
     
     public class NewsController : ControllerBase
     {
-        private NewsService newsService;
+        private INewsService newsService;
 
-        public NewsController(NewsService newsService)
+        public NewsController(INewsService newsService)
         {
             this.newsService = newsService;
         }
