@@ -8,6 +8,7 @@ export interface News{
     comment:string;
     status:number;
     reviewFeedback:string;
+    reviewerName:string;
     result:string
     seeMore: boolean;
 }

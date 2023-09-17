@@ -16,6 +16,8 @@ namespace FND.API.Data.Dtos
         public DateTimeOffset? ReviewCreatedOn { get; set; }
         public int? Status { get; set; }
         public string? ReviewFeedback { get; set; }
+        public int? ReviewedBy { get; set; }
+        public string? ReviewerName { get; set; }
         public string? Result { get; set; }
         public DateTimeOffset? UpdatedOn { get; set; }
 

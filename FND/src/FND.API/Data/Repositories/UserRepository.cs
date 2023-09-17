@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace FND.API.Data.Repositories
 {
@@ -161,6 +162,34 @@ namespace FND.API.Data.Repositories
             fNDDBContext.Entry(deleteModeratorUser).Property(r => r.DeletedAt).IsModified = true;
             fNDDBContext.SaveChanges();
             return true;
+        }
+
+        public async Task<List<ReviewRequestCountByModeratorDashboardresultDto>> GetReviewRequestCountByModerator(int userId, string fromDate, string toDate)
+        {
+            string format = "yyyy-MM-dd";
+            DateTime fromDatee = DateTime.ParseExact(fromDate, format, CultureInfo.InvariantCulture);
+            DateTime toDatee = DateTime.ParseExact(toDate, format, CultureInfo.InvariantCulture);
+
+            //DateTime fromDateee = DateTime.Parse(fromDate);
+            //DateTime toDateee = DateTime.Parse(fromDate);
+            List<ReviewRequestCountByModeratorDashboardresultDto> results = new List<ReviewRequestCountByModeratorDashboardresultDto>();
+            Users user = await fNDDBContext.Users.Where(u => u.Id == userId).FirstAsync();
+            if (user.Role == "Admin")
+            {
+                var reviewREquestCountByModerator = await fNDDBContext.ReviewRequest
+               .Where(n => n.CreatedOn >= fromDatee && n.CreatedOn <= toDatee && n.Status == 1)
+               .GroupBy(n => n.ReviewedBy)
+               .Select(g => new ReviewRequestCountByModeratorDashboardresultDto
+               {
+                   MID = g.Key,
+                   Count = g.Count()
+               })
+               .ToListAsync();
+
+                results.AddRange(reviewREquestCountByModerator);
+            }
+
+            return results;
         }
     }
 }

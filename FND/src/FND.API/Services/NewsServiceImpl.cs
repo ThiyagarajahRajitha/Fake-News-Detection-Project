@@ -103,10 +103,32 @@ namespace FND.API.Services
             return newsList;
         }
 
-        public async Task<NewsDashboardResult> GetNewsCountByClassification([FromQuery(Name = "from")]string fromDate, [FromQuery(Name = "to")] string toDate)
+        public async Task<NewsDashboardResultDto> GetNewsCountByClassification(int id, [FromQuery(Name = "from")]string fromDate, [FromQuery(Name = "to")] string toDate)
         {
-            var newsCountByClassification =  await _newsRepository.GetNewsCountByClassification(fromDate, toDate);
+            var newsCountByClassification =  await _newsRepository.GetNewsCountByClassification(id, fromDate, toDate);
             return newsCountByClassification;
+        }
+
+        public async Task<ReviewRequestDashboardRestultDto> GetReviewRequestCount(int id,[FromQuery(Name = "from")] string fromDate, [FromQuery(Name = "to")] string toDate)
+        {
+            var reviewREquestCountByStatus = await _newsRepository.GetReviewRequestCount(id,fromDate, toDate);
+            return reviewREquestCountByStatus;
+        }
+        public async Task<List<NewsCountByPublisherDashboardresultDto>> GetNewsClassificationCountByPublisher(int id, [FromQuery(Name = "from")] string fromDate, [FromQuery(Name = "to")] string toDate)
+        {
+            var newsClassificationCountByPublisher = await _newsRepository.GetNewsClassificationCountByPublisher(id, fromDate, toDate);
+            return newsClassificationCountByPublisher;
+        }
+        public async Task<List<ReviewRequestCountByPublisherDashboardresultDto>> GetReviewRequestCountByPublisher(int id, [FromQuery(Name = "from")] string fromDate, [FromQuery(Name = "to")] string toDate)
+        {
+            var reviewRequestCountByPublisher = await _newsRepository.GetReviewRequestCountByPublisher(id, fromDate, toDate);
+            return reviewRequestCountByPublisher;
+        }
+
+        public async Task<List<NewsCountByMonthDashboardresultDto>> GetNewsClassificationCountByMonth(int userId, [FromQuery(Name = "from")] string fromDate, [FromQuery(Name = "to")] string toDate)
+        {
+            var newsClassificationCountByMonth = await _newsRepository.GetNewsClassificationCountByMonth(userId, fromDate, toDate);
+            return newsClassificationCountByMonth;
         }
 
         public async Task<List<ListNewsDto>> GetNewsByPublisherId(int publisherId, string Filter)
@@ -134,6 +156,8 @@ namespace FND.API.Services
                     ReviewCreatedOn = news.CreatedOn,
                     Status = news.Status,
                     ReviewFeedback = news.ReviewFeedback,
+                    ReviewedBy = news.Users is null? 0: news.Users.Id,
+                    ReviewerName = news.Users is null? "Pending": news.Users.Name,
                     Result = news.Result,
                     UpdatedOn = news.UpdatedOn
                 };

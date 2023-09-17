@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NewsListComponent } from './components/news/news-list/news-list.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ClassifyNewsModalComponent } from './components/news/classify-news-modal/classify-news-modal.component';
 import { CreateSubscriberModalComponent } from './components/subscribe/create-subscriber-modal/create-subscriber-modal.component';
@@ -33,6 +33,7 @@ import { LayoutComponent } from './components/layout/layout.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ModeratorInvitationComponent } from './components/invite-moderator/moderator-invitation/moderator-invitation.component';
 import { TabbedViewComponent } from './components/tabbed-view/tabbed-view/tabbed-view.component';
+import { TokenInterceptor } from './interceptors/token.interceptor';
 
 @NgModule({
   declarations: [
@@ -75,7 +76,11 @@ import { TabbedViewComponent } from './components/tabbed-view/tabbed-view/tabbed
     MatTabsModule
   ],
   entryComponents: [ClassifyNewsModalComponent],
-  providers: [
+  providers: [{
+    provide: HTTP_INTERCEPTORS,
+    useClass:TokenInterceptor,
+    multi:true
+  },
     DatePipe
   ],
   bootstrap: [AppComponent]

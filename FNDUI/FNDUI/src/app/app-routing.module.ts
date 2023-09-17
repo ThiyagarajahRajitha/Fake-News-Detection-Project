@@ -78,7 +78,8 @@ const routes: Routes = [
 },
 {
    path: 'invite-moderator',
-   component:InviteModeratorModalComponent
+   component:InviteModeratorModalComponent,
+   canActivate:[AuthGuard]
  }
 ];
 

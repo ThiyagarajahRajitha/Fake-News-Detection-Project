@@ -2,6 +2,7 @@
 using FND.API.Data.Dtos;
 using FND.API.Entities;
 using FND.API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
@@ -20,7 +21,6 @@ namespace FND.API.Controllers
             this.newsService = newsService;
         }
 
-
         [HttpGet]
         public async Task<ActionResult<List<News>>> GetNews([FromQuery(Name = "FakeNewsOnly")] bool IsFakeNewsOnly)
         {
@@ -29,7 +29,7 @@ namespace FND.API.Controllers
             return Ok(newsList);
         }
 
-
+        [Authorize]
         [HttpGet("{publisherId:int}")]
         public async Task<ActionResult<List<ListNewsDto>>> GetNewsByPublisher(int publisherId, [FromQuery(Name = "filter")] string filter)
         {
@@ -45,6 +45,7 @@ namespace FND.API.Controllers
             //SaveClassifyResult(result);
         }
 
+        [Authorize]
         [Route("RequestReview")]
         [HttpPost]
         public async Task<IActionResult> RequestReview(CreateRequestReviewDto createRequestReviewDto)
@@ -53,6 +54,7 @@ namespace FND.API.Controllers
             return Ok(request);
         }
 
+        [Authorize]
         [Route("GetAllReviewRequestedNews")]
         [HttpGet]
         public async Task<ActionResult<List<ListNewsDto>>> GetAllReviewRequestedNews([FromQuery(Name = "filter")] string filter)
@@ -88,19 +90,73 @@ namespace FND.API.Controllers
         //    }
         //    return Ok(updatedEmployee);
         //}
+
+        //[Authorize]
         [Route("GetNewsCount")]
         [HttpGet]
-        public async Task<NewsDashboardResult> GetNewsCountByClassification([FromQuery(Name = "from")] string fromDate, [FromQuery(Name = "to")] string toDate)
+        public async Task<ActionResult<NewsDashboardResultDto>> GetNewsCountByClassification(int userId, [FromQuery(Name = "from")] string fromDate, [FromQuery(Name = "to")] string toDate)
         {
             //var newsList = await _fNDDBContext.News.ToListAsync();
-            var newsCountByClassification = await newsService.GetNewsCountByClassification(fromDate, toDate);
+            if (userId == null)
+                return BadRequest();
+
+            var newsCountByClassification = await newsService.GetNewsCountByClassification(userId, fromDate, toDate);
             return newsCountByClassification;
         }
 
+        //[Authorize]
+        [Route("GetReviewRequestCount")]
+        [HttpGet]
+        public async Task<ActionResult<ReviewRequestDashboardRestultDto>> GetReviewRequestCount(int userId, [FromQuery(Name = "from")] string fromDate, [FromQuery(Name = "to")] string toDate)
+        {
+            //var newsList = await _fNDDBContext.News.ToListAsync();
+            if (userId == null)
+                return BadRequest();
+
+            var reviewREquestCountByStatus = await newsService.GetReviewRequestCount(userId, fromDate, toDate);
+            return reviewREquestCountByStatus;
+        }
+
+        [Route("GetNewsClassificationCountByPublisher")]
+        [HttpGet]
+        public async Task<ActionResult<List<NewsCountByPublisherDashboardresultDto>>> GetNewsClassificationCountByPublisher(int userId, [FromQuery(Name = "from")] string fromDate, [FromQuery(Name = "to")] string toDate)
+        {
+            //var newsList = await _fNDDBContext.News.ToListAsync();
+            if (userId == null)
+                return BadRequest();
+
+            var newsClassificationCountByPublisher = await newsService.GetNewsClassificationCountByPublisher(userId, fromDate, toDate);
+            return newsClassificationCountByPublisher;
+        }
+
+        [Route("GetReviewRequestCountByPublisher")]
+        [HttpGet]
+        public async Task<ActionResult<List<ReviewRequestCountByPublisherDashboardresultDto>>> GetReviewRequestCountByPublisher(int userId, [FromQuery(Name = "from")] string fromDate, [FromQuery(Name = "to")] string toDate)
+        {
+            //var newsList = await _fNDDBContext.News.ToListAsync();
+            if (userId == null)
+                return BadRequest();
+
+            var reviewRequestCountByPublisher = await newsService.GetReviewRequestCountByPublisher(userId, fromDate, toDate);
+            return reviewRequestCountByPublisher;
+        }
+
+        [Route("GetNewsClassificationCountByMonth")]
+        [HttpGet]
+        public async Task<ActionResult<List<NewsCountByMonthDashboardresultDto>>> GetNewsClassificationCountByMonth(int userId, [FromQuery(Name = "from")] string fromDate, [FromQuery(Name = "to")] string toDate)
+        {
+            if (userId == null)
+                return BadRequest();
+
+            var newsClassificationCountByMonth = await newsService.GetNewsClassificationCountByMonth(userId, fromDate, toDate);
+            return newsClassificationCountByMonth;
+        }
+
         //submit review
+        [Authorize]
         [Route("SubmitReview")]
         [HttpPost]
-        public async Task<IActionResult> SubmitReview([FromRoute] int ModeratorId, SubmitReviewDto submitReviewDto)
+        public async Task<IActionResult> SubmitReview(int ModeratorId, SubmitReviewDto submitReviewDto)
         {
             var request = await newsService.SubmitReview(ModeratorId, submitReviewDto);
             return Ok(request);

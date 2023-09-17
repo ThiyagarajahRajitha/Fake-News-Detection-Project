@@ -86,5 +86,11 @@ namespace FND.API.Services
             bool rslt= await _publisherRepository.DeletePublisher(id);
             return rslt;
         }
+
+        public async Task<List<Publication>> GetPublication()
+        {
+            var publishersList = await _publisherRepository.GetPublication();
+            return publishersList;
+        }
     }
 }

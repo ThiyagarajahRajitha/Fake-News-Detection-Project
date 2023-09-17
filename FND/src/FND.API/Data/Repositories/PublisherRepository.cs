@@ -28,12 +28,19 @@ namespace FND.API.Data.Repositories
 
         public async Task<List<Users>> GetPublishers([FromQuery(Name = "PendingApprovalOnly")] bool IsPendingOnly)
         {
-            var publishersList = await _fNDDBContext.Users.Where(u => u.Role == "Publisher").OrderByDescending(b => b.Id).ToListAsync();
+            
             if (IsPendingOnly)
             {
-                publishersList = await _fNDDBContext.Users.Where(p => p.Role == "Publisher" && p.Status==0).OrderByDescending(i => i.Id).ToListAsync();
+                var publishersList = await _fNDDBContext.Users.Where(p => p.Role == "Publisher" && p.Status==0).OrderByDescending(i => i.Id).ToListAsync();
+                return publishersList;
             }
-            return publishersList;
+            else
+            {
+                var publishersList = await _fNDDBContext.Users.Where(u => u.Role == "Publisher")
+                .OrderByDescending(b => b.Id).ToListAsync();
+                return publishersList;
+            }
+     
         }
 
         //public async Task UpdatePublisherAsync(int id)
@@ -115,6 +122,12 @@ namespace FND.API.Data.Repositories
             _fNDDBContext.SaveChanges();
             return true;
             
+        }
+
+        public async Task<List<Publication>> GetPublication()
+        {
+            var publishersList = await _fNDDBContext.Publications.ToListAsync();
+            return publishersList;
         }
     }
 }

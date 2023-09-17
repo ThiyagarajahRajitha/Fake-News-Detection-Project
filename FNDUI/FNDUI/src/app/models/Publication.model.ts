@@ -1,4 +1,4 @@
 export interface Publication{
-    id:number;
-    name:string;
+    publication_Id:number;
+    publication_Name:string;
 }

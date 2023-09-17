@@ -13,9 +13,11 @@ using System;
 using FND.API.Data.Dtos;
 using FND.API.Data.Repositories;
 using FND.API.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FND.API.Controllers
 {
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ModeratorController : ControllerBase
@@ -28,6 +30,7 @@ namespace FND.API.Controllers
             userService = new UserService(fNDDBContext);
         }
 
+        [Authorize]
         [HttpPost("CreateModerator")]
         public async Task<ActionResult<Moderator>> CreateModerator(CreateModeratorDto createModeratorDto)
         {
@@ -41,6 +44,7 @@ namespace FND.API.Controllers
             return Ok();
         }
 
+        [Authorize]
         [HttpPost("Reinvite")]
         public async Task<ActionResult<Moderator>> ReinviteModerator(int id)
         {
@@ -51,7 +55,7 @@ namespace FND.API.Controllers
             return BadRequest();
         }
 
-
+        [Authorize]
         [HttpPost("ValidateModerator")]
         public async Task<IActionResult> ValidateModerator([FromQuery(Name = "username")] string userName, [FromQuery(Name = "inviteCode")] Guid inviteCode)
         {
@@ -63,6 +67,7 @@ namespace FND.API.Controllers
                 return BadRequest();
 
         }
+
 
         [HttpPost("RegisterModerator")]
         public async Task<IActionResult> RegisterModerator([FromBody] ModeratorSignUpRequestDto moderatorSignUp)
@@ -118,6 +123,7 @@ namespace FND.API.Controllers
             }
         }
 
+        //  [Authorize]
         [HttpGet]
         public async Task<ActionResult<List<Users>>> GetModerators([FromQuery(Name = "Pending")] bool IsPendingOnly)
         {
@@ -125,6 +131,7 @@ namespace FND.API.Controllers
             return result;
         }
 
+        [Authorize]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteModerator([FromRoute] int id)
         {
@@ -133,6 +140,18 @@ namespace FND.API.Controllers
                 return Ok();
             else
                 return BadRequest(rslt);
+        }
+
+        [Route("GetReviewRequestCountByModerator")]
+        [HttpGet]
+        public async Task<ActionResult<List<ReviewRequestCountByModeratorDashboardresultDto>>> GetReviewRequestCountByModerator(int userId, [FromQuery(Name = "from")] string fromDate, [FromQuery(Name = "to")] string toDate)
+        {
+            //var newsList = await _fNDDBContext.News.ToListAsync();
+            if (userId == null)
+                return BadRequest();
+
+            var reviewRequestCountByModerator = await userService.GetReviewRequestCountByModerator(userId, fromDate, toDate);
+            return reviewRequestCountByModerator;
         }
 
 

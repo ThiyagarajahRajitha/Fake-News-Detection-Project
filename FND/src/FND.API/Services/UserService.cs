@@ -105,5 +105,11 @@ namespace FND.API.Services
             bool rslt = await _repository.DeleteModeratorUser(id);
             return rslt;
         }
+
+        public async Task<List<ReviewRequestCountByModeratorDashboardresultDto>> GetReviewRequestCountByModerator(int userId, string fromDate, string toDate)
+        {
+            var reviewRequestCountByModerator = await _repository.GetReviewRequestCountByModerator(userId, fromDate, toDate);
+            return reviewRequestCountByModerator;
+        }
     }
 }

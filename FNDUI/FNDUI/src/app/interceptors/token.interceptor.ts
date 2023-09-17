@@ -32,7 +32,7 @@ export class TokenInterceptor implements HttpInterceptor {
             this.router.navigate(['login'])
           }
         }
-        return throwError(()=>new Error("Some other error occured"))
+        return throwError(()=>new Error("Something went wrong!"))
       })
     );
   }

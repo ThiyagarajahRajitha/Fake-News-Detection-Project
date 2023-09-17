@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Observable } from 'rxjs';
 import { ModeratorSignupModel } from 'src/app/models/moderator-signup.model';
@@ -13,7 +14,7 @@ export class AuthService {
   baseApiUrl:string = environment.baseApiUrl;
   private userPayload:any;
   //private baseUrl:string = "https://localhost:7288/api/User/"
-  constructor(private http : HttpClient) {
+  constructor(private http : HttpClient, private router:Router) {
     this.userPayload = this.decodedToken();
    }
 
@@ -63,6 +64,8 @@ export class AuthService {
 
   logout(){
     localStorage.clear();
+    //localStorage.removeItem('token');
+    this.router.navigate(['login'])
   }
 
   decodedToken(){

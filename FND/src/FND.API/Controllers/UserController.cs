@@ -108,7 +108,7 @@ namespace FND.API.Controllers
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = identity,
-                Expires = DateTime.Now.AddDays(1),
+                Expires = DateTime.Now.AddMinutes(60),
                 SigningCredentials = credentials
             };
 

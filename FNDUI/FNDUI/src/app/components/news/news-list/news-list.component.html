@@ -110,6 +110,14 @@
                 <input type="text" value="{{newsItem.result}}" disabled>
             </div>
         </div>
+        <div class="row mt-3" *ngIf="newsItem.reviewerName">
+            <div class="col-3">
+                Reviewer Name :
+            </div>
+            <div class="col-9">
+                <input type="text" value="{{newsItem.reviewerName}}" disabled>
+            </div>
+        </div>
       </div>
 
       </div>

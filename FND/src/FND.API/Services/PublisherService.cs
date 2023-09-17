@@ -16,5 +16,6 @@ namespace FND.API.Services
         public Task<bool> RejectPublisher(int id, RejectPublisherDto rejectPublisherDto);
         public void updateLastFetchedNews(int publication_Id, string newsUrl);
         public Task<bool> DeletePublisher(int id);
+        public Task<List<Publication>> GetPublication();
     }
 }

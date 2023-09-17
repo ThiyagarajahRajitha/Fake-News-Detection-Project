@@ -41,6 +41,7 @@ export class LoginComponent {
           const tokenPayload = this.auth.decodedToken();
           this.userStore.setNameForStore(tokenPayload.unique_name);
           this.userStore.setRoleForStore(tokenPayload.role);
+          this.userStore.setIdForStore(tokenPayload.primarysid);
           //alert(res.message);
           if(tokenPayload.role == 'Admin')
           this.router.navigate(['publisher-approval']);
