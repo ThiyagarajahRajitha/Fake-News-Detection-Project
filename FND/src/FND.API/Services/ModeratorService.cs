@@ -2,6 +2,7 @@
 using FND.API.Data.Dtos;
 using FND.API.Data.Repositories;
 using FND.API.Entities;
+using Microsoft.IdentityModel.Tokens;
 
 namespace FND.API.Services
 {
@@ -67,12 +68,20 @@ namespace FND.API.Services
         public async Task<bool> ReInviteModerator(int id)
         {
             Moderator moderator = await _repository.UpdateModerator(id);
-            IEnumerable<string> senders = new string[] { moderator.Username };
-            string body = string.Format(moderatorInviteBody, "http://localhost:4200/moderator-signup?username="
-                + moderator.Username + "&inviteCode=" + moderator.InviteCode);
-            Notification message = new Notification(moderatorInviteSubject, senders, body);
-            await _notificationService.SendMailAsync(message);
-            return true;
+            if(!moderator.Username.IsNullOrEmpty())
+            {
+                IEnumerable<string> senders = new string[] { moderator.Username };
+                string body = string.Format(moderatorInviteBody, "http://localhost:4200/moderator-signup?username="
+                    + moderator.Username + "&inviteCode=" + moderator.InviteCode);
+                Notification message = new Notification(moderatorInviteSubject, senders, body);
+                await _notificationService.SendMailAsync(message);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+            
         }
 
         public async Task<bool> ValidateModerator(string userName, Guid inviteCode)
@@ -87,6 +96,11 @@ namespace FND.API.Services
             return moderator;
         }
 
-       
+        public async Task<bool> DeleteModeratorById(int id)
+        {
+            bool rslt = await _repository.DeleteModeratorById(id);
+            return rslt;
+        }
+
     }
 }

@@ -175,9 +175,9 @@ namespace FND.API.Services
             return request;
         }
 
-        public async Task<ReviewRequest> SubmitReview(int ModeratorId, SubmitReviewDto submitReviewDto)
+        public async Task<ReviewRequest> SubmitReview(SubmitReviewDto submitReviewDto)
         {
-            var request = await _newsRepository.SubmitReview(ModeratorId,submitReviewDto);
+            var request = await _newsRepository.SubmitReview(submitReviewDto);
             return request;
         }
 

@@ -37,6 +37,10 @@ export class LoginComponent {
       .subscribe({
         next:(res)=>{
           this.loginForm.reset();
+          if (!res.token) {
+            this.error= res.message;
+            return;
+          }
           this.auth.storeToken(res.token);
           const tokenPayload = this.auth.decodedToken();
           this.userStore.setNameForStore(tokenPayload.unique_name);
@@ -50,10 +54,14 @@ export class LoginComponent {
           if(tokenPayload.role == 'Moderator')
           this.router.navigate(['news-list']);
         },
-        error:(err)=>{
-          //alert(err?.error.message)
-          this.error= err?. error.message;
-          this.loginForm.reset();
+        // error:(err)=>{
+        //   alert(err?.error.message())
+        //   console.log("authentication failure")
+        //   //this.error= "Invalid Username or Password";
+        //   //this.loginForm.reset();
+          error:(err)=>{
+            //alert(err?.error.message)
+            this.loginForm.reset();
         }
       })
     }
@@ -61,4 +69,73 @@ export class LoginComponent {
       ValidateForm.validateAllFormFields(this.loginForm);
     }
   }
+
+  // onLogin() {
+  //   if (this.loginForm.valid) {
+  //     this.auth.login(this.loginForm.value)
+  //       .subscribe({
+  //         next: (res) => {
+  //           this.loginForm.reset();
+  //           this.auth.storeToken(res.token);
+  //           const tokenPayload = this.auth.decodedToken();
+  //           this.userStore.setNameForStore(tokenPayload.unique_name);
+  //           this.userStore.setRoleForStore(tokenPayload.role);
+  //           this.userStore.setIdForStore(tokenPayload.primarysid);
+  
+  //           // Redirect based on user role
+  //           if (tokenPayload.role === 'Admin') {
+  //             this.router.navigate(['publisher-approval']);
+  //           } else if (tokenPayload.role === 'Publisher' || tokenPayload.role === 'Moderator') {
+  //             this.router.navigate(['news-list']);
+  //           }
+  //         },
+  //         // error: (err) => {
+  //         //   // Display the error message
+  //         //   alert(err);
+  
+  //         error: (err) => {
+  //           console.log(err); // Log the entire error object
+  //           alert(err.error.Message); // Display the error message
+  //           // Other error handling logic
+          
+  //           // Reset the form and any other necessary actions
+  //           this.loginForm.reset();
+  //         }
+  //       });
+  //   } else {
+  //     ValidateForm.validateAllFormFields(this.loginForm);
+  //   }
+  // }
+
+  // onLogin() {
+  //   if (this.loginForm.valid) {
+  //     this.auth.login(this.loginForm.value).subscribe({
+  //       next: (res) => {
+  //         // ... (existing code for successful login)
+  //       },
+        // error: (err) => {
+        //   console.error(err); // Log the entire error response
+        //   if (err.error && err.error.message) {
+        //     // Display the custom error message from the backend
+        //     alert(err.error.message);
+        //   } else {
+        //     // Fallback error message if the custom one is not available
+        //     alert("Authentication failure");
+        //   }
+        //   console.log("Authentication failure");
+        //   // this.error = "Invalid Username or Password";
+        //   // this.loginForm.reset();
+        // },
+  //       error: (err) => {
+  //         console.error(err); // Log the entire error response
+  //         alert(err); // Display the error message received from the backend
+  //         // Handle any additional logic for error handling
+  //       },
+  //     });
+  //   } else {
+  //     ValidateForm.validateAllFormFields(this.loginForm);
+  //   }
+  // }
+  
+  
 }

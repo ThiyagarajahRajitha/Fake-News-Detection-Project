@@ -36,7 +36,7 @@ namespace FND.API.Data.Repositories
             }
             else
             {
-                var publishersList = await _fNDDBContext.Users.Where(u => u.Role == "Publisher")
+                var publishersList = await _fNDDBContext.Users.Where(u => u.Role == "Publisher" && u.IsDeleted==false)
                 .OrderByDescending(b => b.Id).ToListAsync();
                 return publishersList;
             }
@@ -59,7 +59,6 @@ namespace FND.API.Data.Repositories
 
             var updatePublication = new Publication { Publication_Id = id, NewsDiv = activatePublisher.divClass };
             _fNDDBContext.Attach(updatePublication);
-            _fNDDBContext.Entry(updatePublication).Property(r => r.Publication_Id).IsModified = true;
             _fNDDBContext.Entry(updatePublication).Property(r => r.NewsDiv).IsModified = true;
             _fNDDBContext.SaveChanges();
         }
@@ -75,7 +74,7 @@ namespace FND.API.Data.Repositories
 
             var rejectPublication = new Publication { Publication_Id = id,PublisherRejectReason=rejectPublisherDto.RejectReason };
             _fNDDBContext.Attach(rejectPublication);
-            _fNDDBContext.Entry(rejectPublication).Property(r=>r.IsUpdated).IsModified = true;
+            _fNDDBContext.Entry(rejectPublication).Property(r=>r.PublisherRejectReason).IsModified = true;
             _fNDDBContext.SaveChanges();
             return true;
         }
@@ -126,7 +125,8 @@ namespace FND.API.Data.Repositories
 
         public async Task<List<Publication>> GetPublication()
         {
-            var publishersList = await _fNDDBContext.Publications.ToListAsync();
+            var publishersList = await _fNDDBContext.Publications
+                .Where(p=>p.IsDeleted==false).ToListAsync();
             return publishersList;
         }
     }

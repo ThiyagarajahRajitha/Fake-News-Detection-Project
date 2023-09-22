@@ -51,3 +51,30 @@ body, table {
 .status-approved {
     color: #2ecc71;
 }
+
+.styled-table thead{
+    font-weight: bold;
+    background-color: #eef4f5;
+}
+
+/* .mat-mdc-raised-button{
+    background-color: #3498db;
+} */
+
+/* .mat-raised-button.custom-button {
+    background-color: blue; /* Set your desired background color */
+    /* color: white; Set the text color */
+  /* } */ 
+
+  .mat-mdc-raised-button.color-button 
+  { background-color:  #3498db; 
+    color: rgb(243, 246, 251); 
+    border: 1px solid rgb(5, 5, 5); 
+    }
+
+    
+    .mat-mdc-raised-button.color-button:hover
+  { background-color:  #64b3e8; 
+    color: rgb(246, 246, 247); 
+    border: 1px solid rgb(5, 5, 5); 
+    }

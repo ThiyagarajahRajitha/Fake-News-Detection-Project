@@ -14,6 +14,7 @@ using FND.API.Data.Dtos;
 using FND.API.Data.Repositories;
 using FND.API.Services;
 using Microsoft.AspNetCore.Authorization;
+using FND.API.Interfaces;
 
 namespace FND.API.Controllers
 {
@@ -40,14 +41,14 @@ namespace FND.API.Controllers
             if (createModeratorDto == null)
                 return BadRequest();
 
-            if (await CheckModeratorEmailExist(createModeratorDto.Email))
+            if (await CheckModeratorEmailExist(createModeratorDto.Email) || await CheckUserEmailExist(createModeratorDto.Email))
                 return BadRequest(new { Message = "Email Already Exist!" });
 
             var moderator  = await moderatorService.CreateModerator(createModeratorDto);
             return Ok();
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpPost("Reinvite")]
         public async Task<ActionResult<Moderator>> ReinviteModerator(int id)
         {
@@ -58,10 +59,11 @@ namespace FND.API.Controllers
             return BadRequest();
         }
 
-        [Authorize]
         [HttpPost("ValidateModerator")]
         public async Task<IActionResult> ValidateModerator([FromQuery(Name = "username")] string userName, [FromQuery(Name = "inviteCode")] Guid inviteCode)
         {
+            if (userName == null || userName.IsNullOrEmpty())
+                return BadRequest();
             //var newsList = await _fNDDBContext.News.ToListAsync();
             bool isvalid= await moderatorService.ValidateModerator(userName, inviteCode);
             if (isvalid)
@@ -126,7 +128,7 @@ namespace FND.API.Controllers
             }
         }
 
-        //  [Authorize]
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<List<Users>>> GetModerators([FromQuery(Name = "Pending")] bool IsPendingOnly)
         {
@@ -134,17 +136,21 @@ namespace FND.API.Controllers
             return result;
         }
 
-        [Authorize]
+        
+
+        //[Authorize]
+        //[Route("DeleteModeratorById")]
         [HttpDelete("{id:int}")]
-        public async Task<IActionResult> DeleteModerator([FromRoute] int id)
+        public async Task<IActionResult> DeleteModeratorById([FromRoute] int id)
         {
-            bool rslt = await userService.DeleteModeratorUser(id);
+            bool rslt = await moderatorService.DeleteModeratorById(id);
             if (rslt == true)
                 return Ok();
             else
                 return BadRequest(rslt);
         }
 
+        [Authorize]
         [Route("GetReviewRequestCountByModerator")]
         [HttpGet]
         public async Task<ActionResult<List<ReviewRequestCountByModeratorDashboardresultDto>>> GetReviewRequestCountByModerator(int userId, [FromQuery(Name = "from")] string fromDate, [FromQuery(Name = "to")] string toDate)

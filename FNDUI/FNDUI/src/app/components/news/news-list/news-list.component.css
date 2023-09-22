@@ -56,6 +56,15 @@
     cursor: pointer;
 }
 
+.banner button:hover {
+  background-color: #62c8ed;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor:grab/pointer;
+}
+
+
 .news-cards {
     width: 100%;
 }
@@ -182,6 +191,9 @@
 
   h3.form-check-label{
     line-height: 44px;
+  }
+  .clickable {
+    cursor: pointer;
   }
 
 

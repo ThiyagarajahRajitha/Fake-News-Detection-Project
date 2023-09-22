@@ -16,12 +16,22 @@ import { UserStoreService } from 'src/app/services/user-store/user-store.service
 export class NewsCountsComponent implements OnInit{
 
   public name: string = "";
-  userId:String='';
+  userId:string='';
+  userRole:string='';
   uid:number=0;
-  fakeColor:string = "#FF8000";
-  realColor:string = "#4682B4";
-  from: Date = new Date(new Date().setDate(new Date().getDate() - 30));;
+  fakeColor:string = "#e6b263";
+  realColor:string = "#7ecade";
+  completedColor:string = "#7ecade";
+  pendingColor:string = "#e6b263";
+  moderatorsColor:string = '#33c1de'
+  //#63f282
+  //#FF8000
+  //#4682B4
+  from: Date = new Date(new Date().setDate(new Date().getDate() - 30));
   to: Date = new Date();
+  // to=this.datePipe. transform(new Date(), 'yyyy-MM-dd HH:mm:ss')
+  // from = this.datePipe. transform(new Date().setDate(new Date().getDate() - 30));
+
   formattedFromDate:any;
   formattedToDate:any;
  
@@ -37,7 +47,7 @@ export class NewsCountsComponent implements OnInit{
     animationEnabled: true,
     theme: "light2",
   title: {
-      text: "News classification Result"
+      text: "News Classification"
     },
     data: [{
       type: "pie",
@@ -49,7 +59,7 @@ export class NewsCountsComponent implements OnInit{
     animationEnabled: true,
     theme: "light2",
   title: {
-      text: "Review Requests Result"
+      text: "Review Requests"
     },
     data: [{
       type: "pie",
@@ -62,7 +72,7 @@ export class NewsCountsComponent implements OnInit{
   publisherChartOptions = {
 	  animationEnabled: true,
 	  title: {
-		text: "Classification By Publication"
+		text: "News Classification By Publication"
 	  },
 	  axisY: {
 		  title: "Count"
@@ -105,7 +115,7 @@ export class NewsCountsComponent implements OnInit{
 		animationEnabled: true,
 		theme: "light2",
 		title: {
-			text: "Classification Time Series"
+			text: "Monthly News Classification"
 		},
 		axisX: {
 			valueFormatString: "MMM",
@@ -175,12 +185,14 @@ export class NewsCountsComponent implements OnInit{
 	  data: [{
               type: "column",	
               name: "Completed Count",
+              color: this.completedColor,
               showInLegend: true, 
               dataPoints:[
                 ]
             }, {
               type: "column",	
               name: "Pending Count",
+              color: this.pendingColor,
               showInLegend: true,
               dataPoints:[
 		          ]
@@ -217,6 +229,7 @@ export class NewsCountsComponent implements OnInit{
 	  data: [{
               type: "column",	
               name: "Reviewed Count",
+              color: this.moderatorsColor,
               showInLegend: true, 
               dataPoints:[
                 ]
@@ -229,6 +242,7 @@ export class NewsCountsComponent implements OnInit{
   
   ngOnInit(): void {
     this.userId = this.auth.getprimarySidFromToken();
+    this.userRole =this.auth.getRoleFromToken();
     this.userStore.getNameFromStore()
     .subscribe(val =>{
       let nameFromToken = this.auth.getNameFromToken();
@@ -239,6 +253,11 @@ export class NewsCountsComponent implements OnInit{
     this.getModerators();
     
     this.getNewsCount();
+    // this.getPublisherCount();
+    // this.GetNewsCountByMonth();
+    // this.getReviewRequestPublisherCount();
+    // this.getReviewRequestByModeratorCount();
+    
   }
 
   getPublication(){
@@ -272,19 +291,17 @@ export class NewsCountsComponent implements OnInit{
   getNewsChartInstance(chart: object) {
     this.newsChart = chart;
   }
-
+  getTimeSeriesChartInstance(chart:object) {
+    this.timeSeriesChart = chart;
+  }
+  getPublisherChartInstance(chart: object) {
+    this.pubhlisherChart = chart;
+  }
   getReviewRequestsChartInstance(chart: object) {
     this.rrChart = chart;
   }
 
-  getPublisherChartInstance(chart: object) {
-    this.pubhlisherChart = chart;
-  }
-
-  getTimeSeriesChartInstance(chart:object) {
-    this.timeSeriesChart = chart;
-  }
-
+  
   fromDateChanged($event: { target: { value: any; }; }){
     console.log($event.target.value);
     this.from = $event.target.value;
@@ -314,11 +331,10 @@ export class NewsCountsComponent implements OnInit{
         ]
         this.newsChart.options.data[0].dataPoints = dataPoints;
         this.newsChart.render();
-        
         this.getPublisherCount();
-        this.getReviewRequestPublisherCount();
-        this.getReviewRequestByModeratorCount();
-        this.GetNewsCountByMonth();
+    this.GetNewsCountByMonth();
+    this.getReviewRequestPublisherCount();
+    this.getReviewRequestByModeratorCount();
       },
       error:(response) =>{
         console.log(response);
@@ -366,14 +382,14 @@ export class NewsCountsComponent implements OnInit{
     this.newsService.getReviewRequestCountByPublisher(this.uid, this.formattedFromDate, this.formattedToDate)
     .subscribe({
       next:(requestReviewCountsByPublication)=>{
-    var realDataPoints = requestReviewCountsByPublication.map(({ pid: pId, reviewRending }) => 
+    var reviewPending = requestReviewCountsByPublication.map(({ pid: pId, reviewRending }) => 
             ({ label: this.publicationMap.get(pId), y: reviewRending })
           );
-    var fakeDataPoints = requestReviewCountsByPublication.map(({ pid: pId, reviewCompleted }) => 
+    var reviewCompleted = requestReviewCountsByPublication.map(({ pid: pId, reviewCompleted }) => 
           ({ label: this.publicationMap.get(pId), y: reviewCompleted })
         )
-        this.reviewPublisherChart.options.data[0].dataPoints = realDataPoints;
-        this.reviewPublisherChart.options.data[1].dataPoints = fakeDataPoints;
+        this.reviewPublisherChart.options.data[0].dataPoints =reviewCompleted ;
+        this.reviewPublisherChart.options.data[1].dataPoints = reviewPending;
         this.reviewPublisherChart.render();
       }
     })
@@ -407,8 +423,8 @@ export class NewsCountsComponent implements OnInit{
                   ({ x: new Date(year, month), y: fakeCount })
                 );
                   
-            this.timeSeriesChart.options.data[0].dataPoints = realDataPoints;
-            this.timeSeriesChart.options.data[1].dataPoints = fakeDataPoints;
+            this.timeSeriesChart.options.data[1].dataPoints = realDataPoints;
+            this.timeSeriesChart.options.data[0].dataPoints = fakeDataPoints;
             this.timeSeriesChart.render();
           },
           error:(response) =>{

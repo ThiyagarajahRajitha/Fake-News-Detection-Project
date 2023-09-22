@@ -31,7 +31,11 @@ nav ul li.nav-right a {
 }
 
 nav ul li.nav-right a:hover {
-    color: #63d9f7;
+    color: #d9eff5;
+}
+
+nav ul li a:hover {
+  color: #92a3a7;
 }
 
 /* Style the icons */

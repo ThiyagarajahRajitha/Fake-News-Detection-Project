@@ -12,7 +12,7 @@ namespace FND.API.Entities
         public string RSS_Url { get; set; }
         public string? NewsDiv { get; set; }
         public string? LastFetchedNewsUrl { get; set; }
-        public string PublisherRejectReason { get; set; }
+        public string? PublisherRejectReason { get; set; }
         public DateTimeOffset CreatedOn { get; set; }
         public bool IsUpdated { get; set; }
         public int UpdatedAt { get; set; }

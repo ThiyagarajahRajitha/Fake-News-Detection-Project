@@ -20,7 +20,7 @@ namespace FND.API.Interfaces
         public Task<List<ListNewsDto>> GetNewsByPublisherId(int publisherId, string Filter);
         public Task<ReviewRequest> RequestReview(CreateRequestReviewDto createRequestReviewDto);
 
-        public Task<ReviewRequest> SubmitReview(int ModeratorId, SubmitReviewDto submitReviewDto);
+        public Task<ReviewRequest> SubmitReview(SubmitReviewDto submitReviewDto);
 
         public Task<List<ListNewsDto>> GetAllReviewRequestedNews(string filter);
         public Task<List<ReviewRequestCountByPublisherDashboardresultDto>> GetReviewRequestCountByPublisher(int userId, string fromDate, string toDate);

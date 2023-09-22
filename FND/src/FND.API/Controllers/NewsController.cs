@@ -65,33 +65,7 @@ namespace FND.API.Controllers
         }
 
 
-
-
-        //[Route("AddNews")]
-        //[HttpPost]
-        //public async Task<IActionResult> CreateNews(News newsRequest)//give values except id. delete id:
-        //{
-
-        //    await _fNDDBContext.News.AddAsync(newsRequest);
-        //    await _fNDDBContext.SaveChangesAsync();
-
-        //    return Ok(newsRequest);
-
-        //}
-
-        //[Route("Update")]
-        //[HttpPatch("{id}")]
-        //public async Task<IActionResult> PatchEmployee([FromRoute] int id, [FromBody] JsonPatchDocument employeeDocument)
-        //{
-        //    var updatedEmployee = await _newsRepository.UpdateEmployeePatchAsync(id, employeeDocument);
-        //    if (updatedEmployee == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return Ok(updatedEmployee);
-        //}
-
-        //[Authorize]
+        [Authorize]
         [Route("GetNewsCount")]
         [HttpGet]
         public async Task<ActionResult<NewsDashboardResultDto>> GetNewsCountByClassification(int userId, [FromQuery(Name = "from")] string fromDate, [FromQuery(Name = "to")] string toDate)
@@ -104,7 +78,7 @@ namespace FND.API.Controllers
             return newsCountByClassification;
         }
 
-        //[Authorize]
+        [Authorize]
         [Route("GetReviewRequestCount")]
         [HttpGet]
         public async Task<ActionResult<ReviewRequestDashboardRestultDto>> GetReviewRequestCount(int userId, [FromQuery(Name = "from")] string fromDate, [FromQuery(Name = "to")] string toDate)
@@ -116,7 +90,7 @@ namespace FND.API.Controllers
             var reviewREquestCountByStatus = await newsService.GetReviewRequestCount(userId, fromDate, toDate);
             return reviewREquestCountByStatus;
         }
-
+        [Authorize]
         [Route("GetNewsClassificationCountByPublisher")]
         [HttpGet]
         public async Task<ActionResult<List<NewsCountByPublisherDashboardresultDto>>> GetNewsClassificationCountByPublisher(int userId, [FromQuery(Name = "from")] string fromDate, [FromQuery(Name = "to")] string toDate)
@@ -141,6 +115,7 @@ namespace FND.API.Controllers
             return reviewRequestCountByPublisher;
         }
 
+        [Authorize]
         [Route("GetNewsClassificationCountByMonth")]
         [HttpGet]
         public async Task<ActionResult<List<NewsCountByMonthDashboardresultDto>>> GetNewsClassificationCountByMonth(int userId, [FromQuery(Name = "from")] string fromDate, [FromQuery(Name = "to")] string toDate)
@@ -156,9 +131,9 @@ namespace FND.API.Controllers
         [Authorize]
         [Route("SubmitReview")]
         [HttpPost]
-        public async Task<IActionResult> SubmitReview(int ModeratorId, SubmitReviewDto submitReviewDto)
+        public async Task<IActionResult> SubmitReview(SubmitReviewDto submitReviewDto)
         {
-            var request = await newsService.SubmitReview(ModeratorId, submitReviewDto);
+            var request = await newsService.SubmitReview(submitReviewDto);
             return Ok(request);
         }
 

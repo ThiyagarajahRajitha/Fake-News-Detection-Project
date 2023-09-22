@@ -6,5 +6,7 @@ export interface Users{
     created_at: Date|string,
     token:string,
     role:string,
-    status:number
+    status:number,
+    isDeleted:boolean,
+    deletedAt:Date|string
 }

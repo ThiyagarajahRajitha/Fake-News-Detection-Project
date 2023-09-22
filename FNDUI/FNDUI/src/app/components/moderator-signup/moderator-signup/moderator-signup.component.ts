@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { NgToastService } from 'ng-angular-popup';
 import ValidateForm from 'src/app/helpers/validateform';
 import { ModeratorSignupModel } from 'src/app/models/moderator-signup.model';
 import { ModeratorsVerifyModel } from 'src/app/models/moderator-verify.model';
@@ -14,7 +15,8 @@ import { ModeratorService } from 'src/app/services/moderator/moderator.service';
 })
 export class ModeratorSignupComponent implements OnInit{
 
-  constructor(private activateRoute: ActivatedRoute,private moderatorService: ModeratorService,private fb:FormBuilder,private auth:AuthService, private router:Router){}
+  constructor(private activateRoute: ActivatedRoute,private moderatorService: ModeratorService,
+    private fb:FormBuilder,private auth:AuthService, private router:Router, private toastService:NgToastService){}
 
   moderatorVerify!: ModeratorsVerifyModel;
   result: any = '';
@@ -81,7 +83,6 @@ export class ModeratorSignupComponent implements OnInit{
   }
 
   onSignUp(){
-
     if(this.signUpForm.valid){
       const signUpModeratorModel: ModeratorSignupModel = {
         Email: this.email,
@@ -96,7 +97,13 @@ export class ModeratorSignupComponent implements OnInit{
             this.created = true;
           })
           ,error:(err=>{
-            alert(err?.error.message)
+            this.toastService.error({
+              detail: 'Error',
+              summary: err.error.message,
+              sticky: true, // Keep the toast visible
+              position: 'tr',
+              duration: 5000
+            }); 
           })
         })
       

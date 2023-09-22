@@ -4,6 +4,7 @@ using FND.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FND.API.Migrations
 {
     [DbContext(typeof(FNDDBContext))]
-    partial class newsRepositoryModelSnapshot : ModelSnapshot
+    [Migration("20230918165653_PublicationTableNotnullchange")]
+    partial class PublicationTableNotnullchange
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -142,7 +145,7 @@ namespace FND.API.Migrations
                     b.Property<string>("ReviewFeedback")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ReviewedBy")
+                    b.Property<int>("ReviewedBy")
                         .HasColumnType("int");
 
                     b.Property<int>("Status")
@@ -244,7 +247,9 @@ namespace FND.API.Migrations
 
                     b.HasOne("FND.API.Entities.Users", "Users")
                         .WithMany()
-                        .HasForeignKey("ReviewedBy");
+                        .HasForeignKey("ReviewedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("News");
 

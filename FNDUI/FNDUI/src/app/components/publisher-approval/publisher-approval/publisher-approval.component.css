@@ -51,3 +51,8 @@ body, table {
 .status-approved {
     color: #2ecc71;
 }
+
+.styled-table thead{
+    font-weight: bold;
+    background-color: #eef4f5;
+}

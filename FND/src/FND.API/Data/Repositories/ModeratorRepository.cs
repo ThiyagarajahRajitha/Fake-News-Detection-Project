@@ -1,6 +1,7 @@
 ﻿using FND.API.Data.Dtos;
 using FND.API.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Net.WebSockets;
 
 namespace FND.API.Data.Repositories
 {
@@ -32,7 +33,10 @@ namespace FND.API.Data.Repositories
         public async Task<Moderator> UpdateModerator(int id)
         {
             //check the email is already exist
-            
+            var moderator = await GetModeratorById(id);
+            //if(moderator.Username== null || moderator.Username == "")
+            //    throw new InvalidOperationException("The moderator email is null.");
+
             //if not create record with new invite code
             var updateModerator = new Moderator { Id = id, InviteCode = Guid.NewGuid(), IsUpdated = true, UpdatedAt = DateTimeOffset.UtcNow };
             fNDDBContext.Attach(updateModerator);
@@ -72,11 +76,28 @@ namespace FND.API.Data.Repositories
                 return null;
             }
         }
+        
+        public async Task<bool> DeleteModeratorById(int id)
+        {
+            var result = await fNDDBContext.Moderators
+                .FirstOrDefaultAsync(e => e.Id == id);
+            if (result != null)
+            {
+                fNDDBContext.Moderators.Remove(result);
+                await fNDDBContext.SaveChangesAsync();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         public async Task<Moderator> GetModeratorById(int id)
         {
             Moderator moderator = await fNDDBContext.Moderators.Where(u => u.Id == id).FirstAsync();
             return moderator;
         }
+
     }
 }

@@ -24,7 +24,7 @@ namespace FND.API.Fetcher
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             await fetchNews();
-            var timer = new PeriodicTimer(TimeSpan.FromMinutes(15));
+            var timer = new PeriodicTimer(TimeSpan.FromMinutes(5));
             while (await timer.WaitForNextTickAsync(stoppingToken))
             {
                 await fetchNews();
@@ -44,7 +44,15 @@ namespace FND.API.Fetcher
         private async void fetchAndClassifyLastestNews(Publication publisher)
         {
             List<ClassifyNewsDto> newsList = new List<ClassifyNewsDto>();
-            using var reader = XmlReader.Create(publisher.RSS_Url);
+            XmlReader reader = null;
+            try
+            {
+                reader = XmlReader.Create(publisher.RSS_Url);
+            } catch(Exception ex)
+            {
+                Console.WriteLine("Error while loading the rss url " +  publisher.RSS_Url, ex.Message);
+                return;
+            }
             var feed = SyndicationFeed.Load(reader);
             foreach (var item in feed.Items)
             {
@@ -64,50 +72,56 @@ namespace FND.API.Fetcher
                     // This in the latest fetched news url of the publisher. This needs to be updated in the DB
                 }
 
-                using (var httpClient = new HttpClient())
+                try
                 {
-                    var htmlContent = await httpClient.GetStringAsync(newsUrl);
-
-                    var htmlDocument = new HtmlDocument();
-                    htmlDocument.LoadHtml(htmlContent);
-
-
-                    var itemFullTextDiv = htmlDocument.DocumentNode.SelectSingleNode("//div[contains(@class, '" + publisher.NewsDiv + "')]");
-
-                    if (itemFullTextDiv != null)
+                    using (var httpClient = new HttpClient())
                     {
-                        var paragraphs = itemFullTextDiv.SelectNodes(".//p");
-                        var divs = itemFullTextDiv.SelectNodes(".//div");
-                        var content =  "";
-                        if (paragraphs != null)
-                        {
-                            foreach (var paragraph in paragraphs)
-                            {
-                                content = content + "\n" + paragraph.InnerText;
-                                
-                            }
-                        }
-                        if (divs != null)
-                        {
-                            foreach (var div in divs)
-                            {
-                                content = content + "\n" + div.InnerText;
+                        var htmlContent = await httpClient.GetStringAsync(newsUrl);
 
+                        var htmlDocument = new HtmlDocument();
+                        htmlDocument.LoadHtml(htmlContent);
+
+
+                        var itemFullTextDiv = htmlDocument.DocumentNode.SelectSingleNode("//div[contains(@class, '" + publisher.NewsDiv + "')]");
+
+                        if (itemFullTextDiv != null)
+                        {
+                            var paragraphs = itemFullTextDiv.SelectNodes(".//p");
+                            var divs = itemFullTextDiv.SelectNodes(".//div");
+                            var content = "";
+                            if (paragraphs != null)
+                            {
+                                foreach (var paragraph in paragraphs)
+                                {
+                                    content = content + "\n" + paragraph.InnerText;
+
+                                }
                             }
+                            if (divs != null)
+                            {
+                                foreach (var div in divs)
+                                {
+                                    content = content + "\n" + div.InnerText;
+
+                                }
+                            }
+                            ClassifyNewsDto news = new ClassifyNewsDto();
+                            news.Url = newsUrl.ToString();
+                            news.Publication_Id = publisher.Publication_Id;
+                            news.Topic = item.Title.Text;
+                            news.Content = content;
+                            var result = await newsService.ClassifyNews(news);
+                            Console.WriteLine($"News : {news.Url} , classification result : {result}");
+                            newsList.Add(news);
                         }
-                        ClassifyNewsDto news = new ClassifyNewsDto();
-                        news.Url = newsUrl.ToString();
-                        news.Publication_Id = publisher.Publication_Id;
-                        news.Topic = item.Title.Text;
-                        news.Content = content;
-                        var result = await newsService.ClassifyNews(news);
-                        Console.WriteLine($"News : {news.Url} , classification result : {result}");
-                        newsList.Add(news);
+                        else
+                        {
+                            Console.WriteLine("Content not found.");
+                        }
                     }
-                    else
-                    {
-                        Console.WriteLine("Content not found.");
-                    }
+                } catch(Exception ex) {
+                    Console.WriteLine("Error while loading the news url" + newsUrl, ex.Message);
+                    continue;
                 }
             }
             return;
@@ -138,6 +152,7 @@ namespace FND.API.Fetcher
             //{
             //    id = 2,
             //    rssUrl = "https://newsfirst.lk/feed",
+            // https://www.newsfirst.lk/2023/09/22/sajith-slams-attempts-to-protect-those-linked-to-easter-sunday-attacks/
             //    lastFetchedNewsUrl = "https://www.newsfirst.lk/2023/08/05/donald-trump-pleads-not-guilty-to-additional-charges-in-documents-case/",
             //    newsDiv = "editor-style"
             //};

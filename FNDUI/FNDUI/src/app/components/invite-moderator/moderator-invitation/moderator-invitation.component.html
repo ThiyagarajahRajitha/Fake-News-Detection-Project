@@ -4,10 +4,10 @@
     <div class="col py-3">
         <div class="row">
             <div class="col-11">
-                <h2>Moderators</h2>
+                <h1><b>Moderators</b></h1>
             </div>
             <div class="col">
-                <button (click)="openInviteModeratorModal()" mat-raised-button><i class="fa-solid fa-plus"></i></button>
+                <button (click)="openInviteModeratorModal()" mat-raised-button class="color-button"  ><i class="fa-solid fa-plus"></i></button>
             </div>
         </div>
         
@@ -22,19 +22,25 @@
     </div>
     <table class="table table-striped styled-table">
         <thead>
-            <td>Id</td>
+            <td *ngIf="!isShowingPending">Name</td>
             <td>Email</td>
-            <td></td>
+            <td>Action</td>
         </thead>
         <tbody>
             <tr *ngFor="let moderator of users">
-                <td>{{moderator.id}}</td>
+                <td *ngIf="moderator.status==1">{{moderator.name}}</td>
+                <!-- <td *ngIf="moderator.status==0">{{moderator.id}}</td> -->
                 <td>{{moderator.email}}</td>
                 <td>
                     <div *ngIf="moderator.status==0">
                         <span>
                             <button class="approve-button"  type="button" (click)="resend(moderator)">
                                 <i class="fas fa-share"></i> Resend
+                            </button>
+                        </span>&nbsp;
+                        <span>
+                            <button class="reject-button"  type="button" (click)="deleteModerator(moderator)">
+                                <i class="fas fa-times-circle"></i> Delete
                             </button>
                         </span>&nbsp;
                     </div>

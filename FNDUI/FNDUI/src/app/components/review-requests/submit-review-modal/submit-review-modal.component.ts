@@ -3,6 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import ValidateForm from 'src/app/helpers/validateform';
 import { ReviewedResultModel } from 'src/app/models/reviewed-result.model';
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { NewsService } from 'src/app/services/news.service';
 
 @Component({
@@ -12,7 +13,7 @@ import { NewsService } from 'src/app/services/news.service';
 })
 export class SubmitReviewModalComponent {
   @Input() newId: number = 0;
-  constructor(private fb:FormBuilder, public activeModal: NgbActiveModal, private newsService: NewsService) { }
+  constructor(private fb:FormBuilder, public activeModal: NgbActiveModal, private newsService: NewsService, private auth:AuthService) { }
 
   form = this.fb.group({
     result:['', Validators.required],
@@ -22,6 +23,7 @@ export class SubmitReviewModalComponent {
   result: any= '';
   error:any='';
   showForm: boolean = true;
+  userId= this.auth.getprimarySidFromToken();
 
   dismissModal() {
     this.activeModal.dismiss();
@@ -45,24 +47,20 @@ export class SubmitReviewModalComponent {
     const reviewedResult: ReviewedResultModel = {
       requestReviewId: this.newId,
       reviewResult:reviewResult,
-      reviewFeedback: feedback
+      reviewFeedback: feedback,
+      reviewerId:this.userId
     };
 
     // Make a POST request to the API endpoint
     this.newsService.submitReview(reviewedResult).subscribe(
       response => {
-        // Handle the response from the API
         console.log('API response:', response);
             this.result = response.status;
             this.showForm = false;
-        
 
-        // Reset the form or perform further operations
       },
       error => {
-        // Handle any errors that occur during the request
         this.error = error;
-          // Handle any errors that occur during the request
           console.error('API error:', error);
       });
   }

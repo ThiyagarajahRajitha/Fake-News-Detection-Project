@@ -13,6 +13,7 @@ using System;
 using FND.API.Data.Dtos;
 using FND.API.Data.Repositories;
 using FND.API.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FND.API.Controllers
 {
@@ -35,16 +36,16 @@ namespace FND.API.Controllers
                 return BadRequest();
 
             var user = await _context.Users.FirstOrDefaultAsync(x=>x.Email== loginRequest.Username);
-            if(user == null)
-                return NotFound(new {Message = "User Not Found!"});
+            //if(user == null)
+            //    return Ok(new {Message = "User Not Found!"});
 
-            if(!PasswordHasher.verifyPasswood(loginRequest.Password, user.Password_hash))
+            if(user == null || !PasswordHasher.verifyPasswood(loginRequest.Password, user.Password_hash))
             {
-                return BadRequest(new { Message = "Password is incorrect" });
+                return Ok(new { Message = "Invalid Username or Password" });
             }
             if(user.Status == 0)
             {
-                return BadRequest(new { Message = "Your account approval is pending" });
+                return Ok(new { Message = "Your account approval is pending" });
             }
 
             user.Token= CreateJwt(user);
@@ -65,22 +66,6 @@ namespace FND.API.Controllers
             if (await CheckUserEmailExist(signUpRequest.Email))
                 return BadRequest(new { Message = "Email Already Exist!" });
 
-            //signUpRequest.Password = PasswordHasher.HashPassword(signUpRequest.Password);
-            ////users.Token = "";
-            //Users user = new Users()
-            //{
-            //    Name = signUpRequest.Name,
-            //    Email = signUpRequest.Email,
-            //    Password_hash = signUpRequest.Password,
-            //    Created_at = DateTime.UtcNow,
-            //    Token = "",
-            //    Role = "Publisher",
-            //    Status = 0
-            //};
-
-
-            //await _context.Users.AddAsync(user);
-            //await _context.SaveChangesAsync();
             await userService.CreateUser(signUpRequest);
             return Ok(new
             {
@@ -114,6 +99,17 @@ namespace FND.API.Controllers
 
             var token = jwtTokenhandler.CreateToken(tokenDescriptor);
             return jwtTokenhandler.WriteToken(token);
+        }
+
+        [Authorize]
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteModeratoruser([FromRoute] int id)
+        {
+            bool rslt = await userService.DeleteModeratorUser(id);
+            if (rslt == true)
+                return Ok();
+            else
+                return BadRequest(rslt);
         }
     }
 }

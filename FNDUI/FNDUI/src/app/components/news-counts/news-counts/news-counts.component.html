@@ -1,7 +1,7 @@
 <section class="home-content">
   <div class="container my=5">
     <div class="row align-items-center">
-      <h2>News</h2>
+      <h1><b>Dashboard</b></h1>
     </div>
     <div class="row" align-items-center>
       <div class="col-3">
@@ -42,47 +42,38 @@
       </div> -->
     </div>
   </div>
-  <div>
-    <canvasjs-chart [options]="newsChartOptions" (chartInstance)="getNewsChartInstance($event)"></canvasjs-chart>
-  </div>
 
-  <br>
-  <br>
   <div>
+  <br>
+    <canvasjs-chart [options]="newsChartOptions" 
+    (chartInstance)="getNewsChartInstance($event)"></canvasjs-chart>
+  </div>
+  <br>
+  <div *ngIf="userRole =='Admin'">
+  <br>
     <canvasjs-chart [options]="publisherChartOptions"
       (chartInstance)="getPublisherChartInstance($event)"></canvasjs-chart>
   </div>
-
+  <div *ngIf="userRole =='Admin' || userRole == 'Publisher'" >
   <br>
-  <br>
-  <div>
     <canvasjs-chart [options]="timeSeriesChartOptions"
       (chartInstance)="getTimeSeriesChartInstance($event)"></canvasjs-chart>
   </div>
-</section>
-
-<section class="home-content">
-  <div class="container my=5">
-    <div class="row align-items-center">
-      <h2>Review Requests</h2>
-    </div>
-  </div>
-  <div>
+  <div *ngIf="userRole =='Admin' || userRole=='Moderator'">
+    <br>
     <canvasjs-chart [options]="rrChartOptions" (chartInstance)="getReviewRequestsChartInstance($event)"></canvasjs-chart>
     <!-- <canvasjs-chart [options]="reviewRequestChartOptions"
       (chartInstance)="getReviewRequestsChartInstance($event)"></canvasjs-chart> -->
   </div>
-
   <br>
-  <br>
-  <div>
+  <div *ngIf="userRole =='Admin' || userRole=='Moderator'">
+    <br>  
     <canvasjs-chart [options]="reviewPublisherChartOptions"
       (chartInstance)="getReviewPublisherChartInstance($event)"></canvasjs-chart>
   </div>
-
   <br>
-  <br>
-  <div>
+  <div *ngIf="userRole =='Admin' || userRole=='Moderator'">
+  <br>  
     <canvasjs-chart [options]="reviewModeratorChartOptions"
       (chartInstance)="getReviewModeratorChartInstance($event)"></canvasjs-chart>
   </div>

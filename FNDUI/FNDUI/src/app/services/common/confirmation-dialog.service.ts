@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ConfirmationDialogComponent } from './confim-dialog.component';
+import { ConfirmationDialogComponent } from '../../components/confim-dialog/confim-dialog.component';
 import { FormBuilder, Validators } from '@angular/forms';
 
 

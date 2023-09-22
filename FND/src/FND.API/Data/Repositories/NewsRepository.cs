@@ -58,7 +58,7 @@ namespace FND.API.Data.Repositories
             //DateTime toDateee = DateTime.Parse(fromDate);
             NewsDashboardResultDto result = new NewsDashboardResultDto();
             Users user = await _fNDDBContext.Users.Where(u => u.Id == userId).FirstAsync();
-            if (user.Role == "Admin")
+            if (user.Role == "Admin" || user.Role == "Moderator")
             {
                 var newsCountByClassification = await _fNDDBContext.News
                .Where(n => n.CreatedOn >= fromDatee && n.CreatedOn <= toDatee)
@@ -101,41 +101,6 @@ namespace FND.API.Data.Repositories
             }
             return result;
         }
-        //public async Task<NewsDashboardResultDto> GetNewsCountByPublisher(int userId, [FromQuery(Name = "from")] string fromDate, [FromQuery(Name = "to")] string toDate)
-        //{
-        //    string format = "yyyy-MM-dd";
-        //    DateTime fromDatee = DateTime.ParseExact(fromDate, format, CultureInfo.InvariantCulture);
-        //    DateTime toDatee = DateTime.ParseExact(toDate, format, CultureInfo.InvariantCulture);
-
-        //    //DateTime fromDateee = DateTime.Parse(fromDate);
-        //    //DateTime toDateee = DateTime.Parse(fromDate);
-        //    NewsDashboardResultDto result = new NewsDashboardResultDto();
-        //    Users user = await _fNDDBContext.Users.Where(u => u.Id == userId).FirstAsync();
-        //    if (user.Role == "Admin")
-        //    {
-        //        var newsCountByClassification = await _fNDDBContext.News
-        //       .Where(n => n.CreatedOn >= fromDatee && n.CreatedOn <= toDatee)
-        //       .GroupBy(n=>new { n.Publisher_id, n.Classification_Decision })
-        //       //.GroupBy(n => n.Classification_Decision)
-        //       .Select(g => new NewsClassificationByPublisherCount { PublisherId = g.GroupBy(g=>g.Publisher_id), Classification = g.Key.Classification_Decision, Count = g.Count() })
-        //       .ToListAsync();
-
-        //        foreach (var classification in newsCountByClassification.GroupBy(c=>)
-        //        {
-        //            foreach(var pub in newsCountByClassification.)
-        //            if (classification.Classification == "Fake")
-        //            {
-        //                result.fakeCount = classification.Count;
-        //            }
-        //            if (classification.Classification == "Real")
-        //            {
-        //                result.realCount = classification.Count;
-        //            }
-        //        }
-        //    }
-        //    return result;
-
-        //}
 
         public async Task<ReviewRequestDashboardRestultDto> GetReviewRequestCount(int userId, [FromQuery(Name = "from")] string fromDate, [FromQuery(Name = "to")] string toDate)
         {
@@ -147,7 +112,7 @@ namespace FND.API.Data.Repositories
             //DateTime toDateee = DateTime.Parse(fromDate);
             ReviewRequestDashboardRestultDto result = new ReviewRequestDashboardRestultDto();
             Users user = await _fNDDBContext.Users.Where(u => u.Id == userId).FirstAsync();
-            if (user.Role == "Admin")
+            if (user.Role == "Admin" || user.Role == "Moderator")
             {
                 var reviewREquestCountByStatus = await _fNDDBContext.ReviewRequest
                .Where(n => n.CreatedOn >= fromDatee && n.CreatedOn <= toDatee)
@@ -167,27 +132,27 @@ namespace FND.API.Data.Repositories
                     }
                 }
             }
-            else if (user.Role == "Moderator")
-            {
-                var reviewREquestCountByStatus = await _fNDDBContext.ReviewRequest
-               .Where(n => n.ReviewedBy == userId && n.CreatedOn >= fromDatee && n.CreatedOn <= toDatee)
-               .GroupBy(n => n.Status)
-               .Select(g => new ReviewRequestCountDto { Status = g.Key.ToString(), Count = g.Count() })
-               .ToListAsync();
+            //else if (user.Role == "Moderator")
+            //{
+            //    var reviewREquestCountByStatus = await _fNDDBContext.ReviewRequest
+            //   .Where(n => n.ReviewedBy == userId && n.CreatedOn >= fromDatee && n.CreatedOn <= toDatee)
+            //   .GroupBy(n => n.Status)
+            //   .Select(g => new ReviewRequestCountDto { Status = g.Key.ToString(), Count = g.Count() })
+            //   .ToListAsync();
 
 
-                foreach (var reviewRequest in reviewREquestCountByStatus)
-                {
-                    if (reviewRequest.Status == "0")
-                    {
-                        result.ReviewRending = reviewRequest.Count;
-                    }
-                    if (reviewRequest.Status == "1")
-                    {
-                        result.ReviewCompleted = reviewRequest.Count;
-                    }
-                }
-            }
+            //    foreach (var reviewRequest in reviewREquestCountByStatus)
+            //    {
+            //        if (reviewRequest.Status == "0")
+            //        {
+            //            result.ReviewRending = reviewRequest.Count;
+            //        }
+            //        if (reviewRequest.Status == "1")
+            //        {
+            //            result.ReviewCompleted = reviewRequest.Count;
+            //        }
+            //    }
+            //}
 
             return result;
         }
@@ -350,7 +315,7 @@ namespace FND.API.Data.Repositories
             return reviewRequest;
         }
 
-        public async Task<ReviewRequest> SubmitReview(int ModeratorId, SubmitReviewDto submitReviewDto)
+        public async Task<ReviewRequest> SubmitReview(SubmitReviewDto submitReviewDto)
         {
             //GetReviewRequestedNewsById(submitReviewDto.RequestReviewId);
             ReviewRequest updateReviewRequest = new ReviewRequest()
@@ -359,7 +324,7 @@ namespace FND.API.Data.Repositories
                 ReviewFeedback = submitReviewDto.ReviewFeedback,
                 Result = submitReviewDto.ReviewResult,
                 Status = 1,
-                ReviewedBy = ModeratorId,
+                ReviewedBy = submitReviewDto.ReviewerId,
                 UpdatedOn = DateTime.Now
             };
             _fNDDBContext.Attach(updateReviewRequest);
@@ -368,6 +333,19 @@ namespace FND.API.Data.Repositories
             _fNDDBContext.Entry(updateReviewRequest).Property(r => r.Status).IsModified = true;
             _fNDDBContext.Entry(updateReviewRequest).Property(r => r.UpdatedOn).IsModified = true;
             _fNDDBContext.Entry(updateReviewRequest).Property(r => r.ReviewedBy).IsModified = true;
+
+            if(submitReviewDto.ReviewResult == "Real")
+            {
+                News updateNews = new News()
+                {
+                    Id = submitReviewDto.RequestReviewId,
+                    Classification_Decision = "Real"
+                };
+
+                _fNDDBContext.Attach(updateNews);
+                _fNDDBContext.Entry(updateNews).Property(r => r.Classification_Decision).IsModified = true;
+            }
+
             _fNDDBContext.SaveChanges();
             return updateReviewRequest;
         }
@@ -415,7 +393,7 @@ namespace FND.API.Data.Repositories
             //DateTime toDateee = DateTime.Parse(fromDate);
             List<ReviewRequestCountByPublisherDashboardresultDto> results = new List<ReviewRequestCountByPublisherDashboardresultDto>();
             Users user = await _fNDDBContext.Users.Where(u => u.Id == id).FirstAsync();
-            if (user.Role == "Admin")
+            if (user.Role == "Admin" || user.Role == "Moderator")
             {
                 var reviewRequestCountByPublisher = await _fNDDBContext.ReviewRequest
                .Where(n => n.CreatedOn >= fromDatee && n.CreatedOn <= toDatee)
@@ -510,6 +488,48 @@ namespace FND.API.Data.Repositories
                 }
 
                
+            }
+
+            if (user.Role == "Publisher")
+            {
+                var newsCounts = await _fNDDBContext.News
+                        .Where(n => n.Publisher_id == user.Id && n.CreatedOn >= fromDatee && n.CreatedOn <= toDatee)
+                        .GroupBy(n => new { n.Classification_Decision, n.CreatedOn.Year, n.CreatedOn.Month })
+                        .Select(g => new
+                        {
+                            Classification = g.Key.Classification_Decision,
+                            Year = g.Key.Year,
+                            Month = g.Key.Month,
+                            Count = g.Count()
+                        })
+                        .ToListAsync();
+
+                var groupedResults = newsCounts
+                    .GroupBy(g => new { g.Year, g.Month })
+                    .OrderBy(g => g.Key.Year)
+                    .ThenBy(g => g.Key.Month);
+
+                foreach (var group in groupedResults)
+                {
+                    var result = new NewsCountByMonthDashboardresultDto
+                    {
+                        Year = group.Key.Year,
+                        Month = group.Key.Month,
+                    };
+
+                    foreach (var newsCount in group)
+                    {
+                        if (newsCount.Classification == "Fake")
+                        {
+                            result.FakeCount = newsCount.Count;
+                        }
+                        if (newsCount.Classification == "Real")
+                        {
+                            result.RealCount = newsCount.Count;
+                        }
+                    }
+                    results.Add(result);
+                }
             }
             return results;
         }

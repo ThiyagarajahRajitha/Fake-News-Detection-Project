@@ -35,7 +35,6 @@ export class SignupComponent {
   }
 
   onSignUp(){
-    if(this.signUpForm.valid){
       if(this.signUpForm.valid){
         this.auth.signup(this.signUpForm.value)
         .subscribe({
@@ -44,11 +43,13 @@ export class SignupComponent {
             this.created = true;
           })
           ,error:(err=>{
-            this.error = err?.error.message;
+            //console.log("authentication failure");
+            this.error= err.error.message;
+            this.signUpForm.reset();
+            //this.error = err?.error.message;
           })
         })
       }
-    }
     else{
       ValidateForm.validateAllFormFields(this.signUpForm);
     }

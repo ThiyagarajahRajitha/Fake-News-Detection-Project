@@ -4,7 +4,7 @@
 <section class="banner">
     <h2>Welcome <span *ngIf="userRole=='Publisher' || userRole=='Moderator'|| userRole=='Admin'"><b>{{username}}</b></span> to Our Fake News Detector</h2>
     <p>Verify the authenticity of news articles here.</p>
-    <button class="get-started-button" *ngIf="!userRole" (click)="openClassifyNewsModal()">Add News to Classify</button>
+    <button class="get-started-button" [class.Clickable] = true *ngIf="!userRole" (click)="openClassifyNewsModal()">Add News to Classify</button>
     <button class="get-started-button" *ngIf="!userRole" (click)="openSubscribeModal()">Subscribe <i class="fas fa-paper-plane"></i></button>
 
 </section>
@@ -110,7 +110,7 @@
                 <input type="text" value="{{newsItem.result}}" disabled>
             </div>
         </div>
-        <div class="row mt-3" *ngIf="newsItem.reviewerName">
+        <div class="row mt-3" *ngIf="newsItem.reviewerName && userRole!='Publisher'">
             <div class="col-3">
                 Reviewer Name :
             </div>

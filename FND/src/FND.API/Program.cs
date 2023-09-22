@@ -36,7 +36,7 @@ builder.Services.AddDbContext<FNDDBContext>(options =>
 builder.Services.TryAddScoped<INewsService, NewsService>();
 builder.Services.TryAddScoped<IPublisherService, PublisherService>();
 
-//builder.Services.TryAddSingleton<IHostedService, NewsFetcherService>();
+builder.Services.TryAddSingleton<IHostedService, NewsFetcherService>();
 
 builder.Services.AddAuthentication(x =>
 {

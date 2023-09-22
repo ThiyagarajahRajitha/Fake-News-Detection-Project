@@ -5,5 +5,7 @@
         public int RequestReviewId { get; set; }
         public string ReviewResult { get; set; }
         public string ReviewFeedback { get; set; }
+        public int ReviewerId { get; set; }
+
     }
 }

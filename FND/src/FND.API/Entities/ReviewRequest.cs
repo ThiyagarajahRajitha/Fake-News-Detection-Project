@@ -12,7 +12,7 @@ namespace FND.API.Entities
         public string? Result { get; set; }
 
         [ForeignKey("Users")]
-        public int ReviewedBy { get; set; }
+        public int? ReviewedBy { get; set; }
         public DateTimeOffset CreatedOn { get; set; }
         public DateTimeOffset? UpdatedOn { get; set; }
         public virtual Users Users { get; set; }

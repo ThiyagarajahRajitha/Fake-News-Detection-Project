@@ -36,5 +36,23 @@ export class ModeratorService {
     console.log(this.baseApiUrl + '/api/Moderator?Pending=' + filter);
     return usee;
  }
+
+ deleteModerator(id: Number):Observable<any>{
+  var resp = this.http.delete<any>(this.baseApiUrl + '/api/user/'+ id, {observe: 'response'});
+  console.log(this.baseApiUrl + '/api/user/'+ id);
+  return resp;
+  }
+
+  resend(id: Number):Observable<any>{
+    var resp = this.http.post<any>(this.baseApiUrl + '/api/Moderator/Reinvite?id='+ id, {observe: 'response'});
+    console.log(this.baseApiUrl + '/api/Moderator/'+ id);
+    return resp;
+    }
+
+  deleteModeratorFrommoderator(id:Number):Observable<any>{
+    var resp = this.http.delete<any>(this.baseApiUrl + '/api/Moderator/'+ id, {observe: 'response'});
+    console.log(this.baseApiUrl + '/api/Moderator/'+ id);
+    return resp;
+  }  
 }
 

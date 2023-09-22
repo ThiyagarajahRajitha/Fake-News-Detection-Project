@@ -33,7 +33,7 @@ namespace FND.API.Data.Repositories
             fNDDBContext.Users.AddAsync(user);
             fNDDBContext.SaveChangesAsync();
 
-            GetUserById(user.Id);
+            var newUser = GetUserById(user.Id);
 
             Publication publication = new Publication()
             {
@@ -130,7 +130,7 @@ namespace FND.API.Data.Repositories
                 return result;
             }
 
-            var users = await fNDDBContext.Users.Where(p => p.Role == "Moderator").OrderByDescending(i => i.Id).ToListAsync();
+            var users = await fNDDBContext.Users.Where(p => p.Role == "Moderator" && p.IsDeleted==false).OrderByDescending(i => i.Id).ToListAsync();
             return users;
 
         }
@@ -174,14 +174,14 @@ namespace FND.API.Data.Repositories
             //DateTime toDateee = DateTime.Parse(fromDate);
             List<ReviewRequestCountByModeratorDashboardresultDto> results = new List<ReviewRequestCountByModeratorDashboardresultDto>();
             Users user = await fNDDBContext.Users.Where(u => u.Id == userId).FirstAsync();
-            if (user.Role == "Admin")
+            if (user.Role == "Admin" || user.Role == "Moderator")
             {
                 var reviewREquestCountByModerator = await fNDDBContext.ReviewRequest
                .Where(n => n.CreatedOn >= fromDatee && n.CreatedOn <= toDatee && n.Status == 1)
                .GroupBy(n => n.ReviewedBy)
                .Select(g => new ReviewRequestCountByModeratorDashboardresultDto
                {
-                   MID = g.Key,
+                   MID = (int)g.Key,
                    Count = g.Count()
                })
                .ToListAsync();

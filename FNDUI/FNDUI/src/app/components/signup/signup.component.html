@@ -40,9 +40,13 @@
 
                             <div class="form-inline fr mt-4">
 
-                            <div *ngIf="error">
+                                <div *ngIf="error"  class="alert alert-danger" role="alert" >
+                                    {{error}}
+                                </div>
+
+                            <!-- <div *ngIf="error">
                                 <p>{{error}}</p>
-                            </div>
+                            </div> -->
 
 
                             </div>
@@ -51,7 +55,8 @@
                         </form>
                     </div>
                     <div *ngIf="created" class="text-center pt-4 text-muted">
-                        <p>The Account created Sucessfully. Please wait for the admin approval</p>
+                        <p>The Account created Sucessfully. Please wait for the admin approval.</p>
+                        <p><a routerLink="/login"> Click here to login</a></p>
                     </div>
                 </div>
             </div>
