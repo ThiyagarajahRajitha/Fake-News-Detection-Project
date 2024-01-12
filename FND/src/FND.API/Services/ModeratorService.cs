@@ -44,16 +44,10 @@ namespace FND.API.Services
             </html>
             """;
         private FNDDBContext fNDDBContext;
-
         public ModeratorService(FNDDBContext fNDDBContext)
         {
             _repository = new ModeratorRepository(fNDDBContext);
         }
-        //public ModeratorService(FNDDBContext fNDDBContext)
-        //{
-        //    this.fNDDBContext = fNDDBContext;
-        //}
-
         public async Task<Moderator> CreateModerator(CreateModeratorDto createModeratorDto)
         {
             var moderator = await _repository.CreateModerator(createModeratorDto);
@@ -64,7 +58,6 @@ namespace FND.API.Services
             await _notificationService.SendMailAsync(message);
             return moderator;
         }
-
         public async Task<bool> ReInviteModerator(int id)
         {
             Moderator moderator = await _repository.UpdateModerator(id);
@@ -81,7 +74,6 @@ namespace FND.API.Services
             {
                 return false;
             }
-            
         }
 
         public async Task<bool> ValidateModerator(string userName, Guid inviteCode)

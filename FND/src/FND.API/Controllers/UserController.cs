@@ -1,19 +1,15 @@
 ﻿using FND.API.Data;
+using FND.API.Data.Dtos;
 using FND.API.Entities;
 using FND.API.Helpers;
-using Google.Apis.Gmail.v1.Data;
-using Microsoft.AspNetCore.Http;
+using FND.API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System;
-using FND.API.Data.Dtos;
-using FND.API.Data.Repositories;
-using FND.API.Services;
-using Microsoft.AspNetCore.Authorization;
 
 namespace FND.API.Controllers
 {
@@ -35,9 +31,7 @@ namespace FND.API.Controllers
             if (loginRequest == null)
                 return BadRequest();
 
-            var user = await _context.Users.FirstOrDefaultAsync(x=>x.Email== loginRequest.Username);
-            //if(user == null)
-            //    return Ok(new {Message = "User Not Found!"});
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Email == loginRequest.Username);
 
             if(user == null || !PasswordHasher.verifyPasswood(loginRequest.Password, user.Password_hash))
             {
@@ -47,7 +41,6 @@ namespace FND.API.Controllers
             {
                 return Ok(new { Message = "Your account approval is pending" });
             }
-
             user.Token= CreateJwt(user);
             return Ok(new
             {
@@ -72,10 +65,8 @@ namespace FND.API.Controllers
                 Message = "user registered!"
             });
         }
-
         private Task<bool> CheckUserEmailExist(string email)
             =>_context.Users.AnyAsync(x => x.Email == email);
-
         private string CreateJwt(Users user)
         {
             var jwtTokenhandler = new JwtSecurityTokenHandler();
@@ -96,7 +87,6 @@ namespace FND.API.Controllers
                 Expires = DateTime.Now.AddMinutes(60),
                 SigningCredentials = credentials
             };
-
             var token = jwtTokenhandler.CreateToken(tokenDescriptor);
             return jwtTokenhandler.WriteToken(token);
         }

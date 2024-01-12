@@ -1,9 +1,6 @@
-﻿using FND.API.Controllers;
-using FND.API.Data.Dtos;
+﻿using FND.API.Data.Dtos;
 using FND.API.Entities;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace FND.API.Data.Repositories
@@ -11,7 +8,6 @@ namespace FND.API.Data.Repositories
     public class PublisherRepository
     {
         private readonly FNDDBContext _fNDDBContext;
-
         public PublisherRepository(FNDDBContext fNDDBContext)
         {
             _fNDDBContext = fNDDBContext;
@@ -27,8 +23,7 @@ namespace FND.API.Data.Repositories
         }
 
         public async Task<List<Users>> GetPublishers([FromQuery(Name = "PendingApprovalOnly")] bool IsPendingOnly)
-        {
-            
+        { 
             if (IsPendingOnly)
             {
                 var publishersList = await _fNDDBContext.Users.Where(p => p.Role == "Publisher" && p.Status==0).OrderByDescending(i => i.Id).ToListAsync();
@@ -40,16 +35,7 @@ namespace FND.API.Data.Repositories
                 .OrderByDescending(b => b.Id).ToListAsync();
                 return publishersList;
             }
-     
         }
-
-        //public async Task UpdatePublisherAsync(int id)
-        //{
-        //    var updatedPub = new Users { Id = id, Status = 1 };
-        //    _fNDDBContext.Attach(updatedPub);
-        //    _fNDDBContext.Entry(updatedPub).Property(r => r.Status).IsModified = true;
-        //    _fNDDBContext.SaveChanges();
-        //}
 
         public async Task UpdatePublisherAsync(int id, ActivatePublisherDto activatePublisher)
         {
@@ -89,10 +75,16 @@ namespace FND.API.Data.Repositories
 
         internal async void updateLastFetchedNews(int publication_Id, string newsUrl)
         {
-            var updatedPub = new Publication { Publication_Id = publication_Id, LastFetchedNewsUrl = newsUrl };
-            _fNDDBContext.Attach(updatedPub);
-            _fNDDBContext.Entry(updatedPub).Property(r => r.LastFetchedNewsUrl).IsModified = true;
-            _fNDDBContext.SaveChanges();
+            try {
+                _fNDDBContext.ChangeTracker.Clear();
+                var updatedPub = new Publication { Publication_Id = publication_Id, LastFetchedNewsUrl = newsUrl };
+                _fNDDBContext.Attach(updatedPub);
+                _fNDDBContext.Entry(updatedPub).Property(r => r.LastFetchedNewsUrl).IsModified = true;
+                _fNDDBContext.SaveChanges();
+            } catch(Exception ex)
+            {
+                Console.WriteLine("Error while adding last news " + newsUrl, ex.Message);
+            }
         }
 
         public async Task<Publication> getBublisherById(int id)
@@ -105,7 +97,6 @@ namespace FND.API.Data.Repositories
         public async Task<bool> DeletePublisher(int id)
         {
             var publisher = getBublisherById(id);
-
             if (publisher == null)
                 return false;
             
@@ -119,10 +110,8 @@ namespace FND.API.Data.Repositories
             _fNDDBContext.Entry(deleteUser).Property(r => r.IsDeleted).IsModified = true;
             _fNDDBContext.Entry(deleteUser).Property(r => r.DeletedAt).IsModified = true;
             _fNDDBContext.SaveChanges();
-            return true;
-            
+            return true; 
         }
-
         public async Task<List<Publication>> GetPublication()
         {
             var publishersList = await _fNDDBContext.Publications

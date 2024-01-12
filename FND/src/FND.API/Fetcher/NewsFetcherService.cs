@@ -1,12 +1,10 @@
-﻿using FND.API.Entities;
-using System.Xml;
-using System.ServiceModel.Syndication;
+﻿using FND.API.Data.Dtos;
+using FND.API.Entities;
+using FND.API.Interfaces;
 using HtmlAgilityPack;
 using Microsoft.IdentityModel.Tokens;
-using FND.API.Data.Repositories;
-using FND.API.Data;
-using FND.API.Data.Dtos;
-using FND.API.Interfaces;
+using System.ServiceModel.Syndication;
+using System.Xml;
 
 namespace FND.API.Fetcher
 {
@@ -18,7 +16,6 @@ namespace FND.API.Fetcher
         {
             publisherService = serviceProvider.CreateScope().ServiceProvider.GetRequiredService<IPublisherService>();
             newsService = serviceProvider.CreateScope().ServiceProvider.GetRequiredService<INewsService>();
-            //https://iqan.medium.com/how-to-create-a-timely-running-service-in-net-core-757f445035ca
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -140,23 +137,7 @@ namespace FND.API.Fetcher
                 }
                 publisherList.Add(pub);
             }
-            //Publisher pub = new Publisher()
-            //{
-            //    id = 1,
-            //    rssUrl = "https://news.lk/news?format=feed",
-            //    lastFetchedNewsUrl = "https://news.lk/news/political-current-affairs/item/35550-foreign-minister-ali-sabry-to-visit-iran",
-            //    newsDiv = "itemFullText"
-            //};
-            //publisherList.Add(pub);
-            //Publisher pub1 = new Publisher()
-            //{
-            //    id = 2,
-            //    rssUrl = "https://newsfirst.lk/feed",
-            // https://www.newsfirst.lk/2023/09/22/sajith-slams-attempts-to-protect-those-linked-to-easter-sunday-attacks/
-            //    lastFetchedNewsUrl = "https://www.newsfirst.lk/2023/08/05/donald-trump-pleads-not-guilty-to-additional-charges-in-documents-case/",
-            //    newsDiv = "editor-style"
-            //};
-            //publisherList.Add(pub1);
+            
             return publisherList;
         }
     }

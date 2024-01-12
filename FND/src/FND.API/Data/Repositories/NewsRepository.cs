@@ -1,10 +1,8 @@
 ﻿using FND.API.Data.Dtos;
 using FND.API.Entities;
-using FND.API.Fetcher;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace FND.API.Data.Repositories
 {
@@ -29,11 +27,8 @@ namespace FND.API.Data.Repositories
 
         public async Task<ActionResult<News>> CreateNews(CreateNewsDto model)
         {
-            //await _fNDDBContext.News.AddAsync(createNewsDto);
-            //    await _fNDDBContext.SaveChangesAsync();
             News newNews = new News()
             {
-                //Id = Guid.NewGuid(),
                 Url = model.Url,
                 Topic = model.Topic,
                 Content = model.Content,
@@ -54,8 +49,6 @@ namespace FND.API.Data.Repositories
             DateTime fromDatee = DateTime.ParseExact(fromDate, format, CultureInfo.InvariantCulture);
             DateTime toDatee = DateTime.ParseExact(toDate, format, CultureInfo.InvariantCulture);
 
-            //DateTime fromDateee = DateTime.Parse(fromDate);
-            //DateTime toDateee = DateTime.Parse(fromDate);
             NewsDashboardResultDto result = new NewsDashboardResultDto();
             Users user = await _fNDDBContext.Users.Where(u => u.Id == userId).FirstAsync();
             if (user.Role == "Admin" || user.Role == "Moderator")
@@ -108,8 +101,6 @@ namespace FND.API.Data.Repositories
             DateTime fromDatee = DateTime.ParseExact(fromDate, format, CultureInfo.InvariantCulture);
             DateTime toDatee = DateTime.ParseExact(toDate, format, CultureInfo.InvariantCulture);
 
-            //DateTime fromDateee = DateTime.Parse(fromDate);
-            //DateTime toDateee = DateTime.Parse(fromDate);
             ReviewRequestDashboardRestultDto result = new ReviewRequestDashboardRestultDto();
             Users user = await _fNDDBContext.Users.Where(u => u.Id == userId).FirstAsync();
             if (user.Role == "Admin" || user.Role == "Moderator")
@@ -132,28 +123,6 @@ namespace FND.API.Data.Repositories
                     }
                 }
             }
-            //else if (user.Role == "Moderator")
-            //{
-            //    var reviewREquestCountByStatus = await _fNDDBContext.ReviewRequest
-            //   .Where(n => n.ReviewedBy == userId && n.CreatedOn >= fromDatee && n.CreatedOn <= toDatee)
-            //   .GroupBy(n => n.Status)
-            //   .Select(g => new ReviewRequestCountDto { Status = g.Key.ToString(), Count = g.Count() })
-            //   .ToListAsync();
-
-
-            //    foreach (var reviewRequest in reviewREquestCountByStatus)
-            //    {
-            //        if (reviewRequest.Status == "0")
-            //        {
-            //            result.ReviewRending = reviewRequest.Count;
-            //        }
-            //        if (reviewRequest.Status == "1")
-            //        {
-            //            result.ReviewCompleted = reviewRequest.Count;
-            //        }
-            //    }
-            //}
-
             return result;
         }
 
@@ -163,9 +132,6 @@ namespace FND.API.Data.Repositories
             string format = "yyyy-MM-dd";
             DateTime fromDatee = DateTime.ParseExact(fromDate, format, CultureInfo.InvariantCulture);
             DateTime toDatee = DateTime.ParseExact(toDate, format, CultureInfo.InvariantCulture);
-
-            //DateTime fromDateee = DateTime.Parse(fromDate);
-            //DateTime toDateee = DateTime.Parse(fromDate);
             List<NewsCountByPublisherDashboardresultDto> results = new List<NewsCountByPublisherDashboardresultDto>();
             Users user = await _fNDDBContext.Users.Where(u => u.Id == userId).FirstAsync();
             if (user.Role == "Admin")
@@ -178,32 +144,14 @@ namespace FND.API.Data.Repositories
                    PublisherId = g.Key.Publisher_id ?? 0,
                    Classification = g.Key.Classification_Decision,
                    Count = g.Count()
-               })
-               .ToListAsync();
-
-                //foreach (var publisher in newsCountByPublisher)
-                //{
-                //    if (publisher.Classification == "Fake")
-                //    {
-                //        result.FakeCount = publisher.Count;
-                //    }
-                //    if (publisher.Classification == "Real")
-                //    {
-                //        result.RealCount = publisher.Count;
-                //    }
-
-                //}
-
-                // Group the results by PublisherId
+               }).ToListAsync();
                 var groupedResults = newsCountByPublisher.GroupBy(p => p.PublisherId);
-
                 foreach (var group in groupedResults)
                 {
                     var publisherResult = new NewsCountByPublisherDashboardresultDto
                     {
                         PID = group.Key
                     };
-
                     foreach (var publisher in group)
                     {
                         if (publisher.Classification == "Fake")
@@ -215,17 +163,14 @@ namespace FND.API.Data.Repositories
                             publisherResult.RealCount = publisher.Count;
                         }
                     }
-
                     results.Add(publisherResult);
                 }
             }
-
             return results;
         }
 
         public async Task<List<ReviewRequest>> GetNewsByPublisherId(int publisherId, string filter)
         {
-
             if (filter == "fakeOnly")
             {
                 var newsList = await _fNDDBContext.News
@@ -240,7 +185,7 @@ namespace FND.API.Data.Repositories
                         .Where(r => r.Id == news.Id)
                         .Include(rr => rr.News)
                         .Include(uu => uu.Users)
-                        .SingleOrDefaultAsync();
+                        .SingleAsync();
                     if (reviewNews == null)
                     {
                         reviewNews = new ReviewRequest
@@ -249,7 +194,6 @@ namespace FND.API.Data.Repositories
                         };
                     }
                     finalNews.Add(reviewNews);
-
                 }
                 return finalNews;
             }
@@ -286,7 +230,7 @@ namespace FND.API.Data.Repositories
                         .Where(r => r.Id == news.Id)
                         .Include(rr => rr.News)
                         .Include(uu => uu.Users)
-                        .SingleOrDefaultAsync();
+                        .SingleAsync();
                     if (reviewNews == null)
                     {
                         reviewNews = new ReviewRequest
@@ -309,15 +253,12 @@ namespace FND.API.Data.Repositories
                 Comment = createRequestReviewDto.Comment,
                 CreatedOn = DateTime.Now
             };
-
             _fNDDBContext.AddAsync<ReviewRequest>(reviewRequest);
             _fNDDBContext.SaveChanges();
             return reviewRequest;
         }
-
         public async Task<ReviewRequest> SubmitReview(SubmitReviewDto submitReviewDto)
         {
-            //GetReviewRequestedNewsById(submitReviewDto.RequestReviewId);
             ReviewRequest updateReviewRequest = new ReviewRequest()
             {
                 Id = submitReviewDto.RequestReviewId,
@@ -333,7 +274,6 @@ namespace FND.API.Data.Repositories
             _fNDDBContext.Entry(updateReviewRequest).Property(r => r.Status).IsModified = true;
             _fNDDBContext.Entry(updateReviewRequest).Property(r => r.UpdatedOn).IsModified = true;
             _fNDDBContext.Entry(updateReviewRequest).Property(r => r.ReviewedBy).IsModified = true;
-
             if(submitReviewDto.ReviewResult == "Real")
             {
                 News updateNews = new News()
@@ -341,11 +281,9 @@ namespace FND.API.Data.Repositories
                     Id = submitReviewDto.RequestReviewId,
                     Classification_Decision = "Real"
                 };
-
                 _fNDDBContext.Attach(updateNews);
                 _fNDDBContext.Entry(updateNews).Property(r => r.Classification_Decision).IsModified = true;
             }
-
             _fNDDBContext.SaveChanges();
             return updateReviewRequest;
         }
@@ -372,11 +310,6 @@ namespace FND.API.Data.Repositories
             }
         }
 
-        //public async Task<List<ReviewRequest>> GetReviewRequestedNewsById(int RequestedReviewId)
-        //{
-        //    var newsList = await _fNDDBContext.ReviewRequest.Where(r => r.News.Id == RequestedReviewId).OrderByDescending(p => p.Id).ToListAsync();
-        //    return newsList;
-        //}
         public async Task<List<ReviewRequest>> GetReviewRequestedNewsByPublisher(int userId)
         {
             var newsList = await _fNDDBContext.ReviewRequest.Where(r => r.News.Publisher_id == userId).OrderByDescending(p => p.Id).ToListAsync();
@@ -388,9 +321,6 @@ namespace FND.API.Data.Repositories
             string format = "yyyy-MM-dd";
             DateTime fromDatee = DateTime.ParseExact(fromDate, format, CultureInfo.InvariantCulture);
             DateTime toDatee = DateTime.ParseExact(toDate, format, CultureInfo.InvariantCulture);
-
-            //DateTime fromDateee = DateTime.Parse(fromDate);
-            //DateTime toDateee = DateTime.Parse(fromDate);
             List<ReviewRequestCountByPublisherDashboardresultDto> results = new List<ReviewRequestCountByPublisherDashboardresultDto>();
             Users user = await _fNDDBContext.Users.Where(u => u.Id == id).FirstAsync();
             if (user.Role == "Admin" || user.Role == "Moderator")
@@ -406,17 +336,13 @@ namespace FND.API.Data.Repositories
                    Count = g.Count()
                })
                .ToListAsync();
-
-                // Group the results by PublisherId
                 var groupedResults = reviewRequestCountByPublisher.GroupBy(p => p.PublisherId);
-
                 foreach (var group in groupedResults)
                 {
                     var publisherResult = new ReviewRequestCountByPublisherDashboardresultDto
                     {
                         PID = group.Key
                     };
-
                     foreach (var publisher in group)
                     {
                         if (publisher.Status == 0)
@@ -428,11 +354,9 @@ namespace FND.API.Data.Repositories
                             publisherResult.ReviewCompleted = publisher.Count;
                         }
                     }
-
                     results.Add(publisherResult);
                 }
             }
-
             return results;
         }
 
@@ -441,9 +365,6 @@ namespace FND.API.Data.Repositories
             string format = "yyyy-MM-dd";
             DateTime fromDatee = DateTime.ParseExact(fromDate, format, CultureInfo.InvariantCulture);
             DateTime toDatee = DateTime.ParseExact(toDate, format, CultureInfo.InvariantCulture);
-
-            //DateTime fromDateee = DateTime.Parse(fromDate);
-            //DateTime toDateee = DateTime.Parse(fromDate);
             List<NewsCountByMonthDashboardresultDto> results = new List<NewsCountByMonthDashboardresultDto>();
             Users user = await _fNDDBContext.Users.Where(u => u.Id == userId).FirstAsync();
             if (user.Role == "Admin")
@@ -459,12 +380,10 @@ namespace FND.API.Data.Repositories
                             Count = g.Count()
                         })
                         .ToListAsync();
-
                 var groupedResults = newsCounts
                     .GroupBy(g => new { g.Year, g.Month })
                     .OrderBy(g => g.Key.Year)
                     .ThenBy(g => g.Key.Month);
-
                 foreach (var group in groupedResults)
                 {
                     var result = new NewsCountByMonthDashboardresultDto
@@ -472,7 +391,6 @@ namespace FND.API.Data.Repositories
                         Year = group.Key.Year,
                         Month = group.Key.Month,
                     };
-
                     foreach (var newsCount in group)
                     {
                         if (newsCount.Classification == "Fake")
@@ -486,10 +404,7 @@ namespace FND.API.Data.Repositories
                     }
                     results.Add(result);
                 }
-
-               
             }
-
             if (user.Role == "Publisher")
             {
                 var newsCounts = await _fNDDBContext.News
@@ -503,7 +418,6 @@ namespace FND.API.Data.Repositories
                             Count = g.Count()
                         })
                         .ToListAsync();
-
                 var groupedResults = newsCounts
                     .GroupBy(g => new { g.Year, g.Month })
                     .OrderBy(g => g.Key.Year)
@@ -516,7 +430,6 @@ namespace FND.API.Data.Repositories
                         Year = group.Key.Year,
                         Month = group.Key.Month,
                     };
-
                     foreach (var newsCount in group)
                     {
                         if (newsCount.Classification == "Fake")
@@ -527,8 +440,7 @@ namespace FND.API.Data.Repositories
                         {
                             result.RealCount = newsCount.Count;
                         }
-                    }
-                    results.Add(result);
+                    }results.Add(result);
                 }
             }
             return results;

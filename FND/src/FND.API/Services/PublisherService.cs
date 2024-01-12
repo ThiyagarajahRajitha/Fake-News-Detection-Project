@@ -4,7 +4,6 @@ using FND.API.Data.Repositories;
 using FND.API.Entities;
 using FND.API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Xml;
 
 namespace FND.API.Services
 {

@@ -40,16 +40,6 @@ export class AuthService {
     return this.http.post<any>(this.baseApiUrl + '/api/Moderator/RegisterModerator', signupRequset);
   }
 
-  // login(loginObj:any){
-  //   var loginrequst={
-  //     "username": loginObj.username,
-  //     "password":loginObj.password
-  //   }
-  //   //return this.http.post<any>(`${this.baseUrl}authenticate`, loginrequst)
-  //   var resp= this.http.post<any>(this.baseApiUrl + '/api/User/authenticate', loginrequst);
-  //   return resp;
-  // }
-
   login(loginObj:any){
     var loginrequst={
       "username": loginObj.username,
@@ -58,48 +48,6 @@ export class AuthService {
     //return this.http.post<any>(`${this.baseUrl}authenticate`, loginrequst)
     return this.http.post<any>(this.baseApiUrl + '/api/User/authenticate', loginrequst);
   }
-
-  // login(loginObj: any) {
-  //   const loginRequest = {
-  //     "username": loginObj.username,
-  //     "password": loginObj.password
-  //   };
-  
-    // return this.http.post<any>(this.baseApiUrl + '/api/User/authenticate', loginRequest)
-    //   .pipe(
-    //     map((response: any) => {
-    //       // Handle successful authentication here, if needed.
-    //       // You can return response data or do any processing.
-    //       return response;
-    //     }),
-    //     catchError((error: any) => {
-    //       // Handle errors here and display custom error messages.
-    //       let errorMessage = 'Authentication failure'; // Default error message
-          
-    //       if (error.error && error.error.message) {
-    //         // If your backend sends a specific error message, use it.
-    //         errorMessage = error.error.message;
-    //       }
-  
-    //       // You can log the error for debugging purposes.
-    //       console.error('Authentication error:', error);
-  
-    //       // Throw the error to be caught and handled by the caller.
-    //       return throwError(errorMessage);
-    //     })
-    //   );
-
-    // return this.http.post<any>(this.baseApiUrl + '/api/User/authenticate', loginRequest).pipe(
-    //   catchError((error: HttpErrorResponse) => {
-    //     // Handle different error scenarios here
-    //     if (error.status === 400 && error.error && error.error.message) {
-    //       return throwError(error.error.message);
-    //     } else {
-    //       return throwError("An error occurred during authentication.");
-    //     }
-    //   })
-    // );
-  // }
 
   storeToken(tokenValue:string){
     localStorage.setItem('token', tokenValue);

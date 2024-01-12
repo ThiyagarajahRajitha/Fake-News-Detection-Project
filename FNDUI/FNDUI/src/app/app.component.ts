@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SubscribeService } from './services/subscribe/subscribe.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { CreateSubscriberModalComponent } from './components/subscribe/create-subscriber-modal/create-subscriber-modal.component';
 import { Router } from '@angular/router';
 import { AuthService } from './services/auth/auth.service';
 import { UserStoreService } from './services/user-store/user-store.service';
@@ -28,15 +27,11 @@ export class AppComponent implements OnInit{
   openInviteModeratorModal(){
     const modalRef = this.modalService.open(InviteModeratorModalComponent);
   }
-
   publisherSignIn(){
     this.router.navigate(['login']);
   }
-
   logout(){
     this.auth.logout();
     window.location.reload();
   }
-
- 
 }

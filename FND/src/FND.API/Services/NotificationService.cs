@@ -73,7 +73,6 @@ namespace FND.API.Services
                 .Replace("=", "");
         }
     }
-
     public class Notification
     {
         public string Subject { get; set; }
@@ -88,7 +87,6 @@ namespace FND.API.Services
             HtmlBody = htmlBody;
             Bcc = null;
         }
-
         public Notification(string subject, IEnumerable<string> bcc, IEnumerable<string> to, string htmlBody)
         {
             Subject = subject;

@@ -1,24 +1,15 @@
 ﻿using FND.API.Data;
+using FND.API.Data.Dtos;
 using FND.API.Entities;
 using FND.API.Helpers;
-using Google.Apis.Gmail.v1.Data;
-using Microsoft.AspNetCore.Http;
+using FND.API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using System;
-using FND.API.Data.Dtos;
-using FND.API.Data.Repositories;
-using FND.API.Services;
-using Microsoft.AspNetCore.Authorization;
-using FND.API.Interfaces;
 
 namespace FND.API.Controllers
 {
-    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ModeratorController : ControllerBase
@@ -31,7 +22,6 @@ namespace FND.API.Controllers
             _context = fNDDBContext;
             moderatorService = new ModeratorService(fNDDBContext);
             userService = new UserService(fNDDBContext);
-
         }
 
         [Authorize]
@@ -55,7 +45,6 @@ namespace FND.API.Controllers
             var rslt = await moderatorService.ReInviteModerator(id);
             if(rslt == true)
                 return Ok();
-
             return BadRequest();
         }
 
@@ -70,24 +59,19 @@ namespace FND.API.Controllers
                 return Ok();
             else 
                 return BadRequest();
-
         }
-
 
         [HttpPost("RegisterModerator")]
         public async Task<IActionResult> RegisterModerator([FromBody] ModeratorSignUpRequestDto moderatorSignUp)
         {
             if (moderatorSignUp == null)
                 return BadRequest();
-            //check email exists
-            //var users = await _context.Users.FirstOrDefaultAsync(x => x.Email == signUpRequest.Email);
             if (await CheckModeratorEmailExist(moderatorSignUp.Email))
             {
                 bool isvalid = await moderatorService.ValidateModerator(moderatorSignUp.Email, moderatorSignUp.InviteCode);
                 if (isvalid)
                 {
                     moderatorSignUp.Password = PasswordHasher.HashPassword(moderatorSignUp.Password);
-                    //users.Token = "";
                     Users user = new Users()
                     {
                         Name = moderatorSignUp.Name,

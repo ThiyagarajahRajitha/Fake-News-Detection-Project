@@ -4,10 +4,7 @@ namespace FND.API.Data
 {
     public class FNDDBContext : DbContext
     {
-        public FNDDBContext(DbContextOptions options) : base(options)
-        {
-
-        }
+        public FNDDBContext(DbContextOptions options) : base(options){}
         
         public DbSet<Entities.News> News { get; set; }
         public DbSet<Entities.Subscriber> Subscribers { get; set; }

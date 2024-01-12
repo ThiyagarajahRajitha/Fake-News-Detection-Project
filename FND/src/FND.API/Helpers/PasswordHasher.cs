@@ -23,11 +23,9 @@ namespace FND.API.Helpers
             var base64Hash = Convert.ToBase64String(hashbytes);
             return base64Hash;
         }
-
         public static bool verifyPasswood(string password, string base64Hash)
         {
             var hashBytes = Convert.FromBase64String(base64Hash);
-
             var salt = new byte[SaltSize];
             Array.Copy(hashBytes, 0, salt, 0, SaltSize);
 

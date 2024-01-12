@@ -1,7 +1,6 @@
 ﻿using FND.API.Data;
 using FND.API.Data.Dtos;
 using FND.API.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FND.API.Controllers
@@ -17,7 +16,7 @@ namespace FND.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Subscribe(CreateSubscriberDto createSubscriberDto)//have to give news class object to this 
+        public async Task<ActionResult> Subscribe(CreateSubscriberDto createSubscriberDto)
         {
             var result = await subscribeService.Subscribe(createSubscriberDto);
             return Ok(result);

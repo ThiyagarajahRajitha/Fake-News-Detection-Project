@@ -1,12 +1,8 @@
-﻿using FND.API.Data;
-using FND.API.Data.Dtos;
-using FND.API.Data.Repositories;
+﻿using FND.API.Data.Dtos;
 using FND.API.Entities;
 using FND.API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MimeKit.Encodings;
 
 namespace FND.API.Controllers
 {

@@ -11,7 +11,6 @@ namespace FND.API.Services
 {
     public class NewsService : INewsService
     {
-
         private readonly NewsRepository _newsRepository;
         private readonly SubscriberRepository _subscriberRepository;
         private readonly NotificationService _notificationService = new NotificationService();
@@ -46,25 +45,13 @@ namespace FND.API.Services
             </body>
             </html>
             """;
-
-
         public NewsService(FNDDBContext fNDDBContext)
         {
             _newsRepository =  new NewsRepository(fNDDBContext);
             _subscriberRepository = new SubscriberRepository(fNDDBContext);
         }
-
         public async Task<string> ClassifyNews(ClassifyNewsDto classifyNewsDto)//givw the news from user-client
         {
-            //var nws = new
-            //{
-            //    Topic = "Eagle IT Ltd.",
-            //    Content = "USA ewjrwtwt wetwktw",
-            //    //publisher = "Eagle IT Street 289",
-            //    //date = "11-11-2021"
-            //};
-
-            //var company = JsonSerializer.Serialize(classifyNewsDto);
             string jsonString = JsonConvert.SerializeObject(classifyNewsDto);
             var requestContent = new StringContent(jsonString, Encoding.UTF8, "application/json");
             using var _httpClient = new HttpClient();
@@ -103,13 +90,11 @@ namespace FND.API.Services
             var newsList = await _newsRepository.GetNews(IsFakeNewsOnly);
             return newsList;
         }
-
         public async Task<NewsDashboardResultDto> GetNewsCountByClassification(int id, [FromQuery(Name = "from")]string fromDate, [FromQuery(Name = "to")] string toDate)
         {
             var newsCountByClassification =  await _newsRepository.GetNewsCountByClassification(id, fromDate, toDate);
             return newsCountByClassification;
         }
-
         public async Task<ReviewRequestDashboardRestultDto> GetReviewRequestCount(int id,[FromQuery(Name = "from")] string fromDate, [FromQuery(Name = "to")] string toDate)
         {
             var reviewREquestCountByStatus = await _newsRepository.GetReviewRequestCount(id,fromDate, toDate);
@@ -125,20 +110,17 @@ namespace FND.API.Services
             var reviewRequestCountByPublisher = await _newsRepository.GetReviewRequestCountByPublisher(id, fromDate, toDate);
             return reviewRequestCountByPublisher;
         }
-
         public async Task<List<NewsCountByMonthDashboardresultDto>> GetNewsClassificationCountByMonth(int userId, [FromQuery(Name = "from")] string fromDate, [FromQuery(Name = "to")] string toDate)
         {
             var newsClassificationCountByMonth = await _newsRepository.GetNewsClassificationCountByMonth(userId, fromDate, toDate);
             return newsClassificationCountByMonth;
         }
-
         public async Task<List<ListNewsDto>> GetNewsByPublisherId(int publisherId, string Filter)
         {
             var newsList = await _newsRepository.GetNewsByPublisherId(publisherId, Filter);
             List<ListNewsDto> result = ConvertToListNewsDTO(newsList);
             return result;
         }
-
         private static List<ListNewsDto> ConvertToListNewsDTO(List<ReviewRequest> newsList)
         {
             List<ListNewsDto> result = new List<ListNewsDto>();
@@ -163,24 +145,19 @@ namespace FND.API.Services
                     UpdatedOn = news.UpdatedOn
                 };
                 result.Add(n);
-
             }
-
             return result;
         }
-
         public async Task<ReviewRequest> RequestReview(CreateRequestReviewDto createRequestReviewDto)
         {
             var request = await _newsRepository.RequestReview(createRequestReviewDto);
             return request;
         }
-
         public async Task<ReviewRequest> SubmitReview(SubmitReviewDto submitReviewDto)
         {
             var request = await _newsRepository.SubmitReview(submitReviewDto);
             return request;
         }
-
         public async Task<List<ListNewsDto>> GetAllReviewRequestedNews(string filter)
         {
             var newsList = await _newsRepository.GetAllReviewRequestedNews(filter);
@@ -188,7 +165,6 @@ namespace FND.API.Services
             return result;
         }
     }
-
     public class ClassificationResutlt
     {
         public string result { get; set; }
